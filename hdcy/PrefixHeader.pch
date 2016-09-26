@@ -1,0 +1,47 @@
+//
+//  PrefixHeader.pch
+//  hdcy
+//
+//  Created by mac on 16/9/25.
+//  Copyright © 2016年 youngliu.cn. All rights reserved.
+//
+
+#ifndef PrefixHeader_pch
+#define PrefixHeader_pch
+
+#ifndef __IPHONE_3_0
+#warning "This project uses features only available in iOS SDK 3.0 and later."
+#endif
+
+#ifdef __OBJC__
+#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
+#import "AFNetworking.h"
+#import "UIImageView+WebCache.h"
+#import "MJRefresh.h"
+#import "MBProgressHUD.h"
+#import "Masonry.h"
+#import "EquipmentInFHeader.h"
+#import "YLHttp.h"
+#import "MBProgressHUD+Extension.h"
+#import "YLGetTime.h"
+#import "SDAutoLayout.h"
+
+//#import "EMAlertView.h"
+//#import "TTGlobalUICommon.h"
+//#import "EMSDK.h"
+//#import "EaseUI.h"
+//#import "ChatUIDefine.h"
+#import "UCloudDefine.h"
+//#import "MKAnnotationView+WebCache.h"
+//#import "EMCallSession.h"
+//#import "EMConversation.h"
+//#import "ChatDemoHelper.h"
+//#import "MainViewController.h"
+//#import "UserProfileManager.h"
+//#import <Parse/Parse.h>
+//#import "EMCallRemoteView.h"
+#import <CoreLocation/CoreLocation.h>
+#endif
+
+#endif /* PrefixHeader_pch */
