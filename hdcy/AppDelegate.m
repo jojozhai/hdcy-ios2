@@ -7,7 +7,11 @@
 //
 
 #import "AppDelegate.h"
-
+#import "YLMainViewController.h"
+#import "YLVideoViewController.h"
+#import "YLNewsViewController.h"
+#import "YLActivityViewController.h"
+#import "YLFamousViewController.h"
 @interface AppDelegate ()
 
 @end
@@ -17,6 +21,25 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    self.window=[[UIWindow alloc]initWithFrame:[UIScreen mainScreen].bounds];
+    self.window.backgroundColor=[UIColor clearColor];
+    [self.window makeKeyWindow];
+    
+    YLMainViewController *main=[[YLMainViewController alloc]init];
+    self.window.rootViewController=main;
+    
+    YLVideoViewController *video=[[YLVideoViewController alloc]init];
+    YLNewsViewController *news=[[YLNewsViewController alloc]init];
+    YLActivityViewController *activity=[[YLActivityViewController alloc]init];
+    YLFamousViewController *famous=[[YLFamousViewController alloc]init];
+    video.title=@"视频";
+    news.title=@"资讯";
+    activity.title=@"活动";
+    famous.title=@"大咖";
+    main.viewControllers=@[video,news,activity,famous];
+    main.topBackgroudColor=[UIColor blackColor];
+    main.topHeight=50;
+    main.selectedButtonColor=RGBCOLOR(0, 254, 252);
     return YES;
 }
 
