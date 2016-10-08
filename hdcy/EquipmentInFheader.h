@@ -25,8 +25,8 @@
 #define Window_Width [[UIScreen mainScreen] bounds].size.width
 
 //网络
-static NSString *URL= @"http://app.haoduocheyou.com/app2";
-
+//static NSString *URL= @"http://app.haoduocheyou.com/app2";
+static NSString *URL= @"http://dev.haoduocheyou.com/app2";
 //定义屏幕的宽度
 #define SCREEN_WIDTH ([UIScreen mainScreen].bounds.size.width<[UIScreen mainScreen].bounds.size.height?[UIScreen mainScreen].bounds.size.width:[UIScreen mainScreen].bounds.size.height)
 //定义屏幕的高度
@@ -38,7 +38,7 @@ static NSString *URL= @"http://app.haoduocheyou.com/app2";
 //字体
 #define FONT_SYS_BIG [UIFont systemFontOfSize:18]
 #define FONT_SYS_NORMAL [UIFont systemFontOfSize:14]
-#define FONT_SYS_TITTLE [UIFont systemFontOfSize:16]
+#define FONT_SYS_TITTLE [UIFont boldSystemFontOfSize:16]
 #define FONT_SYS_HEADTITLE [UIFont systemFontOfSize:15]
 #define FONT_SYS_DETAIL [UIFont systemFontOfSize:13]
 #define FONT_SYS_WARN [UIFont systemFontOfSize:12]

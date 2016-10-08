@@ -6,8 +6,12 @@
 //  Copyright © 2016年 youngliu.cn. All rights reserved.
 //
 
-#import "RootViewController.h"
+#import <UIKit/UIKit.h>
 
-@interface YLNewsViewController : RootViewController
+@interface YLNewsViewController : UIViewController
+@property (nonatomic, assign) NSInteger topHeight;
 
+@property (nonatomic, strong) UIColor *selectedButtonColor;
+
+@property (nonatomic, strong) UIColor *topBackgroudColor;
 @end

@@ -29,17 +29,27 @@
     self.window.rootViewController=main;
     
     YLVideoViewController *video=[[YLVideoViewController alloc]init];
+    
     YLNewsViewController *news=[[YLNewsViewController alloc]init];
+    news.topHeight=40;
+    news.selectedButtonColor=[UIColor whiteColor];
+    news.topBackgroudColor=RGBCOLOR(143, 175, 202);
+    
     YLActivityViewController *activity=[[YLActivityViewController alloc]init];
+    
     YLFamousViewController *famous=[[YLFamousViewController alloc]init];
+    
     video.title=@"视频";
     news.title=@"资讯";
     activity.title=@"活动";
     famous.title=@"大咖";
     main.viewControllers=@[video,news,activity,famous];
-    main.topBackgroudColor=[UIColor blackColor];
+   // main.topBackgroudColor=[UIColor blackColor];
     main.topHeight=50;
     main.selectedButtonColor=RGBCOLOR(0, 254, 252);
+    
+    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleDefault;
+    
     return YES;
 }
 

@@ -22,17 +22,21 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     // 创建顶部按钮
-    //self.navigationController.navigationBar.hidden=YES;
-    //self.automaticallyAdjustsScrollViewInsets=NO;
+    self.view.backgroundColor=[UIColor clearColor];
     [self setupTopBtnView];
     // 创建scrollView
     [self setupScrollView];
 }
 
+-(UIStatusBarStyle)preferredStatusBarStyle
+{
+    return UIStatusBarStyleLightContent;
+}
+
 - (void)setupTopBtnView {
     //添加自定义导航栏
-    UIView *cusNavigationView=[[UIView alloc]initWithFrame:CGRectMake(0, 20, SCREEN_WIDTH, 50*SCREEN_MUTI)];
-    cusNavigationView.backgroundColor=[UIColor blackColor];
+    UIView *cusNavigationView=[[UIView alloc]initWithFrame:CGRectMake(0, 20, SCREEN_WIDTH, 50)];
+    cusNavigationView.backgroundColor=[UIColor clearColor];
     [self.view addSubview:cusNavigationView];
     //添加头部view
     YLOptionBtnView *topView = [[YLOptionBtnView alloc] initWithFrame:CGRectMake(0, 0, 210*SCREEN_MUTI, self.topHeight)];
@@ -81,7 +85,7 @@
 
 - (void)setupScrollView {
     // 创建滚动视图
-    UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0,70, self.view.width, self.view.size.height-70)];
+    UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0,70, SCREEN_WIDTH, self.view.size.height-70)];
     scrollView.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:scrollView];
     self.scrollView = scrollView;
@@ -91,7 +95,6 @@
     // 给滚动视图添加内容
     for (NSUInteger i = 0; i<count; i++) {
         UIViewController *new=self.viewControllers[i];
-        
         new.view.x = scrollView.width * i;
         new.view.y = 0;
         new.view.width = scrollView.width;

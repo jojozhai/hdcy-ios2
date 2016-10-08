@@ -6,8 +6,8 @@
 //  Copyright © 2016年 youngliu.cn. All rights reserved.
 //
 
-#import "RootViewController.h"
+#import <UIKit/UIKit.h>
 
-@interface YLActivityViewController : RootViewController
+@interface YLActivityViewController : UIViewController
 
 @end

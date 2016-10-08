@@ -66,16 +66,16 @@
         
         if (self.buttonStyle==YLButtonStyleLine) {
             // 添加底部线条
-            UILabel *bottomLine = [[UILabel alloc] initWithFrame:CGRectMake(self.scrollWidth-[self.titleArray[i] length]*self.height, self.height-2, [self.titleArray[i] length]*self.height,2)];
+            UILabel *bottomLine = [[UILabel alloc] init];
+            if (count<=4) {
+                btn.frame=CGRectMake(self.width/count*i, 0, self.width/count, self.height);
+            }
+            bottomLine.frame=CGRectMake(0, self.height-2, btn.width, 2);
             bottomLine.backgroundColor =btn.titleLabel.textColor;
             bottomLine.tag=1111+i;
             bottomLine.hidden=YES;
             [btn addSubview:bottomLine];
             
-            if (count<=4) {
-                btn.frame=CGRectMake(self.width/count*i, 0, self.width/count, self.height);
-                bottomLine.frame=CGRectMake(self.width/count*i, self.height-2, self.width/count, 2);
-            }
             if (i == 0) {
                 btn.selected = YES;
                 self.selectedBtn = btn;
@@ -128,6 +128,9 @@
         for (UIButton *obj in self.subviews) {
             for (UIView *sub in obj.subviews) {
                 if ([sub isKindOfClass:[YLTrangleView class]]) {
+                    sub.hidden=YES;
+                }else if([sub isKindOfClass:[UIView class]]&&sub.frame.size.height==2) {
+                    
                     sub.hidden=YES;
                 }
             }

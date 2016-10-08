@@ -9,15 +9,12 @@
 #import <UIKit/UIKit.h>
 
 @interface RootViewController : UIViewController
+@property (nonatomic,strong)UIView *cusNavigationView;
 -(void)addLeftBarButtonItemWithImageName:(NSString *)imageName
-
                                   target:(id)target
                                 selector:(SEL)selector;
 -(void)addRightBarButtonItemWithImageName:(NSString *)imageName
-
-                                  target:(id)target
-                                selector:(SEL)selector;
--(void)monitorNet;
-
-@property (nonatomic,assign)BOOL isOnline;
+                                    title:(NSString *)title
+                                   target:(id)target
+                                 selector:(SEL)selector;
 @end

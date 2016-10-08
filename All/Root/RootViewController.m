@@ -16,53 +16,40 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    self.automaticallyAdjustsScrollViewInsets=NO;
-    self.view.backgroundColor=[UIColor whiteColor];
-    [self setNav];
-    [self monitorNet];
+    self.view.backgroundColor=[UIColor blackColor];
+    [self cusNavigationBar];
 }
 
--(void)monitorNet
+-(void)cusNavigationBar
 {
-    self.isOnline=YES;
-    [[AFNetworkReachabilityManager sharedManager] setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
-        if (status==AFNetworkReachabilityStatusNotReachable) {
-            [MBProgressHUD showMessage:@"当前没有网络"];
-            self.isOnline=NO;
-        }else{
-            self.isOnline=YES;
-        }
-    }
-     ];
-    [[AFNetworkReachabilityManager sharedManager] startMonitoring];
+    //添加自定义导航栏
+    self.cusNavigationView=[[UIView alloc]initWithFrame:CGRectMake(0,20, SCREEN_WIDTH, 50)];
+    self.cusNavigationView.backgroundColor=[UIColor blackColor];
+    [self.view addSubview:self.cusNavigationView];
 }
 
--(void)setNav
-{
-    self.navigationController.navigationBar.titleTextAttributes=@{NSForegroundColorAttributeName:[UIColor whiteColor]};
- 
-}
 
 -(void)addLeftBarButtonItemWithImageName:(NSString *)imageName
-
                                   target:(id)target
                                 selector:(SEL)selector
 {
-    UIButton *button=[[UIButton alloc]initWithFrame:CGRectMake(0, 0, 12, 20)];
+    UIButton *button=[[UIButton alloc]initWithFrame:CGRectMake(12,10, 30, 30)];
     [button setBackgroundImage:[UIImage imageNamed:imageName] forState:UIControlStateNormal];
     [button addTarget:target action:selector forControlEvents:UIControlEventTouchUpInside];
-    self.navigationItem.leftBarButtonItem=[[UIBarButtonItem alloc]initWithCustomView:button];
+    [self.cusNavigationView addSubview:button];
 }
 
 -(void)addRightBarButtonItemWithImageName:(NSString *)imageName
-
-                                  target:(id)target
-                                selector:(SEL)selector
+                                    title:(NSString *)title
+                                   target:(id)target
+                                 selector:(SEL)selector
 {
-    UIButton *button=[[UIButton alloc]initWithFrame:CGRectMake(0, 0, 20, 20)];
+    UIButton *button=[[UIButton alloc]initWithFrame:CGRectMake(SCREEN_WIDTH-42, 10, 30, 30)];
+    [button setTitle:title forState:UIControlStateNormal];
+    [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [button setBackgroundImage:[UIImage imageNamed:imageName] forState:UIControlStateNormal];
     [button addTarget:target action:selector forControlEvents:UIControlEventTouchUpInside];
-    self.navigationItem.rightBarButtonItem=[[UIBarButtonItem alloc]initWithCustomView:button];
+    [self.cusNavigationView addSubview:button];
 }
 
 

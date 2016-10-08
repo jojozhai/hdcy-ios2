@@ -6,8 +6,8 @@
 //  Copyright © 2016年 youngliu.cn. All rights reserved.
 //
 
-#import "RootViewController.h"
+#import <UIKit/UIKit.h>
 
-@interface YLFamousViewController : RootViewController
+@interface YLFamousViewController : UIViewController
 
 @end
