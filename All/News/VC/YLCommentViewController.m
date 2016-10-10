@@ -130,7 +130,7 @@
 //查找全部评论
 -(void)requestUrl
 {
-    [self.hud show:YES];
+    [self.hud showAnimated:YES];
     NSString *urlString=[NSString stringWithFormat:@"%@%@",URL,@"/comments"];
     NSDictionary *paraDict=@{@"page":@(self.page),@"size":@"30",@"sort":@"createdTime,desc",@"targetId":self.Id,@"target":self.target};
     //首个请求的是评论列表
@@ -197,10 +197,10 @@
                 }
             }
         }
-        [self.hud hide:YES];
+        [self.hud hideAnimated:YES];
         
     } failure:^(NSError *error) {
-        [self.hud hide:YES];
+        [self.hud hideAnimated:YES];
     }];
     //无网络取消刷新
 //    if (self.isOnline==NO) {
@@ -480,10 +480,10 @@
             
             MBProgressHUD *hud=[[MBProgressHUD alloc]initWithView:self.view];
             hud.mode=MBProgressHUDModeText;
-            hud.labelText=@"发布成功";
+            hud.label.text=@"发布成功";
             [self.view addSubview:hud];
-            [hud show:YES];
-            [hud hide:YES afterDelay:1];
+            [hud showAnimated:YES];
+            [hud hideAnimated:YES afterDelay:1];
             [self.tableView reloadData];
         } failure:^(NSError *error) {
             
@@ -619,7 +619,7 @@
 {
     if (!_hud) {
         _hud=[[MBProgressHUD alloc]initWithView:self.view];
-        _hud.labelText=@"正在加载";
+        _hud.label.text=@"正在加载";
         [self.view addSubview:_hud];
     }
     return _hud;

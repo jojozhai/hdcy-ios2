@@ -12,6 +12,8 @@
 #import "YLNewsViewController.h"
 #import "YLActivityViewController.h"
 #import "YLFamousViewController.h"
+#import "UMSocial.h"
+#import "UMSocialWechatHandler.h"
 @interface AppDelegate ()
 
 @end
@@ -48,11 +50,21 @@
     main.topHeight=50;
     main.selectedButtonColor=RGBCOLOR(0, 254, 252);
     
-    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleDefault;
+    [UMSocialData setAppKey:UmengAppID];
+    [UMSocialConfig hiddenNotInstallPlatforms:@[UMShareToQQ, UMShareToQzone, UMShareToWechatSession, UMShareToWechatTimeline]];
+    [UMSocialWechatHandler setWXAppId:WeChatAppID appSecret:WeChatAppSecret url:nil];
     
     return YES;
 }
 
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
+{
+    BOOL result = [UMSocialSnsService handleOpenURL:url];
+    if (result == FALSE) {
+        //调用其他SDK，例如支付宝SDK等
+    }
+    return result;
+}
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.

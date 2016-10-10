@@ -11,6 +11,7 @@
 
 @interface YLNewsInfoViewController : RootViewController
 
+@property (nonatomic,copy)NSString *Id;
 @property (nonatomic,strong)YLNewsListModel *listModel;
 
 @end

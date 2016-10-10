@@ -9,11 +9,15 @@
 #import <UIKit/UIKit.h>
 
 @interface RootViewController : UIViewController
-@property (nonatomic,strong)UIView *cusNavigationView;
+@property (nonatomic,strong)UILabel *titleLabel;
 -(void)addLeftBarButtonItemWithImageName:(NSString *)imageName
                                   target:(id)target
                                 selector:(SEL)selector;
 -(void)addRightBarButtonItemWithImageName:(NSString *)imageName
+                                    title:(NSString *)title
+                                   target:(id)target
+                                 selector:(SEL)selector;
+-(void)addSecondRightBarButtonItemWithImageName:(NSString *)imageName
                                     title:(NSString *)title
                                    target:(id)target
                                  selector:(SEL)selector;

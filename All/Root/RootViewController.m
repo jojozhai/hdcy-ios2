@@ -8,7 +8,7 @@
 
 #import "RootViewController.h"
 @interface RootViewController ()
-
+@property (nonatomic,strong)UIView *cusNavigationView;
 @end
 
 @implementation RootViewController
@@ -26,6 +26,12 @@
     self.cusNavigationView=[[UIView alloc]initWithFrame:CGRectMake(0,20, SCREEN_WIDTH, 50)];
     self.cusNavigationView.backgroundColor=[UIColor blackColor];
     [self.view addSubview:self.cusNavigationView];
+    
+    self.titleLabel=[[UILabel alloc]initWithFrame:CGRectMake(SCREEN_WIDTH/2-100, 15, 200, 20)];
+    self.titleLabel.textAlignment=NSTextAlignmentCenter;
+    self.titleLabel.textColor=[UIColor whiteColor];
+    self.titleLabel.font=FONT_SYS(16);
+    [self.cusNavigationView addSubview:self.titleLabel];
 }
 
 
@@ -33,7 +39,7 @@
                                   target:(id)target
                                 selector:(SEL)selector
 {
-    UIButton *button=[[UIButton alloc]initWithFrame:CGRectMake(12,10, 30, 30)];
+    UIButton *button=[[UIButton alloc]initWithFrame:CGRectMake(12,15, 20, 20)];
     [button setBackgroundImage:[UIImage imageNamed:imageName] forState:UIControlStateNormal];
     [button addTarget:target action:selector forControlEvents:UIControlEventTouchUpInside];
     [self.cusNavigationView addSubview:button];
@@ -44,13 +50,27 @@
                                    target:(id)target
                                  selector:(SEL)selector
 {
-    UIButton *button=[[UIButton alloc]initWithFrame:CGRectMake(SCREEN_WIDTH-42, 10, 30, 30)];
+    UIButton *button=[[UIButton alloc]initWithFrame:CGRectMake(SCREEN_WIDTH-42, 15, 20, 20)];
     [button setTitle:title forState:UIControlStateNormal];
     [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [button setBackgroundImage:[UIImage imageNamed:imageName] forState:UIControlStateNormal];
     [button addTarget:target action:selector forControlEvents:UIControlEventTouchUpInside];
     [self.cusNavigationView addSubview:button];
 }
+
+-(void)addSecondRightBarButtonItemWithImageName:(NSString *)imageName
+                                    title:(NSString *)title
+                                   target:(id)target
+                                 selector:(SEL)selector
+{
+    UIButton *button=[[UIButton alloc]initWithFrame:CGRectMake(SCREEN_WIDTH-85, 15, 20, 20)];
+    [button setTitle:title forState:UIControlStateNormal];
+    [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [button setBackgroundImage:[UIImage imageNamed:imageName] forState:UIControlStateNormal];
+    [button addTarget:target action:selector forControlEvents:UIControlEventTouchUpInside];
+    [self.cusNavigationView addSubview:button];
+}
+
 
 
 - (void)didReceiveMemoryWarning {
