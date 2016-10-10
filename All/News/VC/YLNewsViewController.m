@@ -36,7 +36,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    self.view.backgroundColor=[UIColor redColor];
     // 创建scrollView
     self.page=0;
     [self monitorNet];

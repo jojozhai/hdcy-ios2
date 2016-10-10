@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		042A0CF61DA74FAF00E99894 /* YLWriteCommentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 042A0CF41DA74FAF00E99894 /* YLWriteCommentViewController.m */; };
 		042A0CFA1DA76DDB00E99894 /* YLNotiModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 042A0CF91DA76DDB00E99894 /* YLNotiModel.m */; };
 		042A0CFD1DA76EA300E99894 /* YLCommentModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 042A0CFC1DA76EA300E99894 /* YLCommentModel.m */; };
 		042A0D001DA77F6500E99894 /* YLCommentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 042A0CFF1DA77F6500E99894 /* YLCommentViewController.m */; };
@@ -62,6 +61,7 @@
 		0496453E1D97B9CB003C7037 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0496453C1D97B9CB003C7037 /* LaunchScreen.storyboard */; };
 		049645491D97B9CB003C7037 /* hdcyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 049645481D97B9CB003C7037 /* hdcyTests.m */; };
 		049645541D97B9CB003C7037 /* hdcyUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 049645531D97B9CB003C7037 /* hdcyUITests.m */; };
+		04ABFF651DAB884700F86B10 /* YLReplyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04ABFF641DAB884700F86B10 /* YLReplyViewController.m */; };
 		04B266E51D97E45400F70F9F /* MLEmoji_Expression.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 04B265AB1D97E45400F70F9F /* MLEmoji_Expression.bundle */; };
 		04B266E61D97E45400F70F9F /* MLEmoji_Expression.plist in Resources */ = {isa = PBXBuildFile; fileRef = 04B265AC1D97E45400F70F9F /* MLEmoji_Expression.plist */; };
 		04B266E71D97E45400F70F9F /* MLEmoji_ExpressionImage.plist in Resources */ = {isa = PBXBuildFile; fileRef = 04B265AD1D97E45400F70F9F /* MLEmoji_ExpressionImage.plist */; };
@@ -176,8 +176,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		042A0CF31DA74FAF00E99894 /* YLWriteCommentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YLWriteCommentViewController.h; sourceTree = "<group>"; };
-		042A0CF41DA74FAF00E99894 /* YLWriteCommentViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YLWriteCommentViewController.m; sourceTree = "<group>"; };
 		042A0CF81DA76DDB00E99894 /* YLNotiModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YLNotiModel.h; sourceTree = "<group>"; };
 		042A0CF91DA76DDB00E99894 /* YLNotiModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YLNotiModel.m; sourceTree = "<group>"; };
 		042A0CFB1DA76EA300E99894 /* YLCommentModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YLCommentModel.h; sourceTree = "<group>"; };
@@ -253,6 +251,8 @@
 		0496454F1D97B9CB003C7037 /* hdcyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = hdcyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		049645531D97B9CB003C7037 /* hdcyUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = hdcyUITests.m; sourceTree = "<group>"; };
 		049645551D97B9CB003C7037 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		04ABFF631DAB884700F86B10 /* YLReplyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YLReplyViewController.h; sourceTree = "<group>"; };
+		04ABFF641DAB884700F86B10 /* YLReplyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YLReplyViewController.m; sourceTree = "<group>"; };
 		04B265AB1D97E45400F70F9F /* MLEmoji_Expression.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = MLEmoji_Expression.bundle; sourceTree = "<group>"; };
 		04B265AC1D97E45400F70F9F /* MLEmoji_Expression.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = MLEmoji_Expression.plist; sourceTree = "<group>"; };
 		04B265AD1D97E45400F70F9F /* MLEmoji_ExpressionImage.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = MLEmoji_ExpressionImage.plist; sourceTree = "<group>"; };
@@ -1400,8 +1400,8 @@
 				042A0CFF1DA77F6500E99894 /* YLCommentViewController.m */,
 				04356E451D98BFB70052807E /* YLNewsViewController.h */,
 				04356E461D98BFB70052807E /* YLNewsViewController.m */,
-				042A0CF31DA74FAF00E99894 /* YLWriteCommentViewController.h */,
-				042A0CF41DA74FAF00E99894 /* YLWriteCommentViewController.m */,
+				04ABFF631DAB884700F86B10 /* YLReplyViewController.h */,
+				04ABFF641DAB884700F86B10 /* YLReplyViewController.m */,
 			);
 			path = VC;
 			sourceTree = "<group>";
@@ -1801,6 +1801,7 @@
 				042A0D0A1DA7802100E99894 /* YLCommentTableViewCell.m in Sources */,
 				04B267061D97E45400F70F9F /* YzdHUDImageView.m in Sources */,
 				04B267221D97E45400F70F9F /* UCloudLoadingView.m in Sources */,
+				04ABFF651DAB884700F86B10 /* YLReplyViewController.m in Sources */,
 				042A0CFA1DA76DDB00E99894 /* YLNotiModel.m in Sources */,
 				04B266EE1D97E45400F70F9F /* NSAttributedString+MLExpression.m in Sources */,
 				04B266FC1D97E45400F70F9F /* SDCollectionViewCell.m in Sources */,
@@ -1844,7 +1845,6 @@
 				042A0CFD1DA76EA300E99894 /* YLCommentModel.m in Sources */,
 				04B267021D97E45400F70F9F /* FilterManager.m in Sources */,
 				04CB6AB01D9CAC4300FB0352 /* YLVideoTopCell.m in Sources */,
-				042A0CF61DA74FAF00E99894 /* YLWriteCommentViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

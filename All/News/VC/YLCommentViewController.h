@@ -7,7 +7,7 @@
 //
 
 #import "RootViewController.h"
-typedef void(^changeCommnetCountBlock)();
+typedef void(^changeCommnetCountBlock)(NSArray *data);
 @interface YLCommentViewController : RootViewController
 @property (nonatomic,copy)NSString *Id;
 @property (nonatomic,copy)NSString *target;

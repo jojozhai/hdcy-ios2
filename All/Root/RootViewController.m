@@ -18,6 +18,27 @@
     // Do any additional setup after loading the view.
     self.view.backgroundColor=[UIColor blackColor];
     [self cusNavigationBar];
+    [self monitorNet];
+}
+
+-(void)monitorNet
+{
+    [[AFNetworkReachabilityManager sharedManager] setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
+        if (status==AFNetworkReachabilityStatusNotReachable) {
+            [MBProgressHUD showMessage:@"当前没有网络"];
+            
+        }else{
+            
+        }
+    }
+     ];
+    [[AFNetworkReachabilityManager sharedManager] startMonitoring];
+}
+
+
+-(UIStatusBarStyle)preferredStatusBarStyle
+{
+    return UIStatusBarStyleLightContent;
 }
 
 -(void)cusNavigationBar
@@ -39,10 +60,13 @@
                                   target:(id)target
                                 selector:(SEL)selector
 {
-    UIButton *button=[[UIButton alloc]initWithFrame:CGRectMake(12,15, 20, 20)];
+    UIView *backView=[[UIView alloc]initWithFrame:CGRectMake(2,5, 40, 40)];
+    UITapGestureRecognizer *tap=[[UITapGestureRecognizer alloc]initWithTarget:self action:selector];
+    [backView addGestureRecognizer:tap];
+    [self.cusNavigationView addSubview:backView];
+    UIButton *button=[[UIButton alloc]initWithFrame:CGRectMake(10,10, 20, 20)];
     [button setBackgroundImage:[UIImage imageNamed:imageName] forState:UIControlStateNormal];
-    [button addTarget:target action:selector forControlEvents:UIControlEventTouchUpInside];
-    [self.cusNavigationView addSubview:button];
+    [backView addSubview:button];
 }
 
 -(void)addRightBarButtonItemWithImageName:(NSString *)imageName
@@ -50,12 +74,20 @@
                                    target:(id)target
                                  selector:(SEL)selector
 {
-    UIButton *button=[[UIButton alloc]initWithFrame:CGRectMake(SCREEN_WIDTH-42, 15, 20, 20)];
+    UIView *backView=[[UIView alloc]initWithFrame:CGRectMake(SCREEN_WIDTH-42, 5, 40, 40)];
+    UITapGestureRecognizer *tap=[[UITapGestureRecognizer alloc]initWithTarget:self action:selector];
+    [backView addGestureRecognizer:tap];
+    [self.cusNavigationView addSubview:backView];
+    UIButton *button=[UIButton buttonWithType:UIButtonTypeCustom];
+    button.frame=CGRectMake(10, 10, 20, 20);
+    if (title!=nil) {
+         button.frame=CGRectMake(0, 10, 40, 20);
+    }
     [button setTitle:title forState:UIControlStateNormal];
     [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [button setBackgroundImage:[UIImage imageNamed:imageName] forState:UIControlStateNormal];
     [button addTarget:target action:selector forControlEvents:UIControlEventTouchUpInside];
-    [self.cusNavigationView addSubview:button];
+    [backView addSubview:button];
 }
 
 -(void)addSecondRightBarButtonItemWithImageName:(NSString *)imageName
@@ -63,12 +95,16 @@
                                    target:(id)target
                                  selector:(SEL)selector
 {
-    UIButton *button=[[UIButton alloc]initWithFrame:CGRectMake(SCREEN_WIDTH-85, 15, 20, 20)];
+    UIView *backView=[[UIView alloc]initWithFrame:CGRectMake(SCREEN_WIDTH-85, 5, 40, 40)];
+    UITapGestureRecognizer *tap=[[UITapGestureRecognizer alloc]initWithTarget:self action:selector];
+    [backView addGestureRecognizer:tap];
+    [self.cusNavigationView addSubview:backView];
+    UIButton *button=[[UIButton alloc]initWithFrame:CGRectMake(10, 10, 20, 20)];
     [button setTitle:title forState:UIControlStateNormal];
     [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [button setBackgroundImage:[UIImage imageNamed:imageName] forState:UIControlStateNormal];
     [button addTarget:target action:selector forControlEvents:UIControlEventTouchUpInside];
-    [self.cusNavigationView addSubview:button];
+    [backView addSubview:button];
 }
 
 

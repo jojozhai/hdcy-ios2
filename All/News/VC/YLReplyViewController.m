@@ -1,96 +1,116 @@
 //
-//  YLWriteCommentViewController.m
+//  YLReplyViewController.m
 //  hdcy
 //
-//  Created by mac on 16/10/7.
+//  Created by mac on 16/10/10.
 //  Copyright © 2016年 youngliu.cn. All rights reserved.
 //
 
-#import "YLWriteCommentViewController.h"
+#import "YLReplyViewController.h"
 #import "YLNotiModel.h"
-#import "YLCommentModel.h"
-@interface YLWriteCommentViewController ()<UITextViewDelegate>
+
+@interface YLReplyViewController ()<UITextViewDelegate>
 {
-    UITextView *_commentTextView;
+    UITextView *_TextView;
     YLNotiModel *Nmodel;
     UILabel *_leastLable;
     UILabel *_showLabel;
 }
 @end
 
-@implementation YLWriteCommentViewController
+@implementation YLReplyViewController
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    self.automaticallyAdjustsScrollViewInsets=NO;
-    self.view.backgroundColor = [UIColor grayColor];
+    
     Nmodel=[[YLNotiModel alloc]init];
     [Nmodel addObserver:self forKeyPath:@"changeText" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:nil];
     [self createView];
+    [self createNavigationBar];
 }
 
 //设置navbar
 -(void)createNavigationBar
 {
-//    self.view.backgroundColor=[UIColor whiteColor];
-//    self.title=@"写评论";
-//    //添加返回命令
-//    [self addLeftBarButtonItemWithImageName:@"nav-icon-back-default" target:self selector:@selector(backAction)];
-//    [self addRightBarButtonItemWithImageName:nil title:@"发送" target:self selector:@selector(deliverAction)];
+    self.titleLabel.text=@"写评论";
+    //添加返回命令
+    [self addLeftBarButtonItemWithImageName:@"nav-icon-back-default-" target:self selector:@selector(backAction)];
+    [self addRightBarButtonItemWithImageName:nil title:@"发送" target:self selector:@selector(deliverAction)];
 }
 
 //返回
 -(void)backAction
 {
-    [self.navigationController popViewControllerAnimated:YES];
+    CATransition * animation = [CATransition animation];
+    animation.duration = 0.8;    //  时间
+    animation.type = kCATransitionMoveIn;
+    animation.subtype = kCATransitionFromLeft;
+    [self.view.window.layer addAnimation:animation forKey:nil];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 -(void)deliverAction
 {
     //判断是否为空及空格开头
-    if (_commentTextView.text.length==0||_commentTextView.text==nil||[_commentTextView.text isEqual:@""]||[_commentTextView.text hasPrefix:@" "]) {
+    if (_TextView.text.length==0||_TextView.text==nil||[_TextView.text isEqual:@""]||[_TextView.text hasPrefix:@" "]) {
         [MBProgressHUD showMessage:@"请输入正确的内容"];
     }else{
         NSString *urlString=[NSString stringWithFormat:@"%@%@",URL,@"/comment"];
-        NSDictionary *paraDict=@{@"target":self.target,@"targetId":self.Id,@"content":_commentTextView.text};
+        NSDictionary *paraDict=@{@"target":self.target,@"targetId":self.Id,@"content":_TextView.text};
         [YLHttp post:urlString userName:USERNAME_REMBER passeword:PASSWORD_REMBER params:paraDict success:^(id json) {
+            YLCommentModel *model=[[YLCommentModel alloc]initWithDictionary:json error:nil];
+            self.changeItemBlock(model);
+            
             MBProgressHUD *hud=[[MBProgressHUD alloc]initWithView:self.view];
             hud.mode=MBProgressHUDModeText;
             hud.label.text=@"发布成功";
             [self.view addSubview:hud];
+            [hud showAnimated:YES];
+            [hud hideAnimated:YES afterDelay:1];
         } failure:^(NSError *error) {
             
         }];
-        _commentTextView.text=@"";
+        _TextView.text=@"";
         _showLabel.hidden=NO;
-        _leastLable.text=[NSString stringWithFormat:@"还可以输入%ld字",250-_commentTextView.text.length];
-        [_commentTextView resignFirstResponder];
+        _leastLable.text=[NSString stringWithFormat:@"还可以输入%ld字",250-_TextView.text.length];
+        [_TextView resignFirstResponder];
     }
 }
 
 -(void)createView
 {
-    _commentTextView=[[UITextView alloc]initWithFrame:CGRectMake(0, 64, SCREEN_WIDTH, 300)];
-    _commentTextView.font=FONT_SYS(13);
-    _commentTextView.textColor= [UIColor grayColor];
-    _commentTextView.delegate=self;
-    _commentTextView.text=@"";
-    [self.view addSubview:_commentTextView];
+    UIView *backgroudView=[[UIView alloc]initWithFrame:CGRectMake(0, 70, SCREEN_WIDTH, SCREEN_HEIGHT-70)];
+    UITapGestureRecognizer *tap=[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(resignAction)];
+    [backgroudView addGestureRecognizer:tap];
+    backgroudView.backgroundColor=[UIColor groupTableViewBackgroundColor];
+    [self.view addSubview:backgroudView];
+    _TextView=[[UITextView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 200)];
+    _TextView.font=FONT_SYS(17);
+    _TextView.textColor= [UIColor grayColor];
+    _TextView.delegate=self;
+    _TextView.text=@"";
+    [backgroudView addSubview:_TextView];
     
-    _leastLable=[[UILabel alloc]initWithFrame:CGRectMake(0, 364, SCREEN_WIDTH, 20)];
-    _leastLable.text=@"250";
+    _leastLable=[[UILabel alloc]initWithFrame:CGRectMake(0,200, SCREEN_WIDTH, 20)];
+    _leastLable.text=_leastLable.text=[NSString stringWithFormat:@"还可以输入%ld字",250-_TextView.text.length];;
     _leastLable.textColor=[UIColor grayColor];
     _leastLable.textAlignment=NSTextAlignmentRight;
     _leastLable.backgroundColor=[UIColor whiteColor];
-    [self.view addSubview:_leastLable];
+    [backgroudView addSubview:_leastLable];
     
     _showLabel=[[UILabel alloc]initWithFrame:CGRectMake(5, 5, 200, 20)];
     _showLabel.text=@"写点什么吧...";
     _showLabel.textColor=[UIColor grayColor];
     _showLabel.textAlignment=NSTextAlignmentLeft;
     _showLabel.backgroundColor=[UIColor whiteColor];
-    [_commentTextView addSubview:_showLabel];
+    [backgroudView addSubview:_showLabel];
+}
+
+-(void)resignAction
+{
+    [_TextView resignFirstResponder];
 }
 
 #pragma UITextViewDelegate
@@ -98,7 +118,7 @@
 -(void)textViewDidBeginEditing:(UITextView *)textView
 {
     _showLabel.hidden=YES;
-    [_commentTextView becomeFirstResponder];
+    [_TextView becomeFirstResponder];
 }
 
 -(void)textViewDidChange:(UITextView *)textView
@@ -129,10 +149,10 @@
 //kvo监听textView字数变化
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-
+    
     if ([keyPath isEqualToString:@"changeText"]) {
-        if (_commentTextView.text.length<=250) {
-            _leastLable.text=[NSString stringWithFormat:@"还可以输入%ld字",250-_commentTextView.text.length];
+        if (_TextView.text.length<=250) {
+            _leastLable.text=[NSString stringWithFormat:@"还可以输入%ld字",250-_TextView.text.length];
         }
     }
 }

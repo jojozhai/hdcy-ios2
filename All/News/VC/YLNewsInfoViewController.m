@@ -13,11 +13,12 @@
 #import "YLNotiModel.h"
 #import "YLCommentViewController.h"
 #import "UMSocial.h"
+#import "YLReplyViewController.h"
+
 #define  kTableViewCellIdentifier @"commentReply"
 @interface YLNewsInfoViewController ()<UIWebViewDelegate,UITextFieldDelegate,UITextViewDelegate,UMSocialUIDelegate,clickLabelWithIndexPathAndIndexDelegate,clickMoreDelegate,UITableViewDelegate,UITableViewDataSource>
 {
     UIWebView *_webView;
-    UIView *bottomView;
     UIView *coverView;
     YLNotiModel *Nmodel;
     NSString *_replyToId;
@@ -25,6 +26,7 @@
     NSIndexPath *_indexpath;
     UIScrollView *mainScrollView;
     UILabel *textlabel;
+    NSString *commentCount;
 }
 @property (nonatomic,strong)UITableView *tableView;
 @property (nonatomic,strong)NSMutableArray *dataSource;
@@ -56,10 +58,6 @@
     
 }
 
--(UIStatusBarStyle)preferredStatusBarStyle
-{
-    return UIStatusBarStyleLightContent;
-}
 
 -(void)viewDidAppear:(BOOL)animated
 {
@@ -68,22 +66,43 @@
 
 -(void)createClearCoverView
 {
-//    UIView *clearView=[[UIView alloc]initWithFrame:self.view.bounds];
-//    clearView.backgroundColor = [UIColor colorWithWhite:0.000 alpha:0.00];
-//    [self.view addSubview:clearView];
-    
     UIButton *commentButton=[UIButton buttonWithType:UIButtonTypeCustom];
-    commentButton.frame=CGRectMake(12, SCREEN_HEIGHT-95-50, 50, 50) ;
+    commentButton.frame=CGRectMake(12, SCREEN_HEIGHT-95-50, 60*SCREEN_MUTI, 60*SCREEN_MUTI) ;
     [commentButton setImage:[UIImage imageNamed:@"content-button-edit-default"] forState:UIControlStateNormal];
     [commentButton addTarget:self action:@selector(writeComment) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:commentButton];
     [self.view insertSubview:commentButton aboveSubview:mainScrollView];
 }
 
--(void)writeComment
+-(void)writeComment//跳转评论页
 {
-    coverView.hidden=NO;
-
+    YLReplyViewController *writeVC=[[YLReplyViewController alloc]init];
+    writeVC.changeItemBlock=^(YLCommentModel *model){
+        textlabel.text=[NSString stringWithFormat:@"评论(%ld)",commentCount.integerValue+1];
+        
+        if (self.dataSource.count==5) {
+            [self.dataSource removeLastObject];
+        }
+        [self.dataSource insertObject:model atIndex:0];
+        if (!model.replys) {
+            model.replys=@[];
+        }
+        [self.dataAray insertObject:model.replys atIndex:0];
+        NSMutableDictionary *boolDict=[NSMutableDictionary dictionary];
+        [boolDict setObject:@(NO) forKey:@"bool"];
+        [self.boolAray insertObject:boolDict atIndex:0];
+        [self.praiseArray insertObject:@(0) atIndex:0];
+        
+        [self.tableView reloadData];
+    };
+    writeVC.Id=self.listModel.Id;
+    writeVC.target=@"article";
+    CATransition * animation = [CATransition animation];
+    animation.duration = 0.8;    //  时间
+    animation.type = kCATransitionMoveIn;
+    animation.subtype = kCATransitionFromRight;
+    [self.view.window.layer addAnimation:animation forKey:nil];
+    [self presentViewController:writeVC animated:YES completion:nil];
 }
 
 //设置navbar
@@ -91,10 +110,10 @@
 {
     self.titleLabel.text=@"资讯详情";
     //添加返回命令
-    [self addLeftBarButtonItemWithImageName:@"nav-icon-back-default-" target:self selector:@selector(backAction)];
+    [self addLeftBarButtonItemWithImageName:@"nav-icon-back-default-@2x" target:self selector:@selector(backAction)];
     
-    [self addRightBarButtonItemWithImageName:@"nav-icon-share-default" title:nil target:self selector:@selector(shareAction)];
-    [self addSecondRightBarButtonItemWithImageName:@"nav-icon-information-default" title:nil target:self selector:@selector(infoAction)];
+    [self addRightBarButtonItemWithImageName:@"nav-icon-share-default@2x" title:nil target:self selector:@selector(shareAction)];
+    [self addSecondRightBarButtonItemWithImageName:@"nav-icon-information-default@2x" title:nil target:self selector:@selector(infoAction)];
 }
 //返回
 -(void)backAction
@@ -103,7 +122,6 @@
     animation.duration = 0.8;    //  时间
     animation.type = kCATransitionMoveIn;
     animation.subtype = kCATransitionFromLeft;
-    
     [self.view.window.layer addAnimation:animation forKey:nil];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
@@ -124,7 +142,7 @@
 
 -(void)infoAction
 {
-    
+    [self presentCommentVC];
 }
 #pragma ----------------UMSocialUIDelegate-------------------------------
 -(void)didFinishGetUMSocialDataInViewController:(UMSocialResponseEntity *)response
@@ -163,6 +181,7 @@
     
     NSString *urlString=[NSString stringWithFormat:@"%@%@",URL,[NSString stringWithFormat:@"/article/%@",self.listModel.Id]];
     [YLHttp get:urlString params:nil success:^(id json) {
+        commentCount=json[@"commentCount"];
         [self setWebView];
         [self createClearCoverView];
         [self createCommentView];
@@ -299,7 +318,7 @@
     
     textlabel=[[UILabel alloc]initWithFrame:CGRectMake(8, 12, 80, 18)];
     
-    textlabel.text=[NSString stringWithFormat:@"评论(%@)",self.listModel.commentCount];
+    textlabel.text=[NSString stringWithFormat:@"评论(%@)",commentCount];
     
     
     textlabel.font=[UIFont boldSystemFontOfSize:18];
@@ -335,11 +354,32 @@
     YLCommentViewController *comment=[[YLCommentViewController alloc]init];
     comment.Id=self.listModel.Id;
     comment.target=@"article";
-    comment.changeBlock=^(){
-        textlabel.text=[NSString stringWithFormat:@"%ld",self.listModel.commentCount.integerValue+1];
+    comment.changeBlock=^(NSArray *data){
+        textlabel.text=[NSString stringWithFormat:@"评论(%ld)",commentCount.integerValue+1];
+        
+        YLCommentModel *model=data[0];
+        if (self.dataSource.count==5) {
+            [self.dataSource removeLastObject];
+        }
+        [self.dataSource insertObject:model atIndex:0];
+        if (!model.replys) {
+            model.replys=@[];
+        }
+        [self.dataAray insertObject:model.replys atIndex:0];
+        NSMutableDictionary *boolDict=[NSMutableDictionary dictionary];
+        [boolDict setObject:@(NO) forKey:@"bool"];
+        [self.boolAray insertObject:boolDict atIndex:0];
+        [self.praiseArray insertObject:@(0) atIndex:0];
+    
+        [self.tableView reloadData];
         
     };
-    [self.navigationController pushViewController:comment animated:YES];
+    CATransition * animation = [CATransition animation];
+    animation.duration = 0.8;    //  时间
+    animation.type = kCATransitionMoveIn;
+    animation.subtype = kCATransitionFromRight;
+    [self.view.window.layer addAnimation:animation forKey:nil];
+    [self presentViewController:comment animated:YES completion:nil];
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -399,11 +439,11 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     YLCommentModel *model=self.dataSource[indexPath.row];
-    bottomView.hidden=YES;
     coverView.hidden=NO;
     _replyToId=model.Id;
     self.Id=self.listModel.Id;
     writeCommentView.reCommentLabel.text=@"回复";
+    writeCommentView.frame=CGRectMake(0, SCREEN_HEIGHT-195, SCREEN_WIDTH, 195);
     _indexpath=indexPath;
 }
 
@@ -472,14 +512,13 @@
 }
 
 
-#pragma -------------------------clickLabelWithIndexPathAndIndexDelegate------------------------------------
+#pragma -------------------------clickLabelWithIndexPathAndIndexDelegate--------------------------------
 
 -(void)clickLabelWithIndexPath:(NSIndexPath *)indexPath Index:(NSInteger)index
 {
     YLCommentModel *model=self.dataSource[indexPath.row];
     NSArray *replyArray=model.replys;
     YLCommentReplyModel *replyModel=[[YLCommentReplyModel alloc]initWithDictionary:replyArray[index-99] error:nil];
-    bottomView.hidden=YES;
     coverView.hidden=NO;
     _replyToId=replyModel.Id;
     self.Id=model.Id;
@@ -523,6 +562,7 @@
     CGRect frame=value.CGRectValue;
     CGFloat height=frame.size.height;
     YLWriteCommentView *wcv=[coverView viewWithTag:99];
+    
     //键盘升起
     [UIView animateWithDuration:duration animations:^{
         wcv.frame=CGRectMake(0, SCREEN_HEIGHT-195-height, SCREEN_WIDTH, 195);
@@ -535,7 +575,6 @@
     coverView.hidden=YES;
     [wcv.commentTextView resignFirstResponder];
     wcv.commentTextView.text=@"";
-    bottomView.hidden=NO;
     wcv.frame=CGRectMake(0, SCREEN_HEIGHT-195, SCREEN_WIDTH, 195);
 }
 
@@ -553,14 +592,30 @@
         NSDictionary *paraDict=@{@"target":@"article",@"targetId":self.listModel.Id,@"content":wcv.commentTextView.text};
         
         [YLHttp post:urlString userName:USERNAME_REMBER passeword:PASSWORD_REMBER params:paraDict success:^(id json) {
-            UIButton *button=[bottomView viewWithTag:6789];
-            [button setTitle:[NSString stringWithFormat:@"%ld",self.listModel.commentCount.integerValue+1] forState:UIControlStateNormal];
+            textlabel.text=textlabel.text=[NSString stringWithFormat:@"评论(%ld)",commentCount.integerValue+1];
+            
+            YLCommentModel *model=[[YLCommentModel alloc]initWithDictionary:json error:nil];
+            if (self.dataSource.count==5) {
+                [self.dataSource removeLastObject];
+            }
+            [self.dataSource insertObject:model atIndex:0];
+            if (!model.replys) {
+                model.replys=@[];
+            }
+            [self.dataAray insertObject:model.replys atIndex:0];
+            NSMutableDictionary *boolDict=[NSMutableDictionary dictionary];
+            [boolDict setObject:@(NO) forKey:@"bool"];
+            [self.boolAray insertObject:boolDict atIndex:0];
+            [self.praiseArray insertObject:@(0) atIndex:0];
+            
             MBProgressHUD *hud=[[MBProgressHUD alloc]initWithView:self.view];
             hud.mode=MBProgressHUDModeText;
             hud.label.text=@"发布成功";
             [self.view addSubview:hud];
             [hud showAnimated:YES];
             [hud hideAnimated:YES afterDelay:1];
+            
+            [self.tableView reloadData];
         } failure:^(NSError *error) {
             MBProgressHUD *hud=[[MBProgressHUD alloc]initWithView:self.view];
             hud.mode=MBProgressHUDModeText;
@@ -574,7 +629,6 @@
         wcv.frame=CGRectMake(0, SCREEN_HEIGHT-195, SCREEN_WIDTH, 195);
         wcv.leastLable.text=[NSString stringWithFormat:@"还可以输入%ld字",250-wcv.commentTextView.text.length];
         [wcv.commentTextView resignFirstResponder];
-        bottomView.hidden=NO;
     }
 }
 
@@ -587,10 +641,15 @@
     wcv.frame=CGRectMake(0, SCREEN_HEIGHT-195, SCREEN_WIDTH, 195);
     wcv.leastLable.text=[NSString stringWithFormat:@"还可以输入%ld字",250-wcv.commentTextView.text.length];
     coverView.hidden=YES;
-    bottomView.hidden=NO;
 }
 
 #pragma UITextViewDelegate
+-(void)textViewDidBeginEditing:(UITextField *)textField
+{
+    YLWriteCommentView *wcv=[coverView viewWithTag:99];
+    [wcv.commentTextView becomeFirstResponder];
+}
+
 -(void)textViewDidChange:(UITextView *)textView
 {
     Nmodel.changeText=textView.text;
