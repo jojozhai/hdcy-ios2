@@ -24,7 +24,7 @@
 }
 +(NSString *)getYYMMDDWithDate2:(NSDate *)date{
     NSDateFormatter *formatter = [[NSDateFormatter alloc]init];
-    [formatter setDateFormat:@"yyyy年MM月dd日"];
+    [formatter setDateFormat:@"yyyy-MM-dd"];
     NSString *dateStr = [formatter stringFromDate:date];
     return dateStr;
 }

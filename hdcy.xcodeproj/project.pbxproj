@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		04052CD11DAC7C7A00D6733B /* YLTableHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04052CD01DAC7C7A00D6733B /* YLTableHeaderView.m */; };
+		04052CD41DAC7CFA00D6733B /* YLActiTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04052CD31DAC7CFA00D6733B /* YLActiTableViewCell.m */; };
+		04052CD71DAC7E1C00D6733B /* YLActivityListContentModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 04052CD61DAC7E1C00D6733B /* YLActivityListContentModel.m */; };
+		04052CDA1DAC881100D6733B /* YLActivityListModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 04052CD91DAC881100D6733B /* YLActivityListModel.m */; };
 		042A0CFA1DA76DDB00E99894 /* YLNotiModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 042A0CF91DA76DDB00E99894 /* YLNotiModel.m */; };
 		042A0CFD1DA76EA300E99894 /* YLCommentModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 042A0CFC1DA76EA300E99894 /* YLCommentModel.m */; };
 		042A0D001DA77F6500E99894 /* YLCommentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 042A0CFF1DA77F6500E99894 /* YLCommentViewController.m */; };
@@ -176,6 +180,14 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		04052CCF1DAC7C7A00D6733B /* YLTableHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YLTableHeaderView.h; sourceTree = "<group>"; };
+		04052CD01DAC7C7A00D6733B /* YLTableHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YLTableHeaderView.m; sourceTree = "<group>"; };
+		04052CD21DAC7CFA00D6733B /* YLActiTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YLActiTableViewCell.h; sourceTree = "<group>"; };
+		04052CD31DAC7CFA00D6733B /* YLActiTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YLActiTableViewCell.m; sourceTree = "<group>"; };
+		04052CD51DAC7E1C00D6733B /* YLActivityListContentModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YLActivityListContentModel.h; sourceTree = "<group>"; };
+		04052CD61DAC7E1C00D6733B /* YLActivityListContentModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YLActivityListContentModel.m; sourceTree = "<group>"; };
+		04052CD81DAC881100D6733B /* YLActivityListModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YLActivityListModel.h; sourceTree = "<group>"; };
+		04052CD91DAC881100D6733B /* YLActivityListModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YLActivityListModel.m; sourceTree = "<group>"; };
 		042A0CF81DA76DDB00E99894 /* YLNotiModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YLNotiModel.h; sourceTree = "<group>"; };
 		042A0CF91DA76DDB00E99894 /* YLNotiModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YLNotiModel.m; sourceTree = "<group>"; };
 		042A0CFB1DA76EA300E99894 /* YLCommentModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YLCommentModel.h; sourceTree = "<group>"; };
@@ -707,6 +719,10 @@
 		04B2659A1D97E45400F70F9F /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				04052CD81DAC881100D6733B /* YLActivityListModel.h */,
+				04052CD91DAC881100D6733B /* YLActivityListModel.m */,
+				04052CD51DAC7E1C00D6733B /* YLActivityListContentModel.h */,
+				04052CD61DAC7E1C00D6733B /* YLActivityListContentModel.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -730,6 +746,10 @@
 		04B2659D1D97E45400F70F9F /* View */ = {
 			isa = PBXGroup;
 			children = (
+				04052CD21DAC7CFA00D6733B /* YLActiTableViewCell.h */,
+				04052CD31DAC7CFA00D6733B /* YLActiTableViewCell.m */,
+				04052CCF1DAC7C7A00D6733B /* YLTableHeaderView.h */,
+				04052CD01DAC7C7A00D6733B /* YLTableHeaderView.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1785,6 +1805,7 @@
 				04D817661D9A5683003B297B /* YLNewsListModel.m in Sources */,
 				04CB6AB31D9CACAC00FB0352 /* YLVideoTopModel.m in Sources */,
 				04B266F21D97E45400F70F9F /* MLLinkLabel.m in Sources */,
+				04052CD11DAC7C7A00D6733B /* YLTableHeaderView.m in Sources */,
 				04B266F11D97E45400F70F9F /* MLLabel.m in Sources */,
 				04356E471D98BFB70052807E /* YLNewsViewController.m in Sources */,
 				04B266E81D97E45400F70F9F /* MLEmojiLabel.m in Sources */,
@@ -1814,12 +1835,14 @@
 				04C177B51D9B6DED0081F295 /* YLNewsAdNomalTableViewCell.m in Sources */,
 				04B266E91D97E45400F70F9F /* NSAttributedString+MLLabel.m in Sources */,
 				04B267091D97E45400F70F9F /* PlayerManager.m in Sources */,
+				04052CD71DAC7E1C00D6733B /* YLActivityListContentModel.m in Sources */,
 				04B266F61D97E45400F70F9F /* UITableView+SDAutoTableViewCellHeight.m in Sources */,
 				04B267211D97E45400F70F9F /* UCloudBrightnessView.m in Sources */,
 				04B266FB1D97E45400F70F9F /* TAPageControl.m in Sources */,
 				04B266F41D97E45400F70F9F /* README.md in Sources */,
 				04B266F81D97E45400F70F9F /* TAAbstractDotView.m in Sources */,
 				04356E501D98D2640052807E /* YLTrangleView.m in Sources */,
+				04052CDA1DAC881100D6733B /* YLActivityListModel.m in Sources */,
 				04B267081D97E45400F70F9F /* YzdHUDLabel.m in Sources */,
 				04B266FD1D97E45400F70F9F /* SDCycleScrollView.m in Sources */,
 				04B267251D97E45400F70F9F /* UCloudProgressView.m in Sources */,
@@ -1833,6 +1856,7 @@
 				04B266EF1D97E45400F70F9F /* NSString+MLExpression.m in Sources */,
 				04356E411D98BF7F0052807E /* YLActivityViewController.m in Sources */,
 				04B2673E1D97E83E00F70F9F /* YLOptionBtnView.m in Sources */,
+				04052CD41DAC7CFA00D6733B /* YLActiTableViewCell.m in Sources */,
 				04B266EB1D97E45400F70F9F /* NSString+MLLabel.m in Sources */,
 				04B267231D97E45400F70F9F /* UCloudMediaViewController.m in Sources */,
 				04B2673A1D97E83E00F70F9F /* MBProgressHUD+Extension.m in Sources */,
