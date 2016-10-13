@@ -331,7 +331,7 @@
 {
     CATransition * animation = [CATransition animation];
     
-    animation.duration = 0.8;    //  时间
+    animation.duration = 0.5;    //  时间
     
     /**  type：动画类型
      *  pageCurl       向上翻一页

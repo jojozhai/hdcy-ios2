@@ -56,11 +56,19 @@
 -(void)automaticScroll
 {
     NSInteger index=self.topScrollView.contentOffset.x/SCREEN_WIDTH;
-    
     index=index+1;
+
+    //滚动动画
+//    [UIView animateWithDuration:1 animations:^{
+//        self.topScrollView.contentOffset=CGPointMake(SCREEN_WIDTH*index, 0);
+//        self.pageControl.currentPage=index;
+//        
+//    }];
+   
     [UIView animateWithDuration:1 animations:^{
         self.topScrollView.contentOffset=CGPointMake(SCREEN_WIDTH*index, 0);
         self.pageControl.currentPage=index;
+        
         NSInteger number=index;
         if (number==self.topScrollArray.count+1) {
             number=1;
@@ -68,13 +76,15 @@
             number=self.topScrollArray.count;
         }
         //改变cell
-        for (int i=0;i<self.topScrollView.subviews.count;i++) {
-            YLActiTableViewCell *cell=self.topScrollView.subviews[i];
-            cell.frame=CGRectMake(i*SCREEN_WIDTH-30*SCREEN_MUTI, 17*SCREEN_MUTI,435*SCREEN_MUTI,  SCREEN_MUTI*190);
-        }
         YLActiTableViewCell *cell=self.topScrollView.subviews[number];
         cell.frame=CGRectMake(number*SCREEN_WIDTH+38*SCREEN_MUTI, 0, 299*SCREEN_MUTI, 225*SCREEN_MUTI);
+        
+        YLActiTableViewCell *Precell=self.topScrollView.subviews[index-1];
+        Precell.frame=CGRectMake((index-1)*SCREEN_WIDTH-30*SCREEN_MUTI, 17*SCREEN_MUTI,435*SCREEN_MUTI,  SCREEN_MUTI*190);
+    } completion:^(BOOL finished) {
+        
     }];
+    
     if (index==self.topScrollArray.count+1) {
         [self.topScrollView setContentOffset:CGPointMake(CGRectGetWidth(self.topScrollView.frame), 0) animated:NO];
         self.pageControl.currentPage=0;
@@ -101,7 +111,6 @@
             YLActiTableViewCell *cell=self.topScrollView.subviews[i];
             cell.frame=CGRectMake(i*SCREEN_WIDTH-30*SCREEN_MUTI, 17*SCREEN_MUTI,435*SCREEN_MUTI,  SCREEN_MUTI*190);
         }
-       
     }];
    
 }
@@ -124,14 +133,17 @@
         {
             self.pageControl.currentPage=pageNum-1;
         }
+        [UIView animateWithDuration:0.1 animations:^{
+            NSInteger num=pageNum;
+            if (num==self.topScrollArray.count+1) {
+                num=1;
+            }else if (num==0){
+                num=self.topScrollArray.count;
+            }
+            YLActiTableViewCell *cell=self.topScrollView.subviews[num];
+            cell.frame=CGRectMake(num*SCREEN_WIDTH+38*SCREEN_MUTI, 0, 299*SCREEN_MUTI, 225*SCREEN_MUTI);
+        }];
         
-        if (pageNum==self.topScrollArray.count+1) {
-            pageNum=1;
-        }else if (pageNum==0){
-            pageNum=self.topScrollArray.count;
-        }
-        YLActiTableViewCell *cell=self.topScrollView.subviews[pageNum];
-        cell.frame=CGRectMake(pageNum*SCREEN_WIDTH+38*SCREEN_MUTI, 0, 299*SCREEN_MUTI, 225*SCREEN_MUTI);
     }
 
 }
@@ -218,6 +230,8 @@
 -(void)dealloc
 {
     self.topScrollView.delegate=nil;
+    [self.scrollTimer invalidate];
+    self.scrollTimer = nil;
 }
 
 

@@ -40,6 +40,7 @@
     [self.view addSubview:cusNavigationView];
     //添加头部view
     YLOptionBtnView *topView = [[YLOptionBtnView alloc] initWithFrame:CGRectMake(0, 0, 210*SCREEN_MUTI, self.topHeight)];
+    topView.scrollEnabled=NO;
     topView.buttonStyle=YLButtonStyleTriangle;
     topView.backgroundColor=_topBackgroudColor;
     topView.titleArray = self.titleArray;

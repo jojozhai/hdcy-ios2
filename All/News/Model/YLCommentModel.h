@@ -57,12 +57,8 @@
 @property (nonatomic,copy)NSString<Optional> *praise;
 @property (nonatomic,copy)NSString<Optional> *praiseCount;
 @property (nonatomic,copy)NSString<Optional> *Id;
+@property (nonatomic,copy)NSString<Optional> *createdTime;
 
 @property (nonatomic, copy) NSAttributedString<Optional> *attributedContent;
-
-
-
-
-
 
 @end

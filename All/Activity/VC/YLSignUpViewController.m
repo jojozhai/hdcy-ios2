@@ -1,25 +1,25 @@
 //
-//  YLReplyViewController.m
+//  YLSignUpViewController.m
 //  hdcy
 //
-//  Created by mac on 16/10/10.
+//  Created by mac on 16/10/13.
 //  Copyright © 2016年 youngliu.cn. All rights reserved.
 //
 
-#import "YLReplyViewController.h"
+#import "YLSignUpViewController.h"
 #import "YLNotiModel.h"
-
-@interface YLReplyViewController ()<UITextViewDelegate>
+#import "YLCommentModel.h"
+@interface YLSignUpViewController ()<UITextViewDelegate>
 {
     UITextView *_TextView;
     YLNotiModel *Nmodel;
     UILabel *_leastLable;
     UILabel *_showLabel;
+    UIButton *_signUpButton;
 }
 @end
 
-@implementation YLReplyViewController
-
+@implementation YLSignUpViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -34,14 +34,10 @@
 //设置navbar
 -(void)createNavigationBar
 {
-    if ([self.target isEqualToString:@"activity"]) {
-        self.titleLabel.text=@"写留言";
-    }else{
-        self.titleLabel.text=@"写评论";
-    }
+    self.titleLabel.text=@"写留言";
     //添加返回命令
     [self addLeftBarButtonItemWithImageName:@"nav-icon-back-default-" target:self selector:@selector(backAction)];
-    [self addRightBarButtonItemWithImageName:nil title:@"发送" target:self selector:@selector(deliverAction)];
+    
 }
 
 //返回
@@ -61,24 +57,19 @@
     if (_TextView.text.length==0||_TextView.text==nil||[_TextView.text isEqual:@""]||[_TextView.text hasPrefix:@" "]) {
         [MBProgressHUD showMessage:@"请输入正确的内容"];
     }else{
-        NSString *urlString=[NSString stringWithFormat:@"%@%@",URL,@"/comment"];
-        NSDictionary *paraDict=@{@"target":self.target,@"targetId":self.Id,@"content":_TextView.text};
+        NSString *urlString=[NSString stringWithFormat:@"%@/activityParticipator",URL];
+        NSDictionary *paraDict=@{@"activityId":self.contentModel.Id,@"message":_TextView.text};
         [YLHttp post:urlString userName:USERNAME_REMBER passeword:PASSWORD_REMBER params:paraDict success:^(id json) {
-            YLCommentModel *model=[[YLCommentModel alloc]initWithDictionary:json error:nil];
-            self.changeItemBlock(model);
-            
-            MBProgressHUD *hud=[[MBProgressHUD alloc]initWithView:self.view];
-            hud.mode=MBProgressHUDModeText;
-            hud.label.text=@"发布成功";
-            [self.view addSubview:hud];
-            [hud showAnimated:YES];
-            [hud hideAnimated:YES afterDelay:1];
+            [MBProgressHUD showMessage:@"报名成功"];
+            self.messageBlock();
+            [_signUpButton setTitle:@"已报名" forState:UIControlStateNormal];
+            _signUpButton.enabled=NO;
         } failure:^(NSError *error) {
-            
+            [MBProgressHUD showMessage:@"报名已结束"];
         }];
         _TextView.text=@"";
         _showLabel.hidden=NO;
-        _leastLable.text=[NSString stringWithFormat:@"还可以输入%ld字",250-_TextView.text.length];
+        _leastLable.text=[NSString stringWithFormat:@"%ld",70-_TextView.text.length];
         [_TextView resignFirstResponder];
     }
 }
@@ -98,7 +89,7 @@
     [backgroudView addSubview:_TextView];
     
     _leastLable=[[UILabel alloc]initWithFrame:CGRectMake(0,200, SCREEN_WIDTH, 20)];
-    _leastLable.text=_leastLable.text=[NSString stringWithFormat:@"还可以输入%ld字",250-_TextView.text.length];;
+    _leastLable.text=_leastLable.text=[NSString stringWithFormat:@"%ld",70-_TextView.text.length];;
     _leastLable.textColor=[UIColor grayColor];
     _leastLable.textAlignment=NSTextAlignmentRight;
     _leastLable.backgroundColor=[UIColor whiteColor];
@@ -110,6 +101,14 @@
     _showLabel.textAlignment=NSTextAlignmentLeft;
     _showLabel.backgroundColor=[UIColor whiteColor];
     [backgroudView addSubview:_showLabel];
+    
+    _signUpButton=[UIButton buttonWithType:UIButtonTypeCustom];
+    _signUpButton.frame=CGRectMake(12*SCREEN_MUTI, 260, 351*SCREEN_MUTI, 40);
+    [_signUpButton setTitle:@"立即报名" forState:UIControlStateNormal];
+    [_signUpButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [_signUpButton setBackgroundImage:[UIImage imageNamed:@"baoming"] forState:UIControlStateNormal];
+    [_signUpButton addTarget:self action:@selector(deliverAction) forControlEvents:UIControlEventTouchUpInside];
+    [backgroudView addSubview:_signUpButton];
 }
 
 -(void)resignAction
@@ -128,8 +127,8 @@
 -(void)textViewDidChange:(UITextView *)textView
 {
     Nmodel.changeText=textView.text;
-    if ([textView.text length]>250) {
-        textView.text = [textView.text substringToIndex:250];
+    if ([textView.text length]>70) {
+        textView.text = [textView.text substringToIndex:70];
     }
     if (textView.text.length==0) {
         _showLabel.hidden=NO;
@@ -141,7 +140,7 @@
 //限制字数为50字
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
 {
-    if (range.location>=250)
+    if (range.location>=70)
     {
         return  NO;
     }
@@ -155,8 +154,8 @@
 {
     
     if ([keyPath isEqualToString:@"changeText"]) {
-        if (_TextView.text.length<=250) {
-            _leastLable.text=[NSString stringWithFormat:@"还可以输入%ld字",250-_TextView.text.length];
+        if (_TextView.text.length<=70) {
+            _leastLable.text=[NSString stringWithFormat:@"%ld",70-_TextView.text.length];
         }
     }
 }
@@ -165,10 +164,7 @@
 {
     
     [Nmodel removeObserver:self forKeyPath:@"changeText"];
-}
-
-
-- (void)didReceiveMemoryWarning {
+}- (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }

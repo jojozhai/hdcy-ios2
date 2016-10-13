@@ -102,7 +102,7 @@
 -(void)setModel:(YLActivityListContentModel *)model
 {
     _model=model;
-    [self.backImageView sd_setImageWithURL:[NSURL URLWithString:model.image] placeholderImage:[UIImage imageNamed:@"placeHolderImage"] options:SDWebImageRefreshCached];
+    [self.backImageView sd_setImageWithURL:[NSURL URLWithString:model.image] placeholderImage:[UIImage imageNamed:@"placeholderImage"] options:SDWebImageRefreshCached];
     self.titleLabel.text=model.name;
     self.placeLabel.text=model.address;
     self.timeLabel.text=[YLGetTime getYYMMDDWithDate2:[NSDate dateWithTimeIntervalSince1970:model.startTime.integerValue/1000]];

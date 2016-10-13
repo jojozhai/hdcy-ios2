@@ -11,6 +11,7 @@
 #import "YLActivityListContentModel.h"
 #import "YLTableHeaderView.h"
 #import "YLActivityListModel.h"
+#import "YLActivityOffLineViewController.h"
 @interface YLActivityViewController ()<UITableViewDataSource,UITableViewDelegate,scrollViewScrollClickDelegate,UIScrollViewDelegate>
 //列表model
 @property (nonatomic,strong)YLActivityListModel *listModel;
@@ -57,6 +58,7 @@
 -(void)createTableView
 {
     UITableView *tableView = [[UITableView alloc]initWithFrame:CGRectMake(0,0,SCREEN_WIDTH,SCREEN_HEIGHT) style:UITableViewStylePlain];
+    tableView.backgroundColor=[UIColor whiteColor];
     self.tableView=tableView;
     //下拉刷新
     MJRefreshNormalHeader *header =
@@ -174,12 +176,31 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     YLActivityListContentModel *model=self.dataSource[indexPath.row];
-    
+    YLActivityOffLineViewController *offline=[[YLActivityOffLineViewController alloc]init];
+    offline.contentModel=model;
+    CATransition * animation = [CATransition animation];
+    animation.duration = 0.5;    //  时间
+    animation.type = kCATransitionMoveIn;
+    animation.subtype = kCATransitionFromRight;
+    [self.view.window.layer addAnimation:animation forKey:nil];
+    [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:offline animated:YES completion:^{
+        
+    }];
 }
 
 -(void)clickScrollViewItemWithIndex:(NSInteger)index
 {
-
+    YLActivityListContentModel *model=self.headerArray[index];
+    YLActivityOffLineViewController *offline=[[YLActivityOffLineViewController alloc]init];
+    offline.contentModel=model;
+    CATransition * animation = [CATransition animation];
+    animation.duration = 0.8;    //  时间
+    animation.type = kCATransitionMoveIn;
+    animation.subtype = kCATransitionFromRight;
+    [self.view.window.layer addAnimation:animation forKey:nil];
+    [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:offline animated:YES completion:^{
+        
+    }];
 }
 
 

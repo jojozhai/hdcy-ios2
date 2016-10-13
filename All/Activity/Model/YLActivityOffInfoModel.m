@@ -1,15 +1,16 @@
 //
-//  YLActivityListContentModel.m
+//  YLActivityOffInfoModel.m
 //  hdcy
 //
-//  Created by mac on 16/8/23.
+//  Created by mac on 16/8/25.
 //  Copyright © 2016年 haoduocheyou.cn. All rights reserved.
 //
 
-#import "YLActivityListContentModel.h"
+#import "YLActivityOffInfoModel.h"
 
-@implementation YLActivityListContentModel
+@implementation YLActivityOffInfoModel
 +(JSONKeyMapper *)keyMapper{
     return  [[JSONKeyMapper alloc]initWithDictionary:@{@"id":@"Id"}];
 }
+ 
 @end
