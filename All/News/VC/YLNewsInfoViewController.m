@@ -23,12 +23,22 @@
     YLNotiModel *Nmodel;
     NSString *_replyToId;
     YLWriteCommentView *writeCommentView;
+    /*
+     *tableView的indexpath
+     */
     NSIndexPath *_indexpath;
+    /*
+     *大的滚动式图
+     */
     UIScrollView *mainScrollView;
     UILabel *textlabel;
+    /*
+     *评论数
+     */
     NSString *commentCount;
 }
 @property (nonatomic,strong)UITableView *tableView;
+//数据源
 @property (nonatomic,strong)NSMutableArray *dataSource;
 //是否展开数组
 @property (nonatomic,strong)NSMutableArray *boolAray;
@@ -63,7 +73,9 @@
 {
     [super viewDidAppear:YES];
 }
-
+/*
+ *创建编辑按钮
+ */
 -(void)createClearCoverView
 {
     UIButton *commentButton=[UIButton buttonWithType:UIButtonTypeCustom];
@@ -125,7 +137,9 @@
     [self.view.window.layer addAnimation:animation forKey:nil];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
-
+/*
+ *分享
+ */
 -(void)shareAction
 {
     NSString *urlString=[NSString stringWithFormat:@"%@%@",URL,[NSString stringWithFormat:@"/articleDetails.html?id=%@&show=YES",self.listModel.Id]];
@@ -139,7 +153,9 @@
                                 shareToSnsNames:@[UMShareToWechatSession,UMShareToWechatTimeline]
                                        delegate:self];
 }
-
+/*
+ *跳转评论浏览页
+ */
 -(void)infoAction
 {
     [self presentCommentVC];
@@ -175,7 +191,9 @@
     [coverView addSubview:writeCommentView];
 }
 
-
+/*
+ *请求数据，基本和资讯列表页请求下来的相同
+ */
 -(void)requestUrl
 {
     
@@ -190,7 +208,9 @@
     }];
     
 }
-
+/*
+ *设置web view
+ */
 -(void)setWebView
 {
     //创建大的scrollview
@@ -306,7 +326,9 @@
     }];
     
 }
-
+/*
+ *设置tableview
+ */
 -(void)prepareTableView
 {
     //创建headerview
@@ -348,12 +370,17 @@
     
      
 }
-
+/*
+ *跳转评论浏览页
+ */
 -(void)presentCommentVC
 {
     YLCommentViewController *comment=[[YLCommentViewController alloc]init];
     comment.Id=self.listModel.Id;
     comment.target=@"article";
+    /*
+     *反向传回改变评论数的block
+     */
     comment.changeBlock=^(NSArray *data){
         textlabel.text=[NSString stringWithFormat:@"评论(%ld)",commentCount.integerValue+1];
         
@@ -446,7 +473,9 @@
     writeCommentView.frame=CGRectMake(0, SCREEN_HEIGHT-195, SCREEN_WIDTH, 195);
     _indexpath=indexPath;
 }
-
+/*
+ *点赞状态
+ */
 -(void)praiseAction:(UIButton *)button
 {
     button.enabled=NO;

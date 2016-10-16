@@ -15,6 +15,9 @@
 @property (nonatomic,strong)UILabel *inclineLabel;
 @property (nonatomic,strong)UILabel *timeLabel;
 @property (nonatomic,strong)UIImageView *endImageView;
+@property (nonatomic,strong)UILabel *sponsorLabel;
+@property (nonatomic,strong)UIImageView *sponsorImage;
+
 
 @property (nonatomic,strong)YLActivityListContentModel *model;
 @end

@@ -14,4 +14,5 @@
 @interface YLCommunicateView : UIView
 @property (nonatomic,strong)NSMutableArray *dataSource;
 @property (nonatomic,assign)id<clickAllButtonDelegate>delegate;
+@property (nonatomic,copy)NSString *totalElements;
 @end

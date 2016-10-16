@@ -18,6 +18,7 @@
 #import "YLCommunicateView.h"
 #import "YLSignUpViewController.h"
 #import "YLReplyViewController.h"
+#import "YLAllLeavingMessageViewController.h"
 @interface YLActivityOffLineViewController ()<topViewHeightChangeDelegate,UITextViewDelegate,UMSocialUIDelegate,clickAllButtonDelegate,imageViewClickDelegate,SDCycleScrollViewDelegate>
 {
     /**
@@ -48,14 +49,21 @@
      报名按钮
      */
     UIButton *signButton;
-
+    /*
+     *留言面板
+     */
     YLCommunicateView *commucationView;
     NSInteger communicationHeight;
+    
+    /*
+     *留言总数
+     */
+    NSString *totalElements;
 }
 
 //此页面的数据字典
 @property (nonatomic,strong)NSMutableDictionary *modelDict;
-//全部评论
+//评论
 @property (nonatomic,strong)NSMutableArray *communicationArray;
 
 @property (nonatomic,strong)MBProgressHUD *hud;
@@ -89,7 +97,9 @@
     [self.view addSubview:coverView];
     coverView.hidden=YES;
 }
-
+/*
+ *创建编辑按钮
+ */
 -(void)createClearCoverView
 {
     UIButton *commentButton=[UIButton buttonWithType:UIButtonTypeCustom];
@@ -125,7 +135,9 @@
     [self presentViewController:writeVC animated:YES completion:nil];
 }
 
-
+/*
+ *判断活动状态
+ */
 -(void)isEnroll
 {
     NSString *urlString=[NSString stringWithFormat:@"%@/participator/member",URL];
@@ -279,7 +291,9 @@
     [callView removeFromSuperview];
     coverView.hidden=YES;
 }
-
+/*
+ *报名，跳到报名页
+ */
 -(void)signUpAction
 {
     YLSignUpViewController *signUpVC=[[YLSignUpViewController alloc]init];
@@ -295,7 +309,9 @@
     signUpVC.contentModel=model;
     [self presentViewController:signUpVC animated:YES completion:nil];
 }
-
+/*
+ *网络请求，留言以上的部分
+ */
 -(void)requestUrl
 {
     [self.hud showAnimated:YES];
@@ -310,7 +326,9 @@
         [self.hud hideAnimated:YES];
     }];
 }
-
+/*
+ *布局视图
+ */
 -(void)createView
 {
     scrollView=[[UIScrollView alloc]initWithFrame:CGRectMake(0, 70, SCREEN_WIDTH, SCREEN_HEIGHT-70-49)];
@@ -373,11 +391,12 @@
 {
     
     NSString *urlString=[NSString stringWithFormat:@"%@%@",URL,@"/comments"];
-    NSDictionary *paraDict=@{@"page":@(0),@"size":@"10",@"sort":@"createdTime,desc",@"targetId":self.contentModel.Id,@"target":@"activity"};
+    NSDictionary *paraDict=@{@"page":@(0),@"size":@"5",@"sort":@"createdTime,desc",@"targetId":self.contentModel.Id,@"target":@"activity"};
     [YLHttp get:urlString userName:USERNAME_REMBER passeword:PASSWORD_REMBER params:paraDict success:^(id json) {
+        totalElements=json[@"totalElements"];
         NSArray *contentArray=json[@"content"];
         if (contentArray.count==0) {
-    
+            
         }else{
             if (contentArray.count>5) {
                 for (int i=0;i<5;i++) {
@@ -407,16 +426,17 @@
 -(void)createCommunicationView
 {
     commucationView=[[YLCommunicateView alloc]init];
+    commucationView.dataSource=self.communicationArray;
+    commucationView.totalElements=totalElements;
     commucationView.delegate=self;
+    //获取活动交流下的tableview
+    UITableView *tv=commucationView.subviews[0];
     [scrollView addSubview:commucationView];
     commucationView.sd_layout
     .leftEqualToView(scrollView)
     .rightEqualToView(scrollView)
-    .topSpaceToView(infotableView,8);
-
-    
-
-    commucationView.dataSource=self.communicationArray;
+    .topSpaceToView(infotableView,8)
+    .heightIs(tv.frame.size.height);
 //    如果没有留言
     if (self.communicationArray.count==0) {
         commucationView.sd_layout
@@ -456,7 +476,15 @@
 
 -(void)clickMoreButton
 {
-  
+    YLAllLeavingMessageViewController *leavingMessage=[[YLAllLeavingMessageViewController alloc]init];
+    CATransition * animation = [CATransition animation];
+    animation.duration = 0.5;    //  时间
+    animation.type = kCATransitionMoveIn;
+    animation.subtype = kCATransitionFromRight;
+    [self.view.window.layer addAnimation:animation forKey:nil];
+    YLActivityListContentModel *model=self.contentModel;
+    leavingMessage.contentModel=model;
+    [self presentViewController:leavingMessage animated:YES completion:nil];
 }
 
 

@@ -1,24 +1,21 @@
 //
-//  YLTableHeaderView.m
+//  YLVideoTopView.m
 //  hdcy
 //
-//  Created by mac on 16/8/23.
-//  Copyright © 2016年 haoduocheyou.cn. All rights reserved.
+//  Created by mac on 16/10/16.
+//  Copyright © 2016年 youngliu.cn. All rights reserved.
 //
 
-#import "YLTableHeaderView.h"
-#import "YLActiTableViewCell.h"
-
-@interface YLTableHeaderView()<UIScrollViewDelegate>
-
+#import "YLVideoTopView.h"
+#import "YLLiveVideoCell.h"
+@interface YLVideoTopView()<UIScrollViewDelegate>
 @property (nonatomic,weak)UIScrollView *topScrollView;
 @property (nonatomic,weak)NSTimer *scrollTimer;
 @property (nonatomic,weak)UIPageControl *pageControl;
 @property (nonatomic,assign)CGFloat startPointX;
 @property (nonatomic,assign)CGFloat endPointX;
-
 @end
-@implementation YLTableHeaderView
+@implementation YLVideoTopView
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
@@ -33,7 +30,7 @@
     if (self.topScrollView) {
         [self.topScrollView removeFromSuperview];
     }
-//创建轮播
+    //创建轮播
     UIScrollView *sc=[[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 225*SCREEN_MUTI)];
     self.topScrollView=sc;
     self.topScrollView.bounces = NO;
@@ -44,7 +41,7 @@
     self.topScrollView.scrollEnabled=YES;
     self.topScrollView.tag=6666;
     [self addSubview:self.topScrollView];
-
+    
     
 }
 
@@ -60,7 +57,7 @@
     NSInteger index=self.topScrollView.contentOffset.x/SCREEN_WIDTH;
     self.startPointX=SCREEN_WIDTH*index;
     index=index+1;
-
+    
     [UIView animateWithDuration:1 animations:^{
         self.topScrollView.contentOffset=CGPointMake(SCREEN_WIDTH*index, 0);
         self.pageControl.currentPage=index;
@@ -74,14 +71,14 @@
         
         
         for (int i=0; i<self.topScrollArray.count+2; i++) {
-            YLActiTableViewCell *Precell=self.topScrollView.subviews[i];
+            YLLiveVideoCell *Precell=self.topScrollView.subviews[i];
             Precell.frame=CGRectMake(i*SCREEN_WIDTH-30*SCREEN_MUTI, 17*SCREEN_MUTI,435*SCREEN_MUTI,  SCREEN_MUTI*190);
         }
-
+        
         //改变cell
-        YLActiTableViewCell *cell=self.topScrollView.subviews[number];
+        YLLiveVideoCell *cell=self.topScrollView.subviews[number];
         cell.frame=CGRectMake(number*SCREEN_WIDTH+38*SCREEN_MUTI, 0, 299*SCREEN_MUTI, 225*SCREEN_MUTI);
-    
+        
     } completion:^(BOOL finished) {
         
     }];
@@ -109,11 +106,11 @@
     //改变cell
     [UIView animateWithDuration:0.3 animations:^{
         for (int i=0;i<self.topScrollView.subviews.count;i++) {
-            YLActiTableViewCell *cell=self.topScrollView.subviews[i];
+            YLLiveVideoCell *cell=self.topScrollView.subviews[i];
             cell.frame=CGRectMake(i*SCREEN_WIDTH-30*SCREEN_MUTI, 17*SCREEN_MUTI,435*SCREEN_MUTI,  SCREEN_MUTI*190);
         }
     }];
-   
+    
 }
 
 
@@ -141,25 +138,25 @@
             NSInteger num=pageNum;
             
             for (int i=0; i<self.topScrollArray.count+2; i++) {
-                YLActiTableViewCell *Precell=self.topScrollView.subviews[i];
+                YLLiveVideoCell *Precell=self.topScrollView.subviews[i];
                 Precell.frame=CGRectMake(i*SCREEN_WIDTH-30*SCREEN_MUTI, 17*SCREEN_MUTI,435*SCREEN_MUTI,  SCREEN_MUTI*190);
             }
-
+            
             if (num==self.topScrollArray.count+1) {
                 num=1;
             }else if (num==0){
                 num=self.topScrollArray.count;
             }
-            YLActiTableViewCell *cell=self.topScrollView.subviews[num];
+            YLLiveVideoCell *cell=self.topScrollView.subviews[num];
             cell.frame=CGRectMake(num*SCREEN_WIDTH+38*SCREEN_MUTI, 0, 299*SCREEN_MUTI, 225*SCREEN_MUTI);
         }];
     }
-
+    
 }
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
 {
-
+    
     [self.scrollTimer invalidate];
     self.scrollTimer = nil;
     self.startPointX=scrollView.contentOffset.x;
@@ -181,18 +178,18 @@
             }else if (num==0){
                 num=self.topScrollArray.count;
             }
-            YLActiTableViewCell *cell=self.topScrollView.subviews[num];
+            YLLiveVideoCell *cell=self.topScrollView.subviews[num];
             cell.frame=CGRectMake(num*SCREEN_WIDTH+38*SCREEN_MUTI, 0, 299*SCREEN_MUTI, 225*SCREEN_MUTI);
         }];
-
+        
     }
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
 {
-
+    
     [self setupTimer];
-  
+    
 }
 
 - (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView
@@ -216,7 +213,7 @@
             self.pageControl.currentPage=pageNum-1;
         }
     }
-
+    
 }
 
 
@@ -225,10 +222,10 @@
     _topScrollArray=topScrollArray;
     
     for (int i=0; i<self.topScrollArray.count+2; i++) {
-        YLActiTableViewCell *cell=[[YLActiTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@""];
+        YLLiveVideoCell *cell=[[YLLiveVideoCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@""];
         cell.frame=CGRectMake(i*SCREEN_WIDTH-30*SCREEN_MUTI, 17*SCREEN_MUTI,435*SCREEN_MUTI,  SCREEN_MUTI*190);
         if (i==1) {
-             cell.frame=CGRectMake(SCREEN_WIDTH+38*SCREEN_MUTI, 0, 299*SCREEN_MUTI, 225*SCREEN_MUTI);
+            cell.frame=CGRectMake(SCREEN_WIDTH+38*SCREEN_MUTI, 0, 299*SCREEN_MUTI, 225*SCREEN_MUTI);
         }
         if (i==0) {
             cell.model=topScrollArray[self.topScrollArray.count-1];
@@ -243,7 +240,7 @@
         [self.topScrollView addSubview:cell];
     }
     self.topScrollView.contentSize=CGSizeMake((self.topScrollArray.count+2)*SCREEN_WIDTH, 0);
-
+    
     self.topScrollView.contentOffset=CGPointMake(SCREEN_WIDTH, 0);
     
     if (self.pageControl) {
@@ -269,7 +266,7 @@
 
 -(void)tapAction:(UITapGestureRecognizer *)tap
 {
-    [_Sdelegate clickScrollViewItemWithIndex:tap.view.tag-2346];
+    [_delegate clickScrollViewItemWithIndex:tap.view.tag-2346];
 }
 
 @end

@@ -26,6 +26,12 @@
     self.backImageView=[[UIImageView alloc]init];
     [self.contentView addSubview:self.backImageView];
     
+    UIBlurEffect *backblur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
+    UIVisualEffectView *backeffectview = [[UIVisualEffectView alloc] initWithEffect:backblur];
+    backeffectview.alpha = 0.5;
+    backeffectview.frame =CGRectMake(0, 0, 435*SCREEN_MUTI, 225*SCREEN_MUTI);
+    [self.backImageView addSubview:backeffectview];
+    
 //
     self.titleLabel=[[UILabel alloc]init];
     self.titleLabel.font=FONT_BOLD_BIG;
@@ -47,7 +53,7 @@
     [self.contentView addSubview:self.inclineLabel];
     
 //
-    self.timeLabel=[[UILabel alloc]init];
+    self.timeLabel=[UILabel new];
     self.timeLabel.font=FONT_SYS_NORMAL;
     self.timeLabel.textAlignment=0;
     self.timeLabel.textColor=[UIColor whiteColor];
@@ -58,6 +64,14 @@
     self.endImageView.image=[UIImage imageNamed:@"组-13@2x"];
     [self.contentView addSubview:self.endImageView];
  
+    self.sponsorLabel=[UILabel new];
+    self.sponsorLabel.font=FONT_SYS_NORMAL;
+    self.sponsorLabel.textAlignment=0;
+    self.sponsorLabel.textColor=[UIColor colorWithRed:255 green:255 blue:255 alpha:0.7];
+    [self.contentView addSubview:self.sponsorLabel];
+    
+    self.sponsorImage=[[UIImageView alloc]init];
+    [self.contentView addSubview:self.sponsorImage];
     
     self.backImageView.sd_layout
     .leftEqualToView(self.contentView)
@@ -90,12 +104,17 @@
     .autoHeightRatio(0)
     .leftSpaceToView(self.contentView,5)
     .rightSpaceToView(self.timeLabel,10);
+    
+    self.sponsorLabel.sd_layout
+    .bottomSpaceToView(self.contentView,7)
+    .rightSpaceToView(self.contentView,12)
+    .heightIs(16);
 
-    UIBlurEffect *backblur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
-    UIVisualEffectView *backeffectview = [[UIVisualEffectView alloc] initWithEffect:backblur];
-    backeffectview.alpha = 0.5;
-    backeffectview.frame =CGRectMake(0, 0, 435*SCREEN_MUTI, 225*SCREEN_MUTI);
-    [self.backImageView addSubview:backeffectview];
+    self.sponsorImage.sd_layout
+    .rightSpaceToView(self.sponsorLabel,2)
+    .bottomSpaceToView(self.contentView,7)
+    .widthIs(16)
+    .heightIs(16);
 }
 
 
@@ -106,7 +125,15 @@
     self.titleLabel.text=model.name;
     self.placeLabel.text=model.address;
     self.timeLabel.text=[YLGetTime getYYMMDDWithDate2:[NSDate dateWithTimeIntervalSince1970:model.startTime.integerValue/1000]];
-    
+    self.sponsorLabel.text=model.sponsorName;
+    [self.sponsorImage sd_setImageWithURL:[NSURL URLWithString:model.sponsorImage]];
+    CGSize size = CGSizeMake(MAXFLOAT, 14);
+    CGSize sponsorLabelSize = [model.sponsorName boundingRectWithSize:size
+                                              options:NSStringDrawingTruncatesLastVisibleLine  | NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading
+                                           attributes:@{ NSFontAttributeName:FONT_SYS(14)}
+                                              context:nil].size;
+    self.sponsorLabel.sd_layout
+    .widthIs(sponsorLabelSize.width);
 }
 
 @end

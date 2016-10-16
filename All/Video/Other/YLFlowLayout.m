@@ -7,18 +7,18 @@
 //
 
 #import "YLFlowLayout.h"
-#define ITEM_SIZE 140
-#define ACTIVE_DISTANCE 200
+#define ITEM_HEIGHT (225*SCREEN_MUTI)
+#define ACTIVE_DISTANCE (299*SCREEN_MUTI)
 #define ZOOM_FACTOR 0.3
 @implementation YLFlowLayout
 -(id)init
 {
     self = [super init];
     if (self) {
-        self.itemSize = CGSizeMake(200, ITEM_SIZE);
+        self.itemSize = CGSizeMake(299*SCREEN_MUTI, ITEM_HEIGHT);
         self.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-        self.sectionInset = UIEdgeInsetsMake(0, 50.0, 0, 50.0);
-        self.minimumLineSpacing = 50.0;
+        self.sectionInset = UIEdgeInsetsMake(0, 38*SCREEN_MUTI, 0, 38*SCREEN_MUTI);
+        self.minimumLineSpacing = 38*SCREEN_MUTI;
     }
     return self;
 }

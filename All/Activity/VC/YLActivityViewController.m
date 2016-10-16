@@ -129,7 +129,8 @@
     } failure:^(NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.hud hideAnimated:YES];
-            
+            [self.tableView.mj_header endRefreshing];
+            [self.tableView.mj_footer endRefreshing];
         });
         
     }];

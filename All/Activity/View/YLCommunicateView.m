@@ -16,6 +16,7 @@
 @property (nonatomic,strong)NSMutableArray *dataArray;
 @property (nonatomic,strong)NSMutableArray *cellHeightArray;
 @property (nonatomic,assign)NSInteger totelHeight;
+@property (nonatomic,strong)YLActivityInfoHeaderView *infoHeader;
 @end
 @implementation YLCommunicateView
 
@@ -29,12 +30,13 @@
 
 -(void)createView
 {
-    YLActivityInfoHeaderView *infoHeader=[[YLActivityInfoHeaderView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 50)];
-    infoHeader.infoImageView.image=[UIImage imageNamed:@"content-icon-communication-default"];
-    infoHeader.titleLabel.text=@"活动交流";
+    self.infoHeader=[[YLActivityInfoHeaderView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 50)];
+    self.infoHeader.infoImageView.image=[UIImage imageNamed:@"content-icon-communication-default"];
+    self.infoHeader.titleLabel.text=@"活动交流";
     
-    self.frame=CGRectMake(0, 0, SCREEN_WIDTH, self.totelHeight);
+    //self.frame=CGRectMake(0, 0, SCREEN_WIDTH, self.totelHeight);
     self.tableView = [[UITableView alloc]initWithFrame:CGRectMake(0,0, SCREEN_WIDTH,self.totelHeight) style:UITableViewStylePlain];
+    self.tableView.userInteractionEnabled=YES;
     self.tableView.scrollEnabled=NO;
     [self.tableView registerClass:[YLActiConsultTableViewCell class] forCellReuseIdentifier:@"actiConsult"];
     [self.tableView registerClass:[YLActiConsultTableViewCell class] forCellReuseIdentifier:@"rightConsult"];
@@ -42,13 +44,13 @@
     self.tableView.dataSource = self;
     [self addSubview:self.tableView];
     
-    self.tableView.tableHeaderView=infoHeader;
+    self.tableView.tableHeaderView=self.infoHeader;
     
     UIView *footerView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 50)];
     UIButton *moreButton=[UIButton buttonWithType:UIButtonTypeCustom];
     moreButton.frame=CGRectMake(SCREEN_WIDTH/2-45, 8, 90, 34);
     [moreButton setTitle:@"查看更多" forState:UIControlStateNormal];
-    [moreButton addTarget:self action:@selector(moreAction) forControlEvents:UIControlEventTouchUpInside];
+    [moreButton addTarget:self action:@selector(moreClickAction) forControlEvents:UIControlEventTouchUpInside];
     [moreButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     moreButton.layer.cornerRadius=17;
     moreButton.layer.borderColor= RGBCOLOR(28, 103, 145).CGColor;
@@ -58,7 +60,7 @@
     self.tableView.tableFooterView=footerView;
 }
 
--(void)moreAction
+-(void)moreClickAction
 {
     [_delegate clickMoreButton];
 }
@@ -134,6 +136,12 @@
         self.totelHeight=self.totelHeight+[self.cellHeightArray[i] integerValue];
     }
     [self createView];
+}
+
+-(void)setTotalElements:(NSString *)totalElements
+{
+    _totalElements=totalElements;
+    self.infoHeader.titleLabel.text=[NSString stringWithFormat:@"活动交流(%@)",totalElements];
 }
 
 -(NSMutableArray *)dataArray

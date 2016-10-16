@@ -1,15 +1,15 @@
 //
-//  YLLiveVideoModel.h
+//  YLVideoListModel.h
 //  hdcy
 //
-//  Created by Nemo on 16/9/13.
+//  Created by Nemo on 16/9/16.
 //  Copyright © 2016年 haoduocheyou.cn. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import "JSONModel.h"
 
-@interface YLVideoTopModel : JSONModel
+@interface YLVideoListModel : JSONModel
 @property (nonatomic, strong) NSString<Optional> *liveState;
 @property (nonatomic, strong) NSString<Optional> *streamId;
 @property (nonatomic, strong) NSString<Optional> *image;

@@ -80,6 +80,13 @@
         _showLabel.hidden=NO;
         _leastLable.text=[NSString stringWithFormat:@"还可以输入%ld字",250-_TextView.text.length];
         [_TextView resignFirstResponder];
+        
+        CATransition * animation = [CATransition animation];
+        animation.duration = 0.8;    //  时间
+        animation.type = kCATransitionMoveIn;
+        animation.subtype = kCATransitionFromLeft;
+        [self.view.window.layer addAnimation:animation forKey:nil];
+        [self dismissViewControllerAnimated:YES completion:nil];
     }
 }
 
