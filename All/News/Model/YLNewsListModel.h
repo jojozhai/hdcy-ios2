@@ -31,4 +31,8 @@
 @property (nonatomic,strong)NSNumber *business;
 
 @property (nonatomic,copy)NSString *displayType;
+
+@property (nonatomic,assign)BOOL linkOut;
+
+@property (nonatomic,copy)NSString *outLink;
 @end

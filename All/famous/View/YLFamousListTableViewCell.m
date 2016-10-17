@@ -38,12 +38,20 @@
     self.nameLabel.font=FONT_BOLD(13);
     [backImageView addSubview:self.nameLabel];
     
-    self.introLabel=[[UILabel alloc]initWithFrame:CGRectMake(12, 60, 164, 40)];
+    self.introLabel=[[UILabel alloc]initWithFrame:CGRectMake(12, 53, 164, 40)];
     self.introLabel.textColor=[UIColor whiteColor];
     self.introLabel.numberOfLines=0;
     self.introLabel.textAlignment=NSTextAlignmentLeft;
     self.introLabel.font=FONT_SYS_ANNOTATE;
     [backImageView addSubview:self.introLabel];
+}
+
+-(void)setModel:(YLFamousTopModel *)model
+{
+    _model=model;
+    [self.mainImageView sd_setImageWithURL:[NSURL URLWithString:model.topImage] placeholderImage:[UIImage imageNamed:@"placeholderImage"] options:SDWebImageRefreshCached];
+    self.nameLabel.text=model.nickname;
+    self.introLabel.text=model.intro;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

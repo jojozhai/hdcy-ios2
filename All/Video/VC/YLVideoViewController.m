@@ -148,7 +148,7 @@
             YLVideoDetailViewController *detail = [[YLVideoDetailViewController alloc] initWithURL:m.url];
             detail.Id = [m id];
             detail.model = m;
-            [self.navigationController pushViewController:detail animated:YES];
+             
         }
     }
 }

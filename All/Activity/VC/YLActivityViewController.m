@@ -79,6 +79,7 @@
     
     YLTableHeaderView *headerView=[[YLTableHeaderView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 225*SCREEN_MUTI)];
     headerView.backgroundColor=BGColor;
+    headerView.Sdelegate=self;
     headerView.topScrollArray=self.headerArray;
     self.tableView.tableHeaderView=headerView;
 }

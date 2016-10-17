@@ -16,6 +16,7 @@
 #import "YLNewsListNomalTableViewCell.h"
 #import "YLNewsListTopAdTableViewCell.h"
 #import "YLNewsInfoViewController.h"
+#import "YLOutLinkViewController.h"
 @interface YLNewsViewController ()<UIScrollViewDelegate,UITableViewDataSource,UITableViewDelegate>
 @property (nonatomic, strong) NSMutableArray  *ViewArray;
 @property (nonatomic, strong) YLOptionBtnView *topView;
@@ -239,6 +240,8 @@
                     }
                 }
                 model.business=cDict[@"business"];
+                model.linkOut=cDict[@"linkOut"];
+                model.outLink=cDict[@"outLink"];
                 [self.dataSource addObject:model];
             }
             
@@ -329,6 +332,7 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    YLNewsListModel *listModel=self.dataSource[indexPath.row];
     CATransition * animation = [CATransition animation];
     
     animation.duration = 0.5;    //  时间
@@ -360,11 +364,22 @@
     animation.subtype = kCATransitionFromRight;
     
     [self.view.window.layer addAnimation:animation forKey:nil];
-    YLNewsInfoViewController *info=[[YLNewsInfoViewController alloc]init];
-    info.listModel=self.dataSource[indexPath.row];
-    [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:info animated:YES completion:^{
+
+    if (listModel.linkOut==YES) {
+        YLOutLinkViewController *outlink=[[YLOutLinkViewController alloc]init];
+        outlink.urlString=listModel.outLink;
+        [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:outlink animated:YES completion:^{
+            
+        }];
+
+    }else{
         
-    }];
+        YLNewsInfoViewController *info=[[YLNewsInfoViewController alloc]init];
+        info.listModel=self.dataSource[indexPath.row];
+        [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:info animated:YES completion:^{
+            
+        }];
+    }
 }
 
 #pragma mark - scrollView代理

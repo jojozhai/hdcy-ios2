@@ -17,7 +17,6 @@
 @property (strong, nonatomic) UILabel *titlLabel;
 
 - (instancetype)initWithURL:(NSString *)url;
-
 - (void)goBack;
 
 @property (nonatomic,copy)NSString *Id;
