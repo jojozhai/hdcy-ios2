@@ -7,7 +7,7 @@
 //
 
 #import <MediaPlayer/MediaPlayer.h>
-
+#import "YLVideoListModel.h"
 @interface YLMoviePlayerController : MPMoviePlayerController
 
 @property (nonatomic, assign) CGRect frame;
@@ -16,8 +16,11 @@
 
 @property (nonatomic, retain) NSString *endTime;
 
+@property (nonatomic,strong) YLVideoListModel *model;
 - (void)zoomBlock:(void (^) (BOOL isZoom))block;
 
 - (void)invalidateTimer;
+
+
 
 @end

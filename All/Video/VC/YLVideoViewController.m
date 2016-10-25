@@ -14,7 +14,7 @@
 #import "YLVideoListModel.h"
 #import "YLVideoTopView.h"
 
-@interface YLVideoViewController ()<UITableViewDelegate,UITableViewDataSource>
+@interface YLVideoViewController ()<UITableViewDelegate,UITableViewDataSource,scrollViewClickDelegate>
 {
     YLVideoTopView *_headerView;
     UITableView *_tableView;
@@ -78,6 +78,7 @@
     [_footer setTitle:@"暂无数据" forState:MJRefreshStateNoMoreData];
     
     _headerView=[[YLVideoTopView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 225*SCREEN_MUTI)];
+    _headerView.delegate=self;
     _headerView.backgroundColor=BGColor;
     _tableView.tableHeaderView=_headerView;
 }
@@ -111,53 +112,29 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     YLVideoListModel *m = self.dataSource[indexPath.row];
-    [self transitionWithM:m];
+    YLVideoDetailViewController *detail = [[YLVideoDetailViewController alloc] init];
+    detail.Id = [m id];
+        
+    CATransition * animation = [CATransition animation];
+    animation.duration = 0.8;    //  时间
+    animation.type = kCATransitionMoveIn;
+    animation.subtype = kCATransitionFromRight;
+    [self.view.window.layer addAnimation:animation forKey:nil];
+    [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:detail animated:YES completion:nil];
 }
 
-
-- (void)transitionWithM:(JSONModel *)jm
+-(void)clickScrollViewWithIndex:(NSInteger)index
 {
-    self.hidesBottomBarWhenPushed = YES;
+    YLVideoListModel *m = self.headerArray[index];
+    YLVideoDetailViewController *detail = [[YLVideoDetailViewController alloc] init];
+    detail.Id = [m id];
     
-    if ([jm isKindOfClass:[YLVideoTopModel class]])
-    {
-        YLVideoTopModel *m = (YLVideoTopModel *)jm;
-        if (m.live.integerValue)
-        {
-            [self goChatWithStreamId:m.streamId];
-        }
-        else
-        {
-            YLVideoDetailViewController *detail = [[YLVideoDetailViewController alloc] initWithURL:m.url];
-            detail.Id = [m id];
-            detail.model = m;
-            [self.navigationController pushViewController:detail animated:YES];
-        }
-    }
-    else
-    {
-        YLVideoListModel *m = (YLVideoListModel *)jm;
-        //        m.live = @(1);
-        
-        if (m.live.integerValue)
-        {
-            [self goChatWithStreamId:m.streamId];
-        }
-        else
-        {
-            YLVideoDetailViewController *detail = [[YLVideoDetailViewController alloc] initWithURL:m.url];
-            detail.Id = [m id];
-            detail.model = m;
-             
-        }
-    }
-}
-
-- (void)goChatWithStreamId:(NSString *)streamId
-{
-    dispatch_async(dispatch_get_main_queue(), ^{
-        
-    });
+    CATransition * animation = [CATransition animation];
+    animation.duration = 0.8;    //  时间
+    animation.type = kCATransitionMoveIn;
+    animation.subtype = kCATransitionFromRight;
+    [self.view.window.layer addAnimation:animation forKey:nil];
+    [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:detail animated:YES completion:nil];
 }
 
 -(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation {
@@ -195,7 +172,16 @@
         if (isTop)
         {
             for (NSDictionary *topDict in contentArray) {
-                YLVideoTopModel *topmodel=[[YLVideoTopModel alloc]initWithDictionary:topDict error:nil];
+                YLVideoTopModel *topmodel=[[YLVideoTopModel alloc]init];
+                topmodel.id=topDict[@"id"];
+                topmodel.name=topDict[@"name"];
+                topmodel.image=topDict[@"image"];
+                topmodel.startTime=topDict[@"startTime"];
+                topmodel.live=topDict[@"live"];
+                topmodel.liveState=topDict[@"liveState"];
+                if (topmodel.startTime==nil) {
+                    topmodel.startTime=@"";
+                }
                 [self.headerArray addObject:topmodel];
             }
             _headerView.topScrollArray=self.headerArray;
@@ -203,7 +189,17 @@
         else
         {
             for (NSDictionary *topDict in contentArray) {
-                YLVideoTopModel *topmodel=[[YLVideoTopModel alloc]initWithDictionary:topDict error:nil];
+                
+                YLVideoTopModel *topmodel=[[YLVideoTopModel alloc]init];
+                topmodel.id=topDict[@"id"];
+                topmodel.name=topDict[@"name"];
+                topmodel.image=topDict[@"image"];
+                topmodel.startTime=topDict[@"startTime"];
+                topmodel.live=topDict[@"live"];
+                topmodel.liveState=topDict[@"liveState"];
+                if (topmodel.startTime==nil) {
+                    topmodel.startTime=@"";
+                }
                 [self.dataSource addObject:topmodel];
             }
             

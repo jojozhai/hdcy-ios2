@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 
 @interface RootViewController : UIViewController
+@property (nonatomic,strong)UIView *statusView;
+@property (nonatomic,strong)UIView *cusNavigationView;
 @property (nonatomic,strong)UILabel *titleLabel;
 -(void)addLeftBarButtonItemWithImageName:(NSString *)imageName
                                   target:(id)target

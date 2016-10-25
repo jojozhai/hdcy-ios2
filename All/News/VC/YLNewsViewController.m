@@ -364,14 +364,18 @@
     animation.subtype = kCATransitionFromRight;
     
     [self.view.window.layer addAnimation:animation forKey:nil];
-
-    if (listModel.linkOut==YES) {
-        YLOutLinkViewController *outlink=[[YLOutLinkViewController alloc]init];
-        outlink.urlString=listModel.outLink;
-        [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:outlink animated:YES completion:^{
+    if ([listModel.business isEqual:@1]) {
+        if (listModel.linkOut==YES) {
+            YLOutLinkViewController *outlink=[[YLOutLinkViewController alloc]init];
+            outlink.urlString=listModel.outLink;
+            if ([listModel.outLink isEqual:[NSNull null]]||[listModel.outLink isEqual:@"<null>"]) {
+                outlink.urlString=@"www.baidu.com";
+            }
+            [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:outlink animated:YES completion:^{
+                
+            }];
             
-        }];
-
+        }
     }else{
         
         YLNewsInfoViewController *info=[[YLNewsInfoViewController alloc]init];

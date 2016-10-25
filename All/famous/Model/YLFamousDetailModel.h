@@ -1,14 +1,14 @@
 //
-//  YLFamousTopModel.h
+//  YLFamousDetailModel.h
 //  hdcy
 //
-//  Created by mac on 16/10/17.
+//  Created by mac on 16/10/24.
 //  Copyright © 2016年 youngliu.cn. All rights reserved.
 //
 
 #import <JSONModel/JSONModel.h>
 
-@interface YLFamousTopModel : JSONModel
+@interface YLFamousDetailModel : JSONModel
 @property (nonatomic,copy)NSString <Optional>*Id;
 @property (nonatomic,copy)NSString <Optional>*image;
 @property (nonatomic,copy)NSString <Optional>*intro;
@@ -23,5 +23,4 @@
 @property (nonatomic,copy)NSString <Optional>*userId;
 @property (nonatomic,copy)NSString <Optional>*organ;
 @property (nonatomic,assign)BOOL enable;
-@property (nonatomic,copy)NSString <Optional>*headimgurl;
 @end

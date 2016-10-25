@@ -16,7 +16,6 @@
     AFHTTPRequestOperationManager *mgr = [AFHTTPRequestOperationManager manager];
     mgr.responseSerializer = [AFHTTPResponseSerializer serializer];
     mgr.requestSerializer.timeoutInterval = 15;
-    
     // 2.发送请求
     [mgr GET:url parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
         id response = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingMutableContainers error:nil];

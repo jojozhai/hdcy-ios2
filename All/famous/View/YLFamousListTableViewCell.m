@@ -50,7 +50,7 @@
 {
     _model=model;
     [self.mainImageView sd_setImageWithURL:[NSURL URLWithString:model.topImage] placeholderImage:[UIImage imageNamed:@"placeholderImage"] options:SDWebImageRefreshCached];
-    self.nameLabel.text=model.nickname;
+    self.nameLabel.text=model.name;
     self.introLabel.text=model.intro;
 }
 

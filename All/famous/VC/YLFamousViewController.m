@@ -11,6 +11,7 @@
 #import "YLFamousTopView.h"
 #import "YLFamousListTableViewCell.h"
 #import "YLFamousListSecondTableViewCell.h"
+#import "YLFamousDetailViewController.h"
 @interface YLFamousViewController ()<UITableViewDelegate,UITableViewDataSource>
 {
     UIView *_topMainView;
@@ -115,8 +116,8 @@
     [YLHttp get:famousString params:nil success:^(id json) {
         NSArray *contentArr=json[@"content"];
         for (NSDictionary *dict in contentArr) {
-            YLFamousTopModel *topModel=[[YLFamousTopModel alloc]initWithDictionary:dict error:nil];
-            [self.headerArray addObject:topModel];
+            YLFamousTopModel *Model=[[YLFamousTopModel alloc]initWithDictionary:dict error:nil];
+            [self.headerArray addObject:Model];
         }
         _topView.topScrollArray=self.headerArray;
     } failure:^(NSError *error) {
@@ -192,6 +193,19 @@
         cell.model=Model;
         return cell;
     }
+}
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    YLFamousTopModel *model=self.dataSource[indexPath.row];
+    YLFamousDetailViewController *detail=[[YLFamousDetailViewController alloc]init];
+    detail.Id=model.Id;
+    CATransition * animation = [CATransition animation];
+    animation.duration = 0.8;    //  时间
+    animation.type = kCATransitionMoveIn;
+    animation.subtype = kCATransitionFromRight;
+    [self.view.window.layer addAnimation:animation forKey:nil];
+    [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:detail animated:YES completion:nil];
 }
 
 #pragma 懒加载

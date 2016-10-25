@@ -7,9 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-@protocol scrollViewScrollClickDelegate <NSObject>
+@protocol scrollViewClickDelegate <NSObject>
 
--(void)clickScrollViewItemWithIndex:(NSInteger)index;
+-(void)clickScrollViewWithIndex:(NSInteger)index;
 
 @end
 
@@ -17,5 +17,5 @@
 @property (nonatomic,strong)NSArray *topScrollArray;
 @property (nonatomic,strong)NSArray *topControlArray;
 
-@property (nonatomic,assign)id<scrollViewScrollClickDelegate>delegate;
+@property (nonatomic,assign)id<scrollViewClickDelegate>delegate;
 @end

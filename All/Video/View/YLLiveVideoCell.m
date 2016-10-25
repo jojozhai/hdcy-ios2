@@ -75,7 +75,7 @@
             [df setDateFormat:@"yyyy-MM-dd HH:mm"];
             [df setTimeZone:[NSTimeZone timeZoneWithName:@"Asia/Shanghai"]];
 
-            _subTitleLabel.text = [NSString stringWithFormat:@"#预告# %@",[df stringFromDate:[NSDate dateWithTimeIntervalSinceNow:_model.startTime/1000.0]]];
+            _subTitleLabel.text = [NSString stringWithFormat:@"#预告# %@",[df stringFromDate:[NSDate dateWithTimeIntervalSinceNow:_model.startTime.integerValue/1000.0]]];
         }else{
             _subTitleLabel.text = [NSString stringWithFormat:@"#%@#",model.liveState];
         }

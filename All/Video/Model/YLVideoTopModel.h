@@ -11,21 +11,23 @@
 
 @interface YLVideoTopModel : JSONModel
 @property (nonatomic, strong) NSString<Optional> *liveState;
-@property (nonatomic, strong) NSString<Optional> *streamId;
+//@property (nonatomic, strong) NSString<Ignore> *streamId;
 @property (nonatomic, strong) NSString<Optional> *image;
-@property (nonatomic, strong) NSString<Optional> *length;
+//@property (nonatomic, strong) NSString<Ignore> *length;
 @property (nonatomic, strong) NSString<Optional> *name;
-@property (nonatomic, strong) NSString<Optional> *start;
-@property (nonatomic, strong) NSString<Optional> *url;
-@property (nonatomic, strong) NSString<Optional> *url2;
-@property (nonatomic, strong) NSString<Optional> *desc;
+//@property (nonatomic, strong) NSString<Ignore> *url;
+//@property (nonatomic, strong) NSString<Ignore> *url2;
+//@property (nonatomic, strong) NSString<Ignore> *desc;
 @property (nonatomic, assign) NSInteger commentCount;
 @property (nonatomic, assign) NSInteger enable;
 @property (nonatomic, assign) NSString<Optional> *id;
 @property (nonatomic, strong) NSNumber *live;
-@property (nonatomic, assign) NSTimeInterval startTime;
+@property (nonatomic, assign) NSString *startTime;
 @property (nonatomic, assign) NSInteger top;
 @property (nonatomic, assign) NSInteger viewCount;
 @property (nonatomic, assign) NSInteger viewCountPlus;
-
+@property (nonatomic, assign) NSString *endTime;
+//@property (nonatomic,copy)NSString <Ignore>*sponsorId;
+//@property (nonatomic,copy)NSString <Ignore>*sponsorName;
+//@property (nonatomic,copy)NSString <Ignore>*sponsorImage;
 @end

@@ -8,7 +8,7 @@
 
 #import "RootViewController.h"
 @interface RootViewController ()
-@property (nonatomic,strong)UIView *cusNavigationView;
+
 @end
 
 @implementation RootViewController
@@ -16,7 +16,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    self.view.backgroundColor=[UIColor blackColor];
+    self.statusView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 20)];
+    self.statusView.backgroundColor=[UIColor blackColor];
+    [self.view addSubview:self.statusView];
     [self cusNavigationBar];
     [self monitorNet];
 }

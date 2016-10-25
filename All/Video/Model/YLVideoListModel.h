@@ -15,7 +15,6 @@
 @property (nonatomic, strong) NSString<Optional> *image;
 @property (nonatomic, strong) NSString<Optional> *length;
 @property (nonatomic, strong) NSString<Optional> *name;
-@property (nonatomic, strong) NSString<Optional> *start;
 @property (nonatomic, strong) NSString<Optional> *url;
 @property (nonatomic, strong) NSString<Optional> *url2;
 @property (nonatomic, strong) NSString<Optional> *desc;
@@ -27,5 +26,8 @@
 @property (nonatomic, assign) NSInteger top;
 @property (nonatomic, assign) NSInteger viewCount;
 @property (nonatomic, assign) NSInteger viewCountPlus;
-
+@property (nonatomic, assign)NSTimeInterval endTime;
+@property (nonatomic,copy)NSString <Optional>*sponsorId;
+@property (nonatomic,copy)NSString <Optional>*sponsorName;
+@property (nonatomic,copy)NSString <Optional>*sponsorImage;
 @end

@@ -13,4 +13,6 @@ typedef void(^changeCommnetItemBlock)(YLCommentModel *model);
 @property (nonatomic,copy)NSString *target;
 @property (nonatomic,copy)NSString *Id;
 @property (nonatomic,copy)changeCommnetItemBlock changeItemBlock;
+
+@property (nonatomic,copy)NSString *disguise;
 @end

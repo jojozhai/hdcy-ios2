@@ -266,7 +266,7 @@
 
 -(void)tapAction:(UITapGestureRecognizer *)tap
 {
-    [_delegate clickScrollViewItemWithIndex:tap.view.tag-2346];
+    [_delegate clickScrollViewWithIndex:tap.view.tag-2346];
 }
 
 @end

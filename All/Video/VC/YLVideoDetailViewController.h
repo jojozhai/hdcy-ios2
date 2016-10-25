@@ -8,17 +8,14 @@
 
 #import "RootViewController.h"
 #import "PlayerManager.h"
-#import "YLVideoTopModel.h"
+#import "YLVideoListModel.h"
 @interface YLVideoDetailViewController : RootViewController
 @property (strong, nonatomic) PlayerManager *playerManager;
 
-@property (strong, nonatomic) YLVideoTopModel *model;
-
 @property (strong, nonatomic) UILabel *titlLabel;
-
-- (instancetype)initWithURL:(NSString *)url;
-- (void)goBack;
 
 @property (nonatomic,copy)NSString *Id;
 @property (nonatomic,copy)NSString *target;
+
+@property (nonatomic,copy)NSString *streamId;
 @end
