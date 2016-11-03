@@ -11,6 +11,10 @@
 #import "UIView+AZView.h"
 #import "YLTrangleView.h"
 @interface YLMainViewController ()<UIScrollViewDelegate>
+{
+    UIButton *letterButton;
+    UIButton *mineButton;
+}
 @property (nonatomic, strong) YLOptionBtnView *topView;
 @property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, strong) NSMutableArray *titleArray;
@@ -69,20 +73,49 @@
     topView.operation = ^(NSInteger index) {
         CGFloat contentOffsetX = self.view.width * index;
         self.scrollView.contentOffset = CGPointMake(contentOffsetX, 0);
-        [self.scrollView addSubview:[self.viewControllers[index] view]];
+        //[self.scrollView addSubview:[self.viewControllers[index] view]];
+        self.scrollView.hidden=NO;
+        self.mineVC.view.hidden=YES;
+        mineButton.selected=NO;
     };
     //
-    UIButton *letterButton=[UIButton buttonWithType:UIButtonTypeCustom];
+    
+    letterButton=[UIButton buttonWithType:UIButtonTypeCustom];
     letterButton.frame=CGRectMake(SCREEN_WIDTH-97*SCREEN_MUTI, 10*SCREEN_MUTI, 30*SCREEN_MUTI, 30*SCREEN_MUTI);
     [letterButton setImage:[UIImage imageNamed:@"nav-button-information-default"] forState:UIControlStateNormal];
     [cusNavigationView addSubview:letterButton];
+    
     //
-    UIButton *mineButton=[UIButton buttonWithType:UIButtonTypeCustom];
+    self.mineVC.view.frame=CGRectMake(0, 70, SCREEN_WIDTH, SCREEN_HEIGHT-70);
+    [self.view addSubview:self.mineVC.view];
+    self.mineVC.view.hidden=YES;
+    mineButton=[UIButton buttonWithType:UIButtonTypeCustom];
     mineButton.frame=CGRectMake(SCREEN_WIDTH-42*SCREEN_MUTI, 10*SCREEN_MUTI, 30*SCREEN_MUTI, 30*SCREEN_MUTI);
+    [mineButton addTarget:self action:@selector(mineVCClick:) forControlEvents:UIControlEventTouchUpInside];
     [mineButton setImage:[UIImage imageNamed:@"nav-button-personalcenter-default"] forState:UIControlStateNormal];
+    [mineButton setImage:[UIImage imageNamed:@"nav-button-personalcenter-pressed"] forState:UIControlStateSelected];
+    mineButton.selected=NO;
     [cusNavigationView addSubview:mineButton];
 }
 
+-(void)mineVCClick:(UIButton *)btn
+{
+    btn.selected=YES;
+    self.scrollView.hidden=YES;
+    self.mineVC.view.hidden=NO;
+    for (UIView *view in self.topView.subviews) {
+        if ([view isKindOfClass:[UIButton class]]) {
+            UIButton *btn=(UIButton *)view;
+            btn.selected=NO;
+            for (UIView *bottom in btn.subviews) {
+                if ([bottom isKindOfClass:[YLTrangleView class]]) {
+                    bottom.hidden=YES;
+                }
+            }
+        }
+        
+    }
+}
 
 - (void)setupScrollView {
     // 创建滚动视图
@@ -100,10 +133,10 @@
         new.view.y = 0;
         new.view.width = scrollView.width;
         new.view.height = scrollView.height;
-        if (i==0) {
-            [scrollView addSubview:new.view];
-        }
-        
+//        if (i==0) {
+//            [scrollView addSubview:new.view];
+//        }
+        [scrollView addSubview:new.view];
     }
     
     // 设置滚动视图的其他属性
@@ -123,7 +156,7 @@
     
     // 四舍五入计算出页码
     [self.topView selectedBtnAtIndex:(int)(page + 0.5)];
-    [self.scrollView addSubview:[self.viewControllers[page] view]];
+    //[self.scrollView addSubview:[self.viewControllers[page] view]];
     
 }
 

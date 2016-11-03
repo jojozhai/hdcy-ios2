@@ -19,7 +19,7 @@
 #import "YLSignUpViewController.h"
 #import "YLReplyViewController.h"
 #import "YLAllLeavingMessageViewController.h"
-@interface YLActivityOffLineViewController ()<topViewHeightChangeDelegate,UITextViewDelegate,UMSocialUIDelegate,clickAllButtonDelegate,imageViewClickDelegate,SDCycleScrollViewDelegate>
+@interface YLActivityOffLineViewController ()<topViewHeightChangeDelegate,UITextViewDelegate,clickAllButtonDelegate,imageViewClickDelegate,SDCycleScrollViewDelegate>
 {
     /**
      底部的view
@@ -505,7 +505,7 @@
     cycleScrollView.autoScroll=NO;
     cycleScrollView.imageURLStringsGroup = offInfoModel.images;
     cycleScrollView.currentPageDotColor = [UIColor whiteColor]; // 自定义分页控件小圆标颜色
-    cycleScrollView.placeholderImage = [UIImage imageNamed:@"资讯列表占位图"];
+    cycleScrollView.placeholderImage = [UIImage imageNamed:@"placeholderImage"];
     //    当前点击图片
     cycleScrollView.currentIndex=index+0.5;
 }

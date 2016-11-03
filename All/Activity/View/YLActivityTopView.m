@@ -123,7 +123,7 @@
 }
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
-    CGFloat webViewHeight = [[webView stringByEvaluatingJavaScriptFromString:@"document.height"]floatValue];
+    CGFloat webViewHeight = webView.scrollView.contentSize.height;
     webHeight=webViewHeight;
     NSLog(@"结束加载");
     //    隐藏加载

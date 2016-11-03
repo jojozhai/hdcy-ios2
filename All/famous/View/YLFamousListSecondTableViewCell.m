@@ -38,7 +38,7 @@
     self.nameLabel.font=FONT_BOLD(13);
     [backImageView addSubview:self.nameLabel];
     
-    self.introLabel=[[UILabel alloc]initWithFrame:CGRectMake(12, 53, 164, 40)];
+    self.introLabel=[[UILabel alloc]initWithFrame:CGRectMake(12, 53, 164*SCREEN_MUTI, 40)];
     self.introLabel.textColor=[UIColor whiteColor];
     self.introLabel.numberOfLines=0;
     self.introLabel.textAlignment=NSTextAlignmentLeft;

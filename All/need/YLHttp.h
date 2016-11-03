@@ -40,4 +40,9 @@
  *put请求
  */
 +(void)put:(NSString *)url userName:(NSString *)name passeword:(NSString *)password params:(id)params success:(void(^)(id json))success failure:(void(^)(NSError *error))failure;
+/**
+ *上传头像
+ */
++(void)postImage:(NSData *)imageData url:(NSString *)url params:(NSDictionary *)params success:(void(^)(id json))success failure:(void(^)(NSError *error))failure;
+
 @end

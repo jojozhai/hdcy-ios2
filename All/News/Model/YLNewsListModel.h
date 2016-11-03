@@ -17,6 +17,7 @@
 @property (nonatomic,copy)NSString *title;
 //阅读量
 @property (nonatomic,strong)NSNumber *readCount;
+@property (nonatomic,strong)NSNumber *readCountPlus;
 //图片
 @property (nonatomic,copy)NSString *image;
 //分类的ID，通过资讯分类接口获取
@@ -32,7 +33,7 @@
 
 @property (nonatomic,copy)NSString *displayType;
 
-@property (nonatomic,assign)BOOL linkOut;
+@property (nonatomic,assign)NSNumber *linkOut;
 
 @property (nonatomic,copy)NSString *outLink;
 @end

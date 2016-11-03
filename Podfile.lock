@@ -20,7 +20,7 @@ PODS:
   - AFNetworking/UIKit (2.6.3):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
-  - JSONModel (1.4.0)
+  - JSONModel (1.0.2)
   - Masonry (1.0.1)
   - MBProgressHUD (1.0.0)
   - MJRefresh (3.1.12)
@@ -31,7 +31,7 @@ PODS:
 
 DEPENDENCIES:
   - AFNetworking (~> 2.6)
-  - JSONModel (~> 1.4.0)
+  - JSONModel (~> 1.0.0)
   - Masonry (~> 1.0.1)
   - MBProgressHUD (~> 1.0.0)
   - MJRefresh (~> 3.1.0)
@@ -40,13 +40,13 @@ DEPENDENCIES:
 
 SPEC CHECKSUMS:
   AFNetworking: cb8d14a848e831097108418f5d49217339d4eb60
-  JSONModel: 58fe3f8c29ff95ed94e7ee7dde87e807f5da5371
+  JSONModel: 6ffcb4ffa3659c9e9a2e5d45d6c7705bab187c03
   Masonry: a1a931a0d08870ed8ae415a2ea5ea68ebcac77df
   MBProgressHUD: 4890f671c94e8a0f3cf959aa731e9de2f036d71a
   MJRefresh: b96cdb21c4aa75a7b07654311ab2f315c497e806
   SDWebImage: 35f9627a3e44b4f292a8a8ce6a531fa488239b91
   UMengSocialCOM: 074c135ce349aa4c8848d3fb8458757bcb6ffb67
 
-PODFILE CHECKSUM: 4e02e85c5ce3946f952c9631d209d92dd91ab02c
+PODFILE CHECKSUM: d6d18321ba22fe4c30738e0d617b9fcb0abd7676
 
 COCOAPODS: 1.0.1

@@ -48,7 +48,7 @@
     .leftSpaceToView(self.infoImageView,8)
     .topSpaceToView(self,16)
     .bottomSpaceToView(self,16)
-    .widthIs(70);
+    .widthIs(100);
     
     self.ylbutton.sd_layout
     .topSpaceToView(self,2)

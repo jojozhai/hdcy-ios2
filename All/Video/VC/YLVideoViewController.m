@@ -97,12 +97,7 @@
 {
     static NSString *identifier = @"identifier";
     
-    YLLiveVideoCell *cell = [_tableView dequeueReusableCellWithIdentifier:identifier];
-    
-    if (!cell)
-    {
-        cell = [[YLLiveVideoCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
-    }
+    YLLiveVideoCell *cell = [[YLLiveVideoCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
     
     cell.model=self.dataSource[indexPath.row];
     

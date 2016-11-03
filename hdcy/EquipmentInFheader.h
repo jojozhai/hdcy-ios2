@@ -69,6 +69,7 @@ static NSString *URL= @"http://dev.haoduocheyou.com/app2";
 #define MainColor [UIColor colorWithRed:253.0/255.0 green:115.0/255.0 blue:0.0/255.0 alpha:1]
 #define AditionalColor [UIColor colorWithRed:245.0/255.0 green:245.0/255.0 blue:245.0/255.0 alpha:1]
 #define BGColor RGBCOLOR(34,63,86)
+#define DarkBGColor RGBCOLOR(20,36,47)
 
 #define FONT(x) [UIFont systemFontOfSize:x]
 #define FONT_SYSTEM(x) [UIFont systemFontOfSize:x]

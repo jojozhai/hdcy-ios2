@@ -224,8 +224,8 @@
     [self.view addSubview:mainScrollView];
     
     //创建webview
-    NSString *urlString=[NSString stringWithFormat:@"%@%@",URL,[NSString stringWithFormat:@"/articleDetails.html?id=%@",self.listModel.Id]];
-    _webView=[[UIWebView alloc]initWithFrame:CGRectMake(0,0, SCREEN_WIDTH, 300)];
+    NSString *urlString=[NSString stringWithFormat:@"%@%@",URL,[NSString stringWithFormat:@"/new-articleDetails.html?id=%@",self.listModel.Id]];
+    _webView=[[UIWebView alloc]initWithFrame:CGRectMake(0,0, SCREEN_WIDTH, 0)];
     _webView.delegate=self;
     //_webView.scrollView.scrollEnabled = NO;
     //[_webView sizeToFit];
@@ -253,9 +253,11 @@
     }
     
     CGFloat webViewHeight = [[webView stringByEvaluatingJavaScriptFromString:@"document.body.offsetHeight"]floatValue];
+    webViewHeight=webViewHeight*SCREEN_WIDTH/750;
     //获取内容实际高度（像素）
     _webView.frame=CGRectMake(0, 0, SCREEN_WIDTH,webViewHeight);
     [_webView sizeToFit];
+    mainScrollView.contentSize=CGSizeMake(SCREEN_WIDTH,88+_webView.height);
     [self requestCommentUrl];
     NSLog(@"结束加载");
 
@@ -292,13 +294,14 @@
                 for (int i=0; i<[json count]; i++) {
                     [self.praiseArray addObject:json[i]];
                 }
-                [self prepareTableView];
+                
             } failure:^(NSError *error) {
                 
                 
             }];
             
         }
+        [self prepareTableView];
         //添加是否展开的数组及数组中的元素
         if (self.dataSource.count!=0) {
             [self.boolAray removeAllObjects];

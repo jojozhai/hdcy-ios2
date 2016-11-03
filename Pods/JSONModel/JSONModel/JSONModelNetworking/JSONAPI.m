@@ -1,23 +1,20 @@
 //
 //  JSONAPI.m
 //
-//  @version 1.4
-//  @author Marin Todorov (http://www.underplot.com) and contributors
+//  @version 1.0.2
+//  @author Marin Todorov, http://www.touch-code-magazine.com
 //
 
-// Copyright (c) 2012-2015 Marin Todorov, Underplot ltd.
+// Copyright (c) 2012-2014 Marin Todorov, Underplot ltd.
 // This code is distributed under the terms and conditions of the MIT license.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 // The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
-
+// The MIT License in plain English: http://www.touch-code-magazine.com/JSONModel/MITLicense
 
 #import "JSONAPI.h"
-
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#pragma GCC diagnostic ignored "-Wdeprecated-implementations"
 
 #pragma mark - helper error model class
 @interface JSONAPIRPCErrorModel: JSONModel
@@ -29,7 +26,6 @@
 #pragma mark - static variables
 
 static JSONAPI* sharedInstance = nil;
-
 static long jsonRpcId = 0;
 
 #pragma mark - JSONAPI() private interface
@@ -68,7 +64,7 @@ static long jsonRpcId = 0;
 +(void)getWithPath:(NSString*)path andParams:(NSDictionary*)params completion:(JSONObjectBlock)completeBlock
 {
     NSString* fullURL = [NSString stringWithFormat:@"%@%@", sharedInstance.baseURLString, path];
-
+    
     [JSONHTTPClient getJSONFromURLWithString: fullURL params:params completion:^(NSDictionary *json, JSONModelError *e) {
         completeBlock(json, e);
     }];
@@ -78,7 +74,7 @@ static long jsonRpcId = 0;
 +(void)postWithPath:(NSString*)path andParams:(NSDictionary*)params completion:(JSONObjectBlock)completeBlock
 {
     NSString* fullURL = [NSString stringWithFormat:@"%@%@", sharedInstance.baseURLString, path];
-
+    
     [JSONHTTPClient postJSONFromURLWithString: fullURL params:params completion:^(NSDictionary *json, JSONModelError *e) {
         completeBlock(json, e);
     }];
@@ -87,7 +83,7 @@ static long jsonRpcId = 0;
 #pragma mark - RPC methods
 +(void)__rpcRequestWithObject:(id)jsonObject completion:(JSONObjectBlock)completeBlock
 {
-
+    
     NSData* jsonRequestData = [NSJSONSerialization dataWithJSONObject:jsonObject
                                                               options:kNilOptions
                                                                 error:nil];
@@ -115,7 +111,7 @@ static long jsonRpcId = 0;
                                                    e = [JSONModelError errorBadResponse];
                                                }
                                            }
-
+                                           
                                            //invoke the callback
                                            completeBlock(result, e);
                                        }
@@ -126,7 +122,7 @@ static long jsonRpcId = 0;
 {
     NSAssert(method, @"No method specified");
     if (!args) args = @[];
-
+    
     [self __rpcRequestWithObject:@{
                                   //rpc 1.0
                                   @"id": @(++jsonRpcId),
@@ -139,7 +135,7 @@ static long jsonRpcId = 0;
 {
     NSAssert(method, @"No method specified");
     if (!params) params = @[];
-
+    
     [self __rpcRequestWithObject:@{
                                   //rpc 2.0
                                   @"jsonrpc": @"2.0",

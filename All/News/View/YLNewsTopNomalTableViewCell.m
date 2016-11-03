@@ -54,7 +54,7 @@
     self.timeLabel.textColor=[UIColor grayColor];
     self.timeLabel.textAlignment=NSTextAlignmentLeft;
     self.timeLabel.font=FONT_SYS_ANNOTATE;
-    [hideImageView addSubview:self.timeLabel];
+    //[hideImageView addSubview:self.timeLabel];
     
     UIImageView *eyeImageView=[[UIImageView alloc]init];
     eyeImageView.image=[UIImage imageNamed:@"content-icon-browse-default"];

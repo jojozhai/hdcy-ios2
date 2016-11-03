@@ -41,7 +41,7 @@
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSString *urlString=[NSString stringWithFormat:@"%@%@",URL,@"/participation"];
-        NSDictionary *orderDic=@{@"enable":@YES,@"page":@(0),@"size":@"20",@"sort":@"createdTime,desc",@"top":@(YES)};
+        NSDictionary *orderDic=@{@"enable":@YES,@"page":@(0),@"size":@"20",@"sort":@"createdTime,desc",@"top":@(YES),@"liveForApp":@(YES)};
         [YLHttp get:urlString params:orderDic success:^(id json) {
             for (NSDictionary *dict in json[@"content"]) {
                 YLActivityListContentModel *contentModel=[[YLActivityListContentModel alloc]initWithDictionary:dict error:nil];
@@ -102,7 +102,7 @@
 {
     [self.hud showAnimated:YES];
     
-    NSDictionary *dict=@{@"enable":@YES,@"page":@(page),@"size":@"20",@"sort":@"createdTime,desc",@"actType":@"ACTIVITY"};
+    NSDictionary *dict=@{@"enable":@YES,@"page":@(page),@"size":@"20",@"sort":@"createdTime,desc",@"actType":@"ACTIVITY",@"liveForApp":@(YES)};
     NSString *urlString=[NSString stringWithFormat:@"%@%@",URL,@"/participation"];
     
     [YLHttp get:urlString params:dict success:^(id json) {

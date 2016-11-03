@@ -12,13 +12,18 @@
 #import "YLFamousListTableViewCell.h"
 #import "YLFamousListSecondTableViewCell.h"
 #import "YLFamousDetailViewController.h"
-@interface YLFamousViewController ()<UITableViewDelegate,UITableViewDataSource>
+#import "YLFamousApply.h"
+#import "YLFamousApplyInstitite.h"
+@interface YLFamousViewController ()<UITableViewDelegate,UITableViewDataSource,YLFamousApplyDelegate>
 {
     UIView *_topMainView;
     YLFamousTopView *_topView;
     UIView *_segmentView;
     NSInteger _page;
     NSString *_portString;
+     UIView *_coverView;
+    YLFamousApply *_applyView;
+    YLFamousApplyInstitite *_instituteView;
 }
 @property (nonatomic,strong)NSMutableArray *headerArray;
 @property (nonatomic,strong)NSMutableArray *dataSource;
@@ -34,7 +39,64 @@
     // Do any additional setup after loading the view.
     _portString=@"";
     [self createWholeView];
+    [self createPlusButton];
     [self requestWithTop];
+}
+
+/*
+ *创建编辑按钮
+ */
+-(void)createPlusButton
+{
+    UIButton *commentButton=[UIButton buttonWithType:UIButtonTypeCustom];
+    commentButton.frame=CGRectMake(12, SCREEN_HEIGHT-95-50, 60*SCREEN_MUTI, 60*SCREEN_MUTI) ;
+    [commentButton setImage:[UIImage imageNamed:@"bianji"] forState:UIControlStateNormal];
+    [commentButton addTarget:self action:@selector(famousApply) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:commentButton];
+}
+
+-(void)disappearAction
+{
+    for (UIView *view in _coverView.subviews) {
+        [view removeFromSuperview];
+    }
+    [_coverView removeFromSuperview];
+}
+
+-(void)famousApply
+{
+    //添加蒙板
+    _coverView=[[UIView alloc]initWithFrame:self.view.bounds];
+    _coverView.backgroundColor = [UIColor colorWithWhite:0.000 alpha:0.290];
+    UITapGestureRecognizer *tap=[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(disappearAction)];
+    [_coverView addGestureRecognizer:tap];
+    [self.view addSubview:_coverView];
+    _applyView=[[YLFamousApply alloc]initWithFrame:CGRectMake(30*SCREEN_MUTI, 158, 315*SCREEN_MUTI, 250*SCREEN_MUTI)];
+    _applyView.delegate=self;
+    [_coverView addSubview:_applyView];
+}
+
+-(void)applyButton:(NSInteger)tag
+{
+    [_applyView removeFromSuperview];
+    if (tag==2) {
+        _instituteView=[[YLFamousApplyInstitite alloc]initWithFrame:CGRectMake(30*SCREEN_MUTI, 102*SCREEN_MUTI, 315*SCREEN_MUTI, 360*SCREEN_MUTI)];
+        _instituteView.backgroundColor=[UIColor whiteColor];
+        [_coverView addSubview:_instituteView];
+        NSString *emailString=@"http://dev.haoduocheyou.com/app2/param/leaderContactMail";
+        NSString *phoneString=@"http://dev.haoduocheyou.com/app2/param/leaderContactPhone";
+        [YLHttp get:emailString params:nil success:^(id json) {
+            _instituteView.mailNumLabel.text=json[@"value"];
+        } failure:^(NSError *error) {
+            
+        }];
+        [YLHttp get:phoneString params:nil success:^(id json) {
+            _instituteView.phoneNumLabel.text=json[@"value"];
+        } failure:^(NSError *error) {
+            
+        }];
+
+    }
 }
 
 -(void)createWholeView

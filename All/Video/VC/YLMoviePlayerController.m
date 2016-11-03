@@ -255,7 +255,7 @@
     }
     else
     {
-        _startTimeLabel.text = [NSString stringWithFormat:@"00:%02d",self.currentPlaybackTime];
+        _startTimeLabel.text = [NSString stringWithFormat:@"00:%02d",(int)self.currentPlaybackTime];
     }
     
     if (self.duration > 60)
@@ -267,7 +267,7 @@
     }
     else
     {
-        _endTimeLabel.text = [NSString stringWithFormat:@"00:%02d",self.duration];
+        _endTimeLabel.text = [NSString stringWithFormat:@"00:%02d",(int)self.duration];
     }
 
     _progressView.value = self.currentPlaybackTime / self.duration;

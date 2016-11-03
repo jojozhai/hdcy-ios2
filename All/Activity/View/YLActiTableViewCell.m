@@ -11,7 +11,6 @@
 @implementation YLActiTableViewCell
 
 
-
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if(self) {
@@ -121,10 +120,24 @@
 -(void)setModel:(YLActivityListContentModel *)model
 {
     _model=model;
+    
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateStyle:NSDateFormatterMediumStyle];
+    [formatter setTimeStyle:NSDateFormatterShortStyle];
+    [formatter setDateFormat:@"YYYY-MM-dd HH:mm:ss"];
+    NSDate *datenow = [NSDate date];
+    NSString *nowtimeStr = [formatter stringFromDate:datenow];
+    
     [self.backImageView sd_setImageWithURL:[NSURL URLWithString:model.image] placeholderImage:[UIImage imageNamed:@"placeholderImage"] options:SDWebImageRefreshCached];
     self.titleLabel.text=model.name;
     self.placeLabel.text=model.address;
-    self.timeLabel.text=[YLGetTime getYYMMDDWithDate2:[NSDate dateWithTimeIntervalSince1970:model.startTime.integerValue/1000]];
+    
+    if (model.startTime.integerValue/1000-nowtimeStr.integerValue>60*60*24*3) {
+        self.timeLabel.text=[YLGetTime getYYMMDDWithDate2:[NSDate dateWithTimeIntervalSince1970:model.startTime.integerValue/1000]];
+    }else{
+    
+    }
+    
     self.sponsorLabel.text=model.sponsorName;
     [self.sponsorImage sd_setImageWithURL:[NSURL URLWithString:model.sponsorImage]];
     CGSize size = CGSizeMake(MAXFLOAT, 14);

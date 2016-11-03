@@ -9,7 +9,10 @@
 #import "YLLiveVideoCell.h"
 
 @interface YLLiveVideoCell ()
-
+@property (nonatomic,assign)int second;
+@property (nonatomic,assign)int minute;
+@property (nonatomic,assign)int hour;
+@property (nonatomic, weak)NSTimer *timer;
 @end
 
 @implementation YLLiveVideoCell
@@ -72,10 +75,18 @@
         if ([model.liveState isEqualToString:@"预告"])
         {
             NSDateFormatter *df = [[NSDateFormatter alloc] init];
-            [df setDateFormat:@"yyyy-MM-dd HH:mm"];
+            [df setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
             [df setTimeZone:[NSTimeZone timeZoneWithName:@"Asia/Shanghai"]];
-
-            _subTitleLabel.text = [NSString stringWithFormat:@"#预告# %@",[df stringFromDate:[NSDate dateWithTimeIntervalSinceNow:_model.startTime.integerValue/1000.0]]];
+            NSDate *datenow = [NSDate date];
+            int time=model.startTime.integerValue/1000.0-[datenow timeIntervalSince1970];
+            if (time<60*60*24*3) {
+                self.timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(timeHeadle) userInfo:nil repeats:YES];
+                self.hour=time/60/60;
+                self.minute=(time-self.hour*60*60)/60;
+                self.second=time-self.hour*60*60-self.minute*60;
+            }else{
+                _subTitleLabel.text=[NSString stringWithFormat:@"#预告#/%@",[df stringFromDate:[NSDate dateWithTimeIntervalSince1970:model.startTime.integerValue/1000.0]]];
+            }
         }else{
             _subTitleLabel.text = [NSString stringWithFormat:@"#%@#",model.liveState];
         }
@@ -86,6 +97,23 @@
     }
 }
 
-
+- (void)timeHeadle{
+    
+    self.second--;
+    if (self.second==-1) {
+        self.second=59;
+        self.minute--;
+        if (self.minute==-1) {
+            self.minute=59;
+            self.hour--;
+        }
+    }
+    
+    _subTitleLabel.text = [NSString stringWithFormat:@"#预告#/距离直播开始还有 %ld:%ld:%ld",(long)self.hour,(long)self.minute,(long)self.second];
+    if (self.second==0 && self.minute==0 && self.hour==0) {
+        [self.timer invalidate];
+        self.timer = nil;
+    }
+}
 
 @end

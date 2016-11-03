@@ -169,13 +169,7 @@
                 for (int i=0; i<[json count]; i++) {
                     [self.praiseArray addObject:json[i]];
                 }
-                //取消刷新
-                if ([self.tableView.mj_header isRefreshing]) {
-                    [self.tableView.mj_header endRefreshing];
-                }else{
-                    [self.tableView.mj_footer endRefreshing];
-                }
-                [self.tableView reloadData];
+                
             } failure:^(NSError *error) {
                 if ([self.tableView.mj_header isRefreshing]) {
                     [self.tableView.mj_header endRefreshing];
@@ -190,7 +184,7 @@
         if (self.dataSource.count!=0) {
             [self.boolAray removeAllObjects];
             for (int i=0; i<self.dataSource.count; i++) {
-
+                
                 NSMutableDictionary *boolDict=[NSMutableDictionary dictionary];
                 [boolDict setObject:@(NO) forKey:@"bool"];
                 [self.boolAray addObject:boolDict];
@@ -206,6 +200,13 @@
                 }
             }
         }
+        //取消刷新
+        if ([self.tableView.mj_header isRefreshing]) {
+            [self.tableView.mj_header endRefreshing];
+        }else{
+            [self.tableView.mj_footer endRefreshing];
+        }
+        [self.tableView reloadData];
         [self.hud hideAnimated:YES];
         
     } failure:^(NSError *error) {

@@ -12,8 +12,10 @@
 #import "YLNewsViewController.h"
 #import "YLActivityViewController.h"
 #import "YLFamousViewController.h"
+#import "YLMineViewController.h"
 #import "UMSocial.h"
 #import "UMSocialWechatHandler.h"
+#import "YLRegisterOneViewController.h"
 @interface AppDelegate ()
 
 @end
@@ -26,19 +28,19 @@
     self.window=[[UIWindow alloc]initWithFrame:[UIScreen mainScreen].bounds];
     self.window.backgroundColor=[UIColor clearColor];
     [self.window makeKeyWindow];
+//    YLRegisterOneViewController *one=[[YLRegisterOneViewController alloc]init];
+//    self.window.rootViewController=one;
+    
     
     YLMainViewController *main=[[YLMainViewController alloc]init];
     self.window.rootViewController=main;
     
     YLVideoViewController *video=[[YLVideoViewController alloc]init];
-    
     YLNewsViewController *news=[[YLNewsViewController alloc]init];
     news.topHeight=40;
     news.selectedButtonColor=[UIColor whiteColor];
     news.topBackgroudColor=RGBCOLOR(143, 175, 202);
-    
     YLActivityViewController *activity=[[YLActivityViewController alloc]init];
-    
     YLFamousViewController *famous=[[YLFamousViewController alloc]init];
     
     video.title=@"视频";
@@ -46,9 +48,11 @@
     activity.title=@"活动";
     famous.title=@"大咖";
     main.viewControllers=@[video,news,activity,famous];
-   // main.topBackgroudColor=[UIColor blackColor];
     main.topHeight=50;
     main.selectedButtonColor=RGBCOLOR(0, 254, 252);
+    
+    YLMineViewController *mine=[[YLMineViewController alloc]init];
+    main.mineVC=mine;
     
     [UMSocialData setAppKey:UmengAppID];
     [UMSocialConfig hiddenNotInstallPlatforms:@[UMShareToQQ, UMShareToQzone, UMShareToWechatSession, UMShareToWechatTimeline]];

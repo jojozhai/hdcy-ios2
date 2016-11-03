@@ -187,8 +187,9 @@
     
     // 1.创建请求管理者
     AFHTTPRequestOperationManager *mgr = [AFHTTPRequestOperationManager manager];
-    mgr.requestSerializer = [AFJSONRequestSerializer serializer];  // 解析为data
+    //mgr.requestSerializer = [AFJSONRequestSerializer serializer];  // 解析为data
     mgr.responseSerializer=[AFHTTPResponseSerializer serializer];
+    mgr.responseSerializer.acceptableContentTypes =[NSSet setWithObjects:@"application/json", @"text/json", @"text/javascript",@"text/html",nil];
     mgr.requestSerializer.timeoutInterval = 15;
     [mgr PUT:url parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
         id response=[NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingMutableContainers error:nil];
@@ -196,10 +197,50 @@
             success(response);
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSHTTPURLResponse *response=(NSHTTPURLResponse *)operation.response;
+        
         if (failure) {
             failure(error);
         }
     }];
     
+}
+
++(void)postImage:(NSData *)imageData url:(NSString *)url params:(NSDictionary *)params success:(void(^)(id json))success failure:(void(^)(NSError *error))failure
+{
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    manager.responseSerializer=[AFHTTPResponseSerializer serializer];
+    manager.requestSerializer.timeoutInterval = 15;
+    //接收类型不一致请替换一致text/html或别的
+    manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"application/json",
+                                                         @"text/html",
+                                                         @"image/jpeg",
+                                                         @"image/png",
+                                                         @"application/octet-stream",
+                                                         @"text/json",
+                                                         nil];
+    [manager POST:url parameters:params constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
+        
+        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+        formatter.dateFormat =@"yyyyMMddHHmmss";
+        NSString *str = [formatter stringFromDate:[NSDate date]];
+        NSString *fileName = [NSString stringWithFormat:@"%@.jpg", str];
+        
+        //上传的参数(上传图片，以文件流的格式)
+        [formData appendPartWithFileData:imageData
+                                    name:@"file"
+                                fileName:fileName
+                                mimeType:@"image/jpeg"];
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+        id response=[NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingMutableContainers error:nil];
+        if (success) {
+            success(response);
+        }
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        if (failure) {
+            failure(error);
+        }
+    }];
+
 }
 @end

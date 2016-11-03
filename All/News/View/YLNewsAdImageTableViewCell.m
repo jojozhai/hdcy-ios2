@@ -26,7 +26,7 @@
     
     self.titleLabel=[[UILabel alloc]initWithFrame:CGRectMake(0, 143*SCREEN_MUTI, SCREEN_WIDTH, 50*SCREEN_MUTI)];
     self.titleLabel.textColor=[UIColor whiteColor];
-    self.tintAdjustmentMode=NSTextAlignmentCenter;
+    self.titleLabel.textAlignment=NSTextAlignmentCenter;
     self.titleLabel.font=FONT_BOLD(20);
     self.titleLabel.numberOfLines=0;
     [self.contentView addSubview:self.titleLabel];

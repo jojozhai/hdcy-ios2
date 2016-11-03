@@ -269,59 +269,61 @@
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     YLNewsListModel *model=self.dataSource[indexPath.row];
-    if ([model.top isEqual:@1]&&[model.business isEqual:@1]) {
-        YLNewsListTopAdTableViewCell *cell=[tableView dequeueReusableCellWithIdentifier:@"YLNewsListTopAdTableViewCell"];
-        if (!cell) {
-            cell=[[YLNewsListTopAdTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"YLNewsListTopAdTableViewCell"];
-        }
-        [cell.showImageView sd_setImageWithURL:[NSURL URLWithString:model.image] placeholderImage:[UIImage imageNamed:@"placeholderImage"] options:SDWebImageRefreshCached];
-        cell.titleLabel.text=model.title;
-        
-        return cell;
-    }else if(![model.top isEqual:@1]&&[model.business isEqual:@1]&&[model.displayType isEqualToString:@"MIX"]){
-        YLNewsAdNomalTableViewCell *cell=[tableView dequeueReusableCellWithIdentifier:@"YLNewsAdNomalTableViewCell"];
-        if (!cell) {
-            cell=[[YLNewsAdNomalTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"YLNewsAdNomalTableViewCell"];
-        }
-        [cell.showImageView sd_setImageWithURL:[NSURL URLWithString:model.image] placeholderImage:[UIImage imageNamed:@"placeholderImage"] options:SDWebImageRefreshCached];
-        cell.titleLabel.text=model.title;
-        
-        return cell;
-    }else if (![model.top isEqual:@1]&&[model.business isEqual:@1]&&[model.displayType isEqualToString:@"IMAGE"]){
+    if ([model.displayType isEqualToString:@"IMAGE"]){
         YLNewsAdImageTableViewCell *cell=[tableView dequeueReusableCellWithIdentifier:@"YLNewsAdImageTableViewCell"];
         if (!cell) {
             cell=[[YLNewsAdImageTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"YLNewsAdImageTableViewCell"];
         }
-
-        [cell.showImageView sd_setImageWithURL:[NSURL URLWithString:model.image] placeholderImage:[UIImage imageNamed:@"placeholderImage"] options:SDWebImageRefreshCached];
-        cell.titleLabel.text=model.title;
         
-        return cell;
-    }else if ([model.top isEqual:@1]&&![model.business isEqual:@1]){
-        YLNewsTopNomalTableViewCell *cell=[tableView dequeueReusableCellWithIdentifier:@"YLNewsTopNomalTableViewCell"];
-        if (!cell) {
-            cell=[[YLNewsTopNomalTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"YLNewsTopNomalTableViewCell"];
-        }
-
         [cell.showImageView sd_setImageWithURL:[NSURL URLWithString:model.image] placeholderImage:[UIImage imageNamed:@"placeholderImage"] options:SDWebImageRefreshCached];
-        cell.tagLabel.text=[model.tagInfos[0] objectForKey:@"name"];
-        cell.timeLabel.text=model.createTime;
-        cell.eyeLabel.text=[NSString stringWithFormat:@"%@",model.readCount];
         cell.titleLabel.text=model.title;
         
         return cell;
     }else{
-        YLNewsListNomalTableViewCell *cell=[tableView dequeueReusableCellWithIdentifier:@"YLNewsListNomalTableViewCell"];
-        if (!cell) {
-            cell=[[YLNewsListNomalTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"YLNewsListNomalTableViewCell"];
+        if ([model.top isEqual:@1]&&[model.business isEqual:@1]) {
+            YLNewsListTopAdTableViewCell *cell=[tableView dequeueReusableCellWithIdentifier:@"YLNewsListTopAdTableViewCell"];
+            if (!cell) {
+                cell=[[YLNewsListTopAdTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"YLNewsListTopAdTableViewCell"];
+            }
+            [cell.showImageView sd_setImageWithURL:[NSURL URLWithString:model.image] placeholderImage:[UIImage imageNamed:@"placeholderImage"] options:SDWebImageRefreshCached];
+            cell.titleLabel.text=model.title;
+            
+            return cell;
+        }else if(![model.top isEqual:@1]&&[model.business isEqual:@1]){
+            YLNewsAdNomalTableViewCell *cell=[tableView dequeueReusableCellWithIdentifier:@"YLNewsAdNomalTableViewCell"];
+            if (!cell) {
+                cell=[[YLNewsAdNomalTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"YLNewsAdNomalTableViewCell"];
+            }
+            [cell.showImageView sd_setImageWithURL:[NSURL URLWithString:model.image] placeholderImage:[UIImage imageNamed:@"placeholderImage"] options:SDWebImageRefreshCached];
+            cell.titleLabel.text=model.title;
+            
+            return cell;
+        }else if ([model.top isEqual:@1]&&![model.business isEqual:@1]){
+            YLNewsTopNomalTableViewCell *cell=[tableView dequeueReusableCellWithIdentifier:@"YLNewsTopNomalTableViewCell"];
+            if (!cell) {
+                cell=[[YLNewsTopNomalTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"YLNewsTopNomalTableViewCell"];
+            }
+            
+            [cell.showImageView sd_setImageWithURL:[NSURL URLWithString:model.image] placeholderImage:[UIImage imageNamed:@"placeholderImage"] options:SDWebImageRefreshCached];
+            cell.tagLabel.text=[model.tagInfos[0] objectForKey:@"name"];
+            cell.timeLabel.text=model.createTime;
+            cell.eyeLabel.text=[NSString stringWithFormat:@"%d",model.readCount.intValue+model.readCountPlus.intValue];
+            cell.titleLabel.text=model.title;
+            
+            return cell;
+        }else{
+            YLNewsListNomalTableViewCell *cell=[tableView dequeueReusableCellWithIdentifier:@"YLNewsListNomalTableViewCell"];
+            if (!cell) {
+                cell=[[YLNewsListNomalTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"YLNewsListNomalTableViewCell"];
+            }
+            [cell.showImageView sd_setImageWithURL:[NSURL URLWithString:model.image] placeholderImage:[UIImage imageNamed:@"placeholderImage"] options:SDWebImageRefreshCached];
+            cell.tagLabel.text=[model.tagInfos[0] objectForKey:@"name"];
+            cell.timeLabel.text=model.createTime;
+            cell.eyeLabel.text=[NSString stringWithFormat:@"%@",model.readCount];
+            cell.titleLabel.text=model.title;
+            
+            return cell;
         }
-        [cell.showImageView sd_setImageWithURL:[NSURL URLWithString:model.image] placeholderImage:[UIImage imageNamed:@"placeholderImage"] options:SDWebImageRefreshCached];
-        cell.tagLabel.text=[model.tagInfos[0] objectForKey:@"name"];
-        cell.timeLabel.text=model.createTime;
-        cell.eyeLabel.text=[NSString stringWithFormat:@"%@",model.readCount];
-        cell.titleLabel.text=model.title;
-        
-        return cell;
     }
 }
 
@@ -364,18 +366,15 @@
     animation.subtype = kCATransitionFromRight;
     
     [self.view.window.layer addAnimation:animation forKey:nil];
-    if ([listModel.business isEqual:@1]) {
-        if (listModel.linkOut==YES) {
-            YLOutLinkViewController *outlink=[[YLOutLinkViewController alloc]init];
-            outlink.urlString=listModel.outLink;
-            if ([listModel.outLink isEqual:[NSNull null]]||[listModel.outLink isEqual:@"<null>"]) {
-                outlink.urlString=@"www.baidu.com";
-            }
-            [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:outlink animated:YES completion:^{
-                
-            }];
-            
+    if ([listModel.linkOut isEqual:@1]) {
+        YLOutLinkViewController *outlink=[[YLOutLinkViewController alloc]init];
+        outlink.urlString=listModel.outLink;
+        if ([listModel.outLink isEqual:[NSNull null]]||[listModel.outLink isEqual:@"<null>"]) {
+            outlink.urlString=@"www.baidu.com";
         }
+        [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:outlink animated:YES completion:^{
+            
+        }];
     }else{
         
         YLNewsInfoViewController *info=[[YLNewsInfoViewController alloc]init];

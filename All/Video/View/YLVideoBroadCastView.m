@@ -46,7 +46,7 @@
     self.sponsorImageView.layer.masksToBounds=YES;
     [self addSubview:self.sponsorImageView];
     
-    self.sponorLabel=[[UILabel alloc]initWithFrame:CGRectMake(54, 210, 60, 30)];
+    self.sponorLabel=[[UILabel alloc]initWithFrame:CGRectMake(54, 210, 150, 30)];
     self.sponorLabel.textColor=RGBCOLOR(0, 254, 252);
     self.sponorLabel.textAlignment=NSTextAlignmentLeft;
     self.sponorLabel.font=FONT_BOLD(14);
@@ -60,7 +60,7 @@
     NSDateFormatter *df = [[NSDateFormatter alloc] init];
     [df setDateFormat:@"yyyy-MM-dd/HH:mm"];
     [df setTimeZone:[NSTimeZone timeZoneWithName:@"Asia/Shanghai"]];
-    self.timeLabel.text=[NSString stringWithFormat:@"开始时间:%@",[df stringFromDate:[NSDate dateWithTimeIntervalSince1970:model.startTime/1000.0]]];
+    self.timeLabel.text=[NSString stringWithFormat:@"开始时间:%@",[df stringFromDate:[NSDate dateWithTimeIntervalSince1970:model.startTime.intValue/1000.0]]];
     
     [self.backImageView sd_setImageWithURL:[NSURL URLWithString:model.image] placeholderImage:[UIImage imageNamed:@"placeholderImage"] options:SDWebImageRefreshCached];
     [self.sponsorImageView sd_setImageWithURL:[NSURL URLWithString:model.sponsorImage] placeholderImage:[UIImage imageNamed:@"placeholderImage"] options:SDWebImageRefreshCached];

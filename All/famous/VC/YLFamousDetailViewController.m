@@ -133,7 +133,7 @@
     verticleLine.backgroundColor=[UIColor blackColor];
     [introView addSubview:verticleLine];
     
-    UILabel *label=[[UILabel alloc]initWithFrame:CGRectMake(22, 22, 60, 18)];
+    UILabel *label=[[UILabel alloc]initWithFrame:CGRectMake(22, 22, 120, 18)];
     label.text=@"个人简介";
     label.textColor=[UIColor blackColor];
     label.font=FONT_BOLD(15);

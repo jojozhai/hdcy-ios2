@@ -77,8 +77,7 @@
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     self.target=@"article";
     articleId=self.Id;
-   
-    [self createCommentView];
+
     [self requestTopData];
 }
 
@@ -98,8 +97,71 @@
 {
     NSString *urlString=[NSString stringWithFormat:@"%@/video/%@",URL,self.Id];
     [YLHttp get:urlString params:nil success:^(id json) {
-        _videoModel=[[YLVideoListModel alloc]initWithDictionary:json error:nil];
-         
+       // _videoModel=[[YLVideoListModel alloc]initWithDictionary:json error:nil];
+        _videoModel=[[YLVideoListModel alloc]init];
+        NSMutableDictionary *jsdict=[[NSMutableDictionary alloc]initWithDictionary:json];
+        if ([jsdict[@"commentCount"] isKindOfClass:[NSNull class]]) {
+            _videoModel.commentCount=@"";;
+        }else{
+            _videoModel.commentCount=jsdict[@"commentCount"];
+        }
+        if ([jsdict[@"desc"] isKindOfClass:[NSNull class]]) {
+            _videoModel.desc=@"";;
+        }else{
+            _videoModel.desc=jsdict[@"desc"];
+        }
+        if ([jsdict[@"desc"] isKindOfClass:[NSNull class]]) {
+            _videoModel.desc=@"";;
+        }else{
+            _videoModel.desc=jsdict[@"desc"];
+        }
+        _videoModel.enable=[jsdict[@"enable"] boolValue];
+        if ([jsdict[@"endTime"] isKindOfClass:[NSNull class]]) {
+            _videoModel.endTime=@"";;
+        }else{
+            _videoModel.endTime=jsdict[@"endTime"];
+        }
+        if ([jsdict[@"image"] isKindOfClass:[NSNull class]]) {
+            _videoModel.image=@"";;
+        }else{
+            _videoModel.image=jsdict[@"image"];
+        }
+        if ([jsdict[@"length"] isKindOfClass:[NSNull class]]) {
+            _videoModel.length=@"";;
+        }else{
+            _videoModel.length=jsdict[@"length"];
+        }
+
+        _videoModel.live=jsdict[@"live"];
+        _videoModel.liveState=jsdict[@"liveState"];
+        _videoModel.name=jsdict[@"name"];
+        _videoModel.sponsorId=jsdict[@"sponsorId"];
+        _videoModel.sponsorName=jsdict[@"sponsorName"];
+        _videoModel.sponsorImage=jsdict[@"sponsorImage"];
+        if ([jsdict[@"startTime"] isKindOfClass:[NSNull class]]) {
+            _videoModel.startTime=@"";;
+        }else{
+            _videoModel.startTime=jsdict[@"startTime"];
+        }
+        if ([jsdict[@"streamId"] isKindOfClass:[NSNull class]]) {
+            _videoModel.streamId=@"";;
+        }else{
+            _videoModel.streamId=jsdict[@"streamId"];
+        }
+        _videoModel.top=[jsdict[@"top"] boolValue];
+        if ([jsdict[@"url"] isKindOfClass:[NSNull class]]) {
+            _videoModel.url=@"";;
+        }else{
+            _videoModel.url=jsdict[@"url"];
+        }
+        if ([jsdict[@"url2"] isKindOfClass:[NSNull class]]) {
+            _videoModel.url2=@"";;
+        }else{
+            _videoModel.url2=jsdict[@"url2"];
+        }
+        _videoModel.viewCount=[jsdict[@"viewCount"] intValue];
+        _videoModel.viewCountPlus=[jsdict[@"viewCountPlus"] intValue];
+        _videoModel.id=jsdict[@"id"];
         [self createView];
         
     } failure:^(NSError *error) {
@@ -186,6 +248,8 @@
         
         _webView=[[UIWebView alloc]init];
         _webView.delegate=self;
+        [_webView setBackgroundColor:BGColor];
+        [_webView setOpaque:NO];
         [_webView loadHTMLString:_videoModel.desc baseURL:nil];
         [_introView addSubview:_webView];
         
@@ -198,7 +262,7 @@
         [_WebTableView addSubview:_commentlabel];
         
         _commentCountLabel=[[UILabel alloc]init];
-        _commentCountLabel.text=[NSString stringWithFormat:@"评论(%ld)",(long)_videoModel.commentCount];
+        _commentCountLabel.text=[NSString stringWithFormat:@"评论(%@)",_videoModel.commentCount];
         _commentCountLabel.textColor=[UIColor whiteColor];
         _commentCountLabel.font=FONT_BOLD(15);
         [_WebTableView addSubview:_commentCountLabel];
@@ -229,6 +293,7 @@
     
     [self createClearCoverView];
     [self initNavigationBar];
+    [self createCommentView];
     if (_videoModel.live.integerValue) {
         _commentButton.hidden=YES;
     }else{
@@ -263,6 +328,8 @@
     [self.view addSubview:self.tableView];
     
     _webView=[[UIWebView alloc]initWithFrame:CGRectMake(0, 290, SCREEN_WIDTH, SCREEN_HEIGHT-290)];
+    [_webView setBackgroundColor:BGColor];
+    [_webView setOpaque:NO];
     [_webView loadHTMLString:_videoModel.desc baseURL:nil];
     [self.view addSubview:_webView];
 }
