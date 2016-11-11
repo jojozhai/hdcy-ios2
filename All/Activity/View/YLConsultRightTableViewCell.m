@@ -26,9 +26,6 @@
 -(void)configUI
 {
     self.headerImageVIew=[[UIImageView alloc]initWithFrame:CGRectMake(SCREEN_WIDTH-37, 16, 32, 25)];
-//    self.headerImageVIew.layer.cornerRadius=12.5;
-//    self.headerImageVIew.layer.masksToBounds=YES;
-    self.headerImageVIew.image=[UIImage imageNamed:@""];
     [self.contentView addSubview:self.headerImageVIew];
     
     self.nameLabel=[[UILabel alloc]initWithFrame:CGRectMake(SCREEN_WIDTH-142, 16, 100, 12)];
@@ -42,7 +39,6 @@
 -(void)setModel:(YLCommentModel *)model
 {
     self.headerImageVIew.image=[UIImage imageNamed:@"hdcy"];
-    self.nameLabel.text=model.createrName;
     
     UIImageView *backImageView=[[UIImageView alloc]init];
     UIImage *bgImage = [[[UIImage imageNamed:@"Blue"] stretchableImageWithLeftCapWidth:100 topCapHeight:30] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
@@ -82,7 +78,7 @@
         [backImageView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.right.equalTo(self.contentView.mas_right).offset(-42);
             make.top.equalTo(self.nameLabel.mas_bottom).offset(2);
-            make.width.equalTo(@(100));
+            make.width.equalTo(@(120));
         }];
     }
 }

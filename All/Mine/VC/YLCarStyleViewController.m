@@ -82,7 +82,8 @@
 {
     NSString *urlString=[NSString stringWithFormat:@"%@/user/property",URL];
     NSDictionary *paraDict=@{@"name":@"car",@"value":self.carButtonArray[btn.tag-738]};
-    [YLHttp put:urlString userName:USERNAME_REMBER passeword:PASSWORD_REMBER params:paraDict success:^(id json) {
+    NSString *token=[[NSUserDefaults standardUserDefaults]objectForKey:BASE64CONTENT];
+    [YLHttp put:urlString token:token params:paraDict success:^(id json) {
         [self dismissAction];
         self.carStyleBlock(self.carButtonArray[btn.tag-738]);
     } failure:^(NSError *error) {
@@ -151,7 +152,8 @@
     NSString *name=carDict[@"name"];
     NSString *urlString=[NSString stringWithFormat:@"%@/user/property",URL];
     NSDictionary *paraDict=@{@"name":@"car",@"value":name};
-    [YLHttp put:urlString userName:nil passeword:nil params:paraDict success:^(id json) {
+    NSString *token=[[NSUserDefaults standardUserDefaults]objectForKey:BASE64CONTENT];
+    [YLHttp put:urlString token:token params:paraDict success:^(id json) {
         [self dismissAction];
         self.carStyleBlock(name);
     } failure:^(NSError *error) {

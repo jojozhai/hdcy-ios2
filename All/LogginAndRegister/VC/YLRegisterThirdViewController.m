@@ -8,6 +8,8 @@
 
 #import "YLRegisterThirdViewController.h"
 #import "YLLogginViewController.h"
+#import "YLRegisterMessage.h"
+#import "YLJSONResponseSerializer.h"
 @interface YLRegisterThirdViewController ()
 {
     UIButton *reButton;
@@ -20,6 +22,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    [self redeliverAction:nil];
     [self createNavigationBar];
     [self cusView];
 }
@@ -65,8 +68,9 @@
     TextField.placeholder=@"请输入验证码";
     TextField.font=FONT_SYS(15);
     TextField.textColor=[UIColor grayColor];
+    TextField.keyboardType=UIKeyboardTypeNumberPad;
     TextField.borderStyle=UITextBorderStyleNone;
-    TextField.secureTextEntry=YES;
+    TextField.secureTextEntry=NO;
     [whiteView addSubview:TextField];
     
     UIButton *nextButton=[UIButton buttonWithType:UIButtonTypeCustom];
@@ -78,7 +82,7 @@
     [self.view addSubview:nextButton];
     
     reButton=[UIButton buttonWithType:UIButtonTypeCustom];
-    reButton.frame=CGRectMake(145*SCREEN_MUTI+120, 190,45, 17);
+    reButton.frame=CGRectMake(SCREEN_WIDTH-76*SCREEN_MUTI-50,18,45, 20);
     reButton.titleLabel.font=FONT_SYS(10);
     reButton.layer.borderColor=[UIColor grayColor].CGColor;
     reButton.layer.borderWidth=0.5;
@@ -86,8 +90,8 @@
     reButton.layer.masksToBounds=YES;
     reButton.backgroundColor=BGColor;
     [reButton setTitle:@"重新发送" forState:UIControlStateNormal];
-    [reButton setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
-    [reButton addTarget:self action:@selector(redeliverAction) forControlEvents:UIControlEventTouchUpInside];
+    [reButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [reButton addTarget:self action:@selector(redeliverAction:) forControlEvents:UIControlEventTouchUpInside];
     [whiteView addSubview:reButton];
     
     for (int i=0; i<3; i++) {
@@ -110,12 +114,63 @@
 
 -(void)complete
 {
-    YLLogginViewController *loggin=[[YLLogginViewController alloc]init];
-    [self presentViewController:loggin animated:NO completion:nil];
+    UITextField *CTF=[whiteView viewWithTag:8800];
+    [CTF resignFirstResponder];
+    NSString *nickname=[YLRegisterMessage sharedRegisterMessage].nickname;
+    NSString *password=[YLRegisterMessage sharedRegisterMessage].password;
+    NSString *sex=[YLRegisterMessage sharedRegisterMessage].sex;
+    NSString *city=[YLRegisterMessage sharedRegisterMessage].city;
+    NSString *mobile=[YLRegisterMessage sharedRegisterMessage].username;
+   
+    NSString *urlString=[NSString stringWithFormat:@"%@/sms/code/check",URL];
+    NSDictionary *paraDict=@{@"phone":mobile,@"code":CTF.text};
+    [YLHttp get:urlString params:paraDict success:^(id json) {
+        NSString *reString=[NSString stringWithFormat:@"%@/user",URL];
+        NSDictionary *dictionary=@{@"username":mobile,@"nickname":nickname,@"password":password,@"sex":sex,@"city":city};
+        
+        AFHTTPRequestOperationManager *mgr = [AFHTTPRequestOperationManager manager];
+        //mgr.responseSerializer=[YLJSONResponseSerializer serializer];
+        NSMutableURLRequest *request =
+        [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:reString]];
+        [request setHTTPMethod:@"POST"];
+        [request setValue:@"application/json"
+       forHTTPHeaderField:@"Content-Type"];
+        [request setHTTPBody:[NSJSONSerialization dataWithJSONObject:dictionary options:NSJSONWritingPrettyPrinted error:nil]];
+        NSOperation *operation =
+        [mgr HTTPRequestOperationWithRequest:request
+                                     success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                         // 成功后的处理
+                                         [MBProgressHUD showMessage:@"注册成功"];
+                                         YLLogginViewController *loggin=[[YLLogginViewController alloc]init];
+                                         [self presentViewController:loggin animated:NO completion:nil];
+                                     }
+                                     failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                                         // 失败后的处理
+                                         [MBProgressHUD showMessage:@"手机号已存在"];
+                                     }];
+        [mgr.operationQueue addOperation:operation];
+        
+    } failure:^(NSError *error) {
+        [MBProgressHUD showMessage:@"验证信息失败"];
+    }];
+    
 }
 
--(void)redeliverAction
+-(void)redeliverAction:(UIButton *)btn
 {
+    if (btn==nil) {
+        
+    }else{
+        UITextField *otf=[self.view viewWithTag:8800];
+        [otf resignFirstResponder];
+        NSString *urlString=[NSString stringWithFormat:@"%@/sms/code",URL];
+        NSDictionary *paraDict=@{@"phone":otf.text};
+        [YLHttp get:urlString params:paraDict success:^(id json) {
+            
+        } failure:^(NSError *error) {
+            
+        }];
+    }
     __block NSInteger time = 59; //倒计时时间
     
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);

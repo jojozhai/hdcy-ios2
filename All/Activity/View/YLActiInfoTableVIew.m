@@ -61,10 +61,10 @@
         if (indexPath.row!=0) {
             [cell.nameLabel setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         }
-        if ([[self.sourceArray[1] objectAtIndex:indexPath.row] isEqualToString:@"0"]) {
+        if ([[self.sourceArray[1] objectAtIndex:indexPath.row] isEqual:[NSNumber numberWithInt:0]]) {
             [cell.nameLabel setTitle:@"免费" forState:UIControlStateNormal];
         }else{
-            [cell.nameLabel setTitle:[self.sourceArray[1] objectAtIndex:indexPath.row] forState:UIControlStateNormal];
+            [cell.nameLabel setTitle:[NSString stringWithFormat:@"%@",[self.sourceArray[1] objectAtIndex:indexPath.row]]   forState:UIControlStateNormal];
         }
     }
     return cell;

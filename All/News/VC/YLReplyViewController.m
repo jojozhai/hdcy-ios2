@@ -63,16 +63,12 @@
     }else{
         NSString *urlString=[NSString stringWithFormat:@"%@%@",URL,@"/comment"];
         NSDictionary *paraDict=@{@"target":self.target,@"targetId":self.Id,@"content":_TextView.text};
-        [YLHttp post:urlString userName:USERNAME_REMBER passeword:PASSWORD_REMBER params:paraDict success:^(id json) {
+        NSString *token=[[NSUserDefaults standardUserDefaults]objectForKey:BASE64CONTENT];
+        [YLHttp post:urlString token:token params:paraDict success:^(id json) {
             YLCommentModel *model=[[YLCommentModel alloc]initWithDictionary:json error:nil];
             self.changeItemBlock(model);
             
-            MBProgressHUD *hud=[[MBProgressHUD alloc]initWithView:self.view];
-            hud.mode=MBProgressHUDModeText;
-            hud.label.text=@"发布成功";
-            [self.view addSubview:hud];
-            [hud showAnimated:YES];
-            [hud hideAnimated:YES afterDelay:1];
+            [MBProgressHUD showMessage:@"发布成功"];
         } failure:^(NSError *error) {
             
         }];

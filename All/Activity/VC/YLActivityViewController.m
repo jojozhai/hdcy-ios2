@@ -30,18 +30,20 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    self.view.backgroundColor=[UIColor blackColor];
+    self.view.backgroundColor=[UIColor whiteColor];
     // 创建scrollView
     self.page=0;
     [self requestHeader];
+    [self requestData];
+    
 }
 
 
 -(void)requestHeader
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSString *urlString=[NSString stringWithFormat:@"%@%@",URL,@"/participation"];
-        NSDictionary *orderDic=@{@"enable":@YES,@"page":@(0),@"size":@"20",@"sort":@"createdTime,desc",@"top":@(YES),@"liveForApp":@(YES)};
+        NSString *urlString=[NSString stringWithFormat:@"%@%@",URL,@"/activity"];
+        NSDictionary *orderDic=@{@"enable":@YES,@"page":@(0),@"size":@"20",@"sort":@"topIndex,asc",@"top":@(YES)};
         [YLHttp get:urlString params:orderDic success:^(id json) {
             for (NSDictionary *dict in json[@"content"]) {
                 YLActivityListContentModel *contentModel=[[YLActivityListContentModel alloc]initWithDictionary:dict error:nil];
@@ -57,15 +59,9 @@
 
 -(void)createTableView
 {
-    UITableView *tableView = [[UITableView alloc]initWithFrame:CGRectMake(0,0,SCREEN_WIDTH,SCREEN_HEIGHT) style:UITableViewStylePlain];
+    UITableView *tableView = [[UITableView alloc]initWithFrame:CGRectMake(0,0,SCREEN_WIDTH,SCREEN_HEIGHT-20) style:UITableViewStylePlain];
     tableView.backgroundColor=[UIColor whiteColor];
     self.tableView=tableView;
-    //下拉刷新
-    MJRefreshNormalHeader *header =
-    [[MJRefreshNormalHeader alloc]init];
-    [header setRefreshingTarget:self refreshingAction:@selector(refreshWithHeader:)];
-    tableView.mj_header = header;
-    [header beginRefreshing];
     
     //上拉加载
     MJRefreshAutoFooter *footer=[[MJRefreshAutoFooter alloc]init];
@@ -84,31 +80,39 @@
     self.tableView.tableHeaderView=headerView;
 }
 
--(void)refreshWithHeader:(MJRefreshHeader *)header
-{
-    self.page=0;
-    [self requestDataWithPage:self.page];
-    
-}
-
 -(void)refreshFooter:(MJRefreshAutoFooter *)footer
 {
     int currentPage=self.page;
     [self requestDataWithPage:++currentPage];
     self.page=currentPage;
 }
+
+-(void)requestData
+{
+    NSDictionary *dict=@{@"enable":@YES,@"size":@"20",@"sort":@"signEndTime,asc",@"top":@(NO),@"signFinish":@(NO)};
+    NSString *urlString=[NSString stringWithFormat:@"%@%@",URL,@"/activity"];
+    
+    [YLHttp get:urlString params:dict success:^(id json) {
+        for (NSDictionary *dict in json[@"content"]) {
+            YLActivityListContentModel *contentModel=[[YLActivityListContentModel alloc]initWithDictionary:dict error:nil];
+            [self.dataSource addObject:contentModel];
+        }
+        [self requestDataWithPage:self.page];
+    } failure:^(NSError *error) {
+        
+    }];
+}
+
 //网络请求
 -(void)requestDataWithPage:(int)page
 {
     [self.hud showAnimated:YES];
     
-    NSDictionary *dict=@{@"enable":@YES,@"page":@(page),@"size":@"20",@"sort":@"createdTime,desc",@"actType":@"ACTIVITY",@"liveForApp":@(YES)};
-    NSString *urlString=[NSString stringWithFormat:@"%@%@",URL,@"/participation"];
+    NSDictionary *dict=@{@"enable":@YES,@"page":@(page),@"size":@"20",@"sort":@"startTime,desc",@"top":@(NO),@"signFinish":@(YES)};
+    NSString *urlString=[NSString stringWithFormat:@"%@%@",URL,@"/activity"];
     
     [YLHttp get:urlString params:dict success:^(id json) {
-        if (self.page==0) {
-            [self.dataSource removeAllObjects];
-        }
+        
         self.listModel=[[YLActivityListModel alloc]initWithDictionary:json error:nil];
         if (self.listModel.totalPages<=self.page) {
             [MBProgressHUD showMessage:@"没有更多数据了"];
@@ -119,7 +123,6 @@
         }
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.tableView.mj_header endRefreshing];
             [self.tableView.mj_footer endRefreshing];
             
             [self.tableView reloadData];
@@ -130,19 +133,11 @@
     } failure:^(NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.hud hideAnimated:YES];
-            [self.tableView.mj_header endRefreshing];
             [self.tableView.mj_footer endRefreshing];
         });
         
     }];
     
-    
-//    if (self.isOnline==NO) {
-//        [self.tableView.mj_header endRefreshing];
-//        [self.tableView.mj_footer endRefreshing];
-//        [self.hud hide:YES];
-//        
-//    }
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -153,15 +148,14 @@
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *reuse=@"cell";
-    
-    YLActiTableViewCell *cell=[tableView dequeueReusableCellWithIdentifier:reuse];
-    if (!cell) {
-        cell=[[YLActiTableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:reuse];
-    }
-    
+    YLActiTableViewCell *cell=[[YLActiTableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:reuse];
     cell.backgroundColor=[UIColor whiteColor];
     cell.model=self.dataSource[indexPath.row];
-    if (cell.model.finish==YES) {
+    NSDateFormatter *df = [[NSDateFormatter alloc] init];
+    [df setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    [df setTimeZone:[NSTimeZone timeZoneWithName:@"Asia/Shanghai"]];
+    NSDate *datenow = [NSDate date];
+    if (cell.model.endTime.integerValue/1000-[datenow timeIntervalSince1970]<0) {
         cell.endImageView.hidden=NO;
     }else{
         cell.endImageView.hidden=YES;
@@ -179,6 +173,12 @@
 {
     YLActivityListContentModel *model=self.dataSource[indexPath.row];
     YLActivityOffLineViewController *offline=[[YLActivityOffLineViewController alloc]init];
+    NSDate *datenow = [NSDate date];
+    if (model.endTime.integerValue/1000-[datenow timeIntervalSince1970]<0) {
+        offline.isFinish=@YES;
+    }else{
+        offline.isFinish=@NO;
+    }
     offline.contentModel=model;
     CATransition * animation = [CATransition animation];
     animation.duration = 0.5;    //  时间
@@ -195,6 +195,7 @@
     YLActivityListContentModel *model=self.headerArray[index];
     YLActivityOffLineViewController *offline=[[YLActivityOffLineViewController alloc]init];
     offline.contentModel=model;
+    offline.isFinish=model.finish;
     CATransition * animation = [CATransition animation];
     animation.duration = 0.8;    //  时间
     animation.type = kCATransitionMoveIn;

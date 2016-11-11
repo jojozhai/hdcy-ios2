@@ -218,7 +218,6 @@
     
 }
 
-
 -(void)setTopScrollArray:(NSArray *)topScrollArray
 {
     _topScrollArray=topScrollArray;
@@ -239,6 +238,7 @@
             YLFamousTopModel *topModel=topScrollArray[i-1];
             [cell sd_setImageWithURL:[NSURL URLWithString:topModel.topImage] placeholderImage:[UIImage imageNamed:@"placeholderImage"] options:SDWebImageRefreshCached];            cell.tag=2345+i;
         }
+        cell.userInteractionEnabled=YES;
         UITapGestureRecognizer *tap=[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(tapAction:)];
         [cell addGestureRecognizer:tap];
         [self.topScrollView addSubview:cell];
@@ -266,7 +266,6 @@
     [self.scrollTimer invalidate];
     self.scrollTimer = nil;
 }
-
 
 -(void)tapAction:(UITapGestureRecognizer *)tap
 {

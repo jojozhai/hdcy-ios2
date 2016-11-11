@@ -7,7 +7,7 @@
 //
 
 #import "YLAboutUsViewController.h"
-
+#import "YLAboutWebViewController.h"
 @interface YLAboutUsViewController ()<UITableViewDelegate,UITableViewDataSource>
 @property (nonatomic,strong)NSArray *dataSource;
 @property (nonatomic,strong)UITableView *tableView;
@@ -75,7 +75,9 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-   
+    YLAboutWebViewController *web=[[YLAboutWebViewController alloc]init];
+    web.row=indexPath.row;
+    [self presentViewController:web animated:NO completion:nil];
 }
 
 -(NSArray *)dataSource

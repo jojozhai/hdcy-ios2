@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "YLMineViewController.h"
+#import "YLInLetterViewController.h"
 @interface YLMainViewController : UIViewController
 @property (nonatomic, strong) NSArray *viewControllers;
 
@@ -18,4 +19,5 @@
 @property (nonatomic, strong) UIColor *topBackgroudColor;
 
 @property (nonatomic,strong) YLMineViewController *mineVC;
+@property (nonatomic,strong) YLInLetterViewController *inletterVC;
 @end

@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface YLInLetterTableViewCell : UITableViewCell
-
+@property (nonatomic,strong)NSDictionary *dict;
 @end

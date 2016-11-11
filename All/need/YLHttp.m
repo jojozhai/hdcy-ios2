@@ -7,7 +7,7 @@
 //
 
 #import "YLHttp.h"
-
+#import "YLJSONResponseSerializer.h"
 @implementation YLHttp
 
 
@@ -30,24 +30,20 @@
     
 }
 
-+(void)get:(NSString *)url userName:(NSString *)name passeword:(NSString *)password params:(id)params success:(void(^)(id json))success failure:(void(^)(NSError *error))failure
++(void)get:(NSString *)url token:(NSString *)token params:(id)params success:(void(^)(id json))success failure:(void(^)(NSError *error))failure
 {
     // 1.创建请求管理者
     AFHTTPRequestOperationManager *mgr = [AFHTTPRequestOperationManager manager];
-    [mgr.requestSerializer setAuthorizationHeaderFieldWithUsername:name password:password];
     mgr.responseSerializer = [AFHTTPResponseSerializer serializer];
-    
+    [mgr.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
     mgr.requestSerializer.timeoutInterval = 15;
     // 2.发送请求
     [mgr GET:url parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        
         id responsedict = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingMutableContainers error:nil];
         if (success) {
             success(responsedict);
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {  // 网络请求失败
-        
-        
         if (failure) {
             failure(error);
         }
@@ -61,33 +57,31 @@
     // 1.创建请求管理者
     AFHTTPRequestOperationManager *mgr = [AFHTTPRequestOperationManager manager];
     mgr.requestSerializer = [AFHTTPRequestSerializer serializer];  // 解析为data
-    mgr.responseSerializer=[AFHTTPResponseSerializer serializer];
-    //mgr.responseSerializer.acceptableContentTypes =[NSSet setWithObjects:@"application/json", @"text/json", @"text/javascript",@"text/html",nil];
+    mgr.responseSerializer=[YLJSONResponseSerializer serializer];
+    mgr.responseSerializer.acceptableContentTypes =[NSSet setWithObjects:@"application/json",nil];
     mgr.requestSerializer.timeoutInterval = 15;
     // 2.发送请求
     [mgr POST:url parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        
-        id responseDict =[NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingMutableContainers error:nil];
-        
+//        id responseDict =[NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingMutableLeaves error:nil];
+        id responseDict=responseObject;
         
         if (success) {
             success(responseDict);
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {  // 网络请求失败
-        
-        
         if (failure) {
             failure(error);
+ 
         }
     }];
     
 }
 
-+(void)post:(NSString *)url userName:(NSString *)name passeword:(NSString *)password params:(id)params success:(void(^)(id json))success failure:(void(^)(NSError *error))failure
++(void)post:(NSString *)url token:(NSString *)token params:(id)params success:(void(^)(id json))success failure:(void(^)(NSError *error))failure
 {
     // 1.创建请求管理者
     AFHTTPRequestOperationManager *mgr = [AFHTTPRequestOperationManager manager];
-    [mgr.requestSerializer setAuthorizationHeaderFieldWithUsername:name password:password];
+    [mgr.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
     mgr.requestSerializer = [AFJSONRequestSerializer serializer];  // 解析为data
     mgr.responseSerializer=[AFHTTPResponseSerializer serializer];
     mgr.responseSerializer.acceptableContentTypes =[NSSet setWithObjects:@"application/json", @"text/json", @"text/javascript",@"text/html",nil];
@@ -146,59 +140,27 @@
     }];
 }
 
-+ (void)post:(NSString *)url parameters:(NSDictionary *)params constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block success:(void(^)(id json))success failure:(void(^)(NSError *error))failure {
-    // 1.创建请求管理者
-    AFHTTPRequestOperationManager *mgr = [AFHTTPRequestOperationManager manager];
-    
-    mgr.responseSerializer = [AFHTTPResponseSerializer serializer];  // 解析为data
-    
-    mgr.requestSerializer.timeoutInterval = 15;
-    
-    NSArray *keys = [params allKeys];
-    NSMutableString *mString= [NSMutableString stringWithFormat:@"%@?",url];
-    for (NSString *key in keys) {
-        NSString *value = params[key];
-        [mString appendFormat:@"%@=%@&",key,value];
-    }
-    [mString deleteCharactersInRange:NSMakeRange(mString.length-1, 1)];
-    
-    NSString *urlStr = [mString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
++(void)post:(NSString *)url bodyparams:(NSDictionary *)params success:(void (^)(id))success failure:(void (^)(NSError *))failure
+{
     
     
-    // 2.发送请求
-    [mgr POST:urlStr parameters:nil constructingBodyWithBlock:block success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        id responseDict = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingMutableContainers error:nil];
-        
-        if (success) {
-            success(responseDict);
-        }
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        
-        
-        if (failure) {
-            failure(error);
-        }
-    }];
 }
 
 
-+(void)put:(NSString *)url userName:(NSString *)name passeword:(NSString *)password params:(id)params success:(void(^)(id json))success failure:(void(^)(NSError *error))failure
-{
-    
++(void)put:(NSString *)url token:(NSString *)token params:(id)params success:(void(^)(id json))success failure:(void(^)(NSError *error))failure{
     // 1.创建请求管理者
     AFHTTPRequestOperationManager *mgr = [AFHTTPRequestOperationManager manager];
-    //mgr.requestSerializer = [AFJSONRequestSerializer serializer];  // 解析为data
-    mgr.responseSerializer=[AFHTTPResponseSerializer serializer];
+    mgr.requestSerializer = [AFJSONRequestSerializer serializer];  // 解析为data
+    mgr.responseSerializer=[YLJSONResponseSerializer serializer];
+    [mgr.requestSerializer setValue:token forHTTPHeaderField:@"Authorization"];
     mgr.responseSerializer.acceptableContentTypes =[NSSet setWithObjects:@"application/json", @"text/json", @"text/javascript",@"text/html",nil];
     mgr.requestSerializer.timeoutInterval = 15;
     [mgr PUT:url parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        id response=[NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingMutableContainers error:nil];
+        id response=responseObject;
         if (success) {
             success(response);
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSHTTPURLResponse *response=(NSHTTPURLResponse *)operation.response;
-        
         if (failure) {
             failure(error);
         }

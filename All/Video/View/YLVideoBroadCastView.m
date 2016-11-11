@@ -60,7 +60,8 @@
     NSDateFormatter *df = [[NSDateFormatter alloc] init];
     [df setDateFormat:@"yyyy-MM-dd/HH:mm"];
     [df setTimeZone:[NSTimeZone timeZoneWithName:@"Asia/Shanghai"]];
-    self.timeLabel.text=[NSString stringWithFormat:@"开始时间:%@",[df stringFromDate:[NSDate dateWithTimeIntervalSince1970:model.startTime.intValue/1000.0]]];
+    NSDate *date = [NSDate dateWithTimeIntervalSince1970:model.startTime.doubleValue/1000];
+    self.timeLabel.text=[NSString stringWithFormat:@"开始时间:%@",[df stringFromDate:date]];
     
     [self.backImageView sd_setImageWithURL:[NSURL URLWithString:model.image] placeholderImage:[UIImage imageNamed:@"placeholderImage"] options:SDWebImageRefreshCached];
     [self.sponsorImageView sd_setImageWithURL:[NSURL URLWithString:model.sponsorImage] placeholderImage:[UIImage imageNamed:@"placeholderImage"] options:SDWebImageRefreshCached];

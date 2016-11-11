@@ -9,5 +9,5 @@
 #import "RootViewController.h"
 
 @interface YLBackCodeViewController : RootViewController
-
+@property (nonatomic,copy)NSString *mobile;
 @end

@@ -16,6 +16,6 @@
 
 @property (nonatomic,copy)NSString *Id;
 @property (nonatomic,copy)NSString *target;
-
+@property (nonatomic,strong)YLVideoListModel *model;
 @property (nonatomic,copy)NSString *streamId;
 @end

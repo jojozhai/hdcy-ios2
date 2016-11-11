@@ -107,13 +107,15 @@
 -(void)setModel:(YLActivityOffInfoModel *)model
 {
     _model=model;
+    
     [self customView];
+    NSDictionary *dict=model.waiterInfo;
     self.backgroundColor=[UIColor whiteColor];
     self.layer.cornerRadius=10;
     self.layer.masksToBounds=YES;
-    [self.waiterImageView sd_setImageWithURL:[NSURL URLWithString:model.waiterImage]];
-    self.waiterNameLabel.text=[NSString stringWithFormat:@"%@:",model.waiterName];
-    self.phoneNumLabel.text=model.contactPhone;
+    [self.waiterImageView sd_setImageWithURL:[NSURL URLWithString:dict[@"image"]]];
+    self.waiterNameLabel.text=[NSString stringWithFormat:@"%@:",dict[@"name"]];
+    self.phoneNumLabel.text=dict[@"phone"];
 }
 
 

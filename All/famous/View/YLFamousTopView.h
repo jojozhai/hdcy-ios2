@@ -7,12 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
-@protocol scrollViewClickDelegate <NSObject>
+@protocol FamousScrollViewClickDelegate <NSObject>
 -(void)clickScrollViewItemWithIndex:(NSInteger)index;
 @end
 @interface YLFamousTopView : UIView
 @property (nonatomic,strong)NSArray *topScrollArray;
 @property (nonatomic,strong)NSArray *topControlArray;
 
-@property (nonatomic,assign)id<scrollViewClickDelegate>delegate;
+@property (nonatomic,assign)id<FamousScrollViewClickDelegate>delegate;
 @end

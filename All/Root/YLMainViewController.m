@@ -10,6 +10,7 @@
 #import "YLOptionBtnView.h"
 #import "UIView+AZView.h"
 #import "YLTrangleView.h"
+#import "YLLoginRegisterViewController.h"
 @interface YLMainViewController ()<UIScrollViewDelegate>
 {
     UIButton *letterButton;
@@ -77,12 +78,18 @@
         self.scrollView.hidden=NO;
         self.mineVC.view.hidden=YES;
         mineButton.selected=NO;
+        self.inletterVC.view.hidden=YES;
+        letterButton.selected=NO;
     };
     //
-    
+    self.inletterVC.view.frame=CGRectMake(0, 70, SCREEN_WIDTH, SCREEN_HEIGHT-70);
+    [self.view addSubview:self.inletterVC.view];
+    self.inletterVC.view.hidden=YES;
     letterButton=[UIButton buttonWithType:UIButtonTypeCustom];
     letterButton.frame=CGRectMake(SCREEN_WIDTH-97*SCREEN_MUTI, 10*SCREEN_MUTI, 30*SCREEN_MUTI, 30*SCREEN_MUTI);
+    [letterButton addTarget:self action:@selector(letterAction:) forControlEvents:UIControlEventTouchUpInside];
     [letterButton setImage:[UIImage imageNamed:@"nav-button-information-default"] forState:UIControlStateNormal];
+    [letterButton setImage:[UIImage imageNamed:@"nav-button-informatio-pressed@2x"] forState:UIControlStateSelected];
     [cusNavigationView addSubview:letterButton];
     
     //
@@ -100,9 +107,33 @@
 
 -(void)mineVCClick:(UIButton *)btn
 {
+    [self isLoggin];
     btn.selected=YES;
+    letterButton.selected=NO;
     self.scrollView.hidden=YES;
+    self.inletterVC.view.hidden=YES;
     self.mineVC.view.hidden=NO;
+    for (UIView *view in self.topView.subviews) {
+        if ([view isKindOfClass:[UIButton class]]) {
+            UIButton *btn=(UIButton *)view;
+            btn.selected=NO;
+            for (UIView *bottom in btn.subviews) {
+                if ([bottom isKindOfClass:[YLTrangleView class]]) {
+                    bottom.hidden=YES;
+                }
+            }
+        }
+        
+    }
+}
+
+-(void)letterAction:(UIButton *)btn
+{
+    btn.selected=YES;
+    mineButton.selected=NO;
+    self.scrollView.hidden=YES;
+    self.mineVC.view.hidden=YES;
+    self.inletterVC.view.hidden=NO;
     for (UIView *view in self.topView.subviews) {
         if ([view isKindOfClass:[UIButton class]]) {
             UIButton *btn=(UIButton *)view;
@@ -146,6 +177,15 @@
     scrollView.showsHorizontalScrollIndicator = NO;
     scrollView.showsVerticalScrollIndicator = NO;
     scrollView.delegate = self;
+}
+
+-(void)isLoggin
+{
+    NSString *token=[[NSUserDefaults standardUserDefaults]objectForKey:BASE64CONTENT];
+    if (token.length==0||token==nil) {
+        YLLoginRegisterViewController *logRegist=[[YLLoginRegisterViewController alloc]init];
+        [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:logRegist animated:YES completion:nil];
+    }
 }
 
 #pragma mark - scrollView代理

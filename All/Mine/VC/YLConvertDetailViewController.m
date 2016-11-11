@@ -8,6 +8,7 @@
 
 #import "YLConvertDetailViewController.h"
 #import "SDCycleScrollView.h"
+#import "UMSocial.h"
 @interface YLConvertDetailViewController ()<SDCycleScrollViewDelegate>
 {
     YLConvertModel *_convertModel;
@@ -50,7 +51,27 @@
 
 -(void)shareAction
 {
+//    NSString *urlString=[NSString stringWithFormat:@"%@%@",URL,[NSString stringWithFormat:@"/videoDetail.html?id=%@",self.listModel.Id]];
+//    NSData *data = [NSData dataWithContentsOfURL:[NSURL  URLWithString:self.listModel.image]];
+//    [[UMSocialData defaultData].urlResource setResourceType:UMSocialUrlResourceTypeWeb url:urlString];
+//    [UMSocialData defaultData].extConfig.title = self.listModel.title;
+//    [UMSocialSnsService presentSnsIconSheetView:self
+//                                         appKey:UmengAppID
+//                                      shareText:nil
+//                                     shareImage:[UIImage imageWithData:data]
+//                                shareToSnsNames:@[UMShareToWechatSession,UMShareToWechatTimeline]
+//                                       delegate:self];
+}
 
+#pragma ----------------UMSocialUIDelegate-------------------------------
+-(void)didFinishGetUMSocialDataInViewController:(UMSocialResponseEntity *)response
+{
+    //根据`responseCode`得到发送结果,如果分享成功
+    if(response.responseCode == UMSResponseCodeSuccess)
+    {
+        //得到分享到的平台名
+        NSLog(@"share to sns name is %@",[[response.data allKeys] objectAtIndex:0]);
+    }
 }
 
 -(void)createbottom

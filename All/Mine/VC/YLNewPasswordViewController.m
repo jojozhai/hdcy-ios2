@@ -60,7 +60,7 @@
         [self.view addSubview:PassWordLabel];
         
         UITextField *passwordTextField=[[UITextField alloc]initWithFrame:CGRectMake(145*SCREEN_MUTI, 141+50*i, 144, 15)];
-        passwordTextField.tag=8888+i;
+        passwordTextField.tag=8808+i;
         passwordTextField.font=FONT_SYS(12);
         passwordTextField.textColor=[UIColor grayColor];
         passwordTextField.borderStyle=UITextBorderStyleNone;
@@ -82,23 +82,42 @@
 
 -(void)resignAction
 {
-    UITextField *otf=[self.view viewWithTag:8888];
+    UITextField *otf=[self.view viewWithTag:8808];
     [otf resignFirstResponder];
-    UITextField *nof=[self.view viewWithTag:8889];
+    UITextField *nof=[self.view viewWithTag:8809];
     [nof resignFirstResponder];
     
 }
 
 -(void)deliverAction
 {
-    UITextField *otf=[self.view viewWithTag:8888];
-    UITextField *nof=[self.view viewWithTag:8889];
-    NSString *urlstring=[NSString stringWithFormat:@"%@/user/password",URL];
-    NSDictionary *padict=@{@"oldPassword":otf.text,@"newPassword":nof.text};
-    [YLHttp put:urlstring userName:USERNAME_REMBER passeword:PASSWORD_REMBER params:padict success:^(id json) {
-        
+    UITextField *otf=[self.view viewWithTag:8808];
+    UITextField *nof=[self.view viewWithTag:8809];
+    NSString *oldpass=[nof.text stringByReplacingOccurrencesOfString:@" " withString:@""];
+    if (otf.text.length==0||nof.text.length==0) {
+        [MBProgressHUD showMessage:@"旧密码或新密码不能为空"];
+        return;
+    }
+    if (nof.text.length<8||nof.text.length>12) {
+        [MBProgressHUD showMessage:@"新密码在8～12位之间"];
+        return;
+    }
+    NSString *urlstring=[NSString stringWithFormat:@"%@/user/password?oldPassword=%@&newPassword=%@",URL,otf.text,oldpass];
+    NSString *token=[[NSUserDefaults standardUserDefaults]objectForKey:BASE64CONTENT];
+    [YLHttp put:urlstring token:token params:nil success:^(id json) {
+        [MBProgressHUD showMessage:@"修改成功"];
+        NSString *str=[[NSUserDefaults standardUserDefaults]objectForKey:USERNAME];
+        NSString *urlS=[NSString stringWithFormat:@"%@/user/login",URL];
+        NSDictionary *paraD=@{@"username":str,@"password":oldpass};
+        [YLHttp post:urlS params:paraD success:^(id json) {
+            if ([json[@"result"] isEqual:@(YES)]) {
+                [[NSUserDefaults standardUserDefaults]setObject:json[@"content"] forKey:BASE64CONTENT];
+            }
+        } failure:^(NSError *error) {
+            
+        }];
     } failure:^(NSError *error) {
-        
+        [MBProgressHUD showMessage:@"旧密码错误"];
     }];
 }
 

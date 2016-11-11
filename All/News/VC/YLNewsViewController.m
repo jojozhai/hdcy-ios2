@@ -149,7 +149,7 @@
     
     // 给滚动视图添加内容
     for (NSUInteger i = 0; i<count; i++) {
-        UITableView *tableView = [[UITableView alloc]initWithFrame:CGRectMake(SCREEN_WIDTH*i, 0, SCREEN_WIDTH, SCREEN_HEIGHT-self.topHeight) style:UITableViewStylePlain];
+        UITableView *tableView = [[UITableView alloc]initWithFrame:CGRectMake(SCREEN_WIDTH*i, 0, SCREEN_WIDTH, SCREEN_HEIGHT-self.topHeight-20) style:UITableViewStylePlain];
         tableView.tag = 1024 + i;
         [tableView registerClass:[YLNewsAdImageTableViewCell class ] forCellReuseIdentifier:@"YLNewsAdImageTableViewCell"];
         [tableView registerClass:[YLNewsAdNomalTableViewCell class] forCellReuseIdentifier:@"YLNewsAdNomalTableViewCell"];
@@ -319,7 +319,7 @@
             [cell.showImageView sd_setImageWithURL:[NSURL URLWithString:model.image] placeholderImage:[UIImage imageNamed:@"placeholderImage"] options:SDWebImageRefreshCached];
             cell.tagLabel.text=[model.tagInfos[0] objectForKey:@"name"];
             cell.timeLabel.text=model.createTime;
-            cell.eyeLabel.text=[NSString stringWithFormat:@"%@",model.readCount];
+            cell.eyeLabel.text=[NSString stringWithFormat:@"%d",model.readCount.intValue+model.readCountPlus.intValue];
             cell.titleLabel.text=model.title;
             
             return cell;

@@ -75,7 +75,7 @@
         if ([model.liveState isEqualToString:@"预告"])
         {
             NSDateFormatter *df = [[NSDateFormatter alloc] init];
-            [df setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+            [df setDateFormat:@"yyyy-MM-dd"];
             [df setTimeZone:[NSTimeZone timeZoneWithName:@"Asia/Shanghai"]];
             NSDate *datenow = [NSDate date];
             int time=model.startTime.integerValue/1000.0-[datenow timeIntervalSince1970];
@@ -85,7 +85,8 @@
                 self.minute=(time-self.hour*60*60)/60;
                 self.second=time-self.hour*60*60-self.minute*60;
             }else{
-                _subTitleLabel.text=[NSString stringWithFormat:@"#预告#/%@",[df stringFromDate:[NSDate dateWithTimeIntervalSince1970:model.startTime.integerValue/1000.0]]];
+                NSDate *date = [NSDate dateWithTimeIntervalSince1970:model.startTime.doubleValue/1000];
+                _subTitleLabel.text=[NSString stringWithFormat:@"#预告#/%@",[df stringFromDate:date]];
             }
         }else{
             _subTitleLabel.text = [NSString stringWithFormat:@"#%@#",model.liveState];

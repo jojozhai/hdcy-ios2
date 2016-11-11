@@ -9,9 +9,15 @@
 #import "YLRegisterOneViewController.h"
 #import "YLAddressViewController.h"
 #import "YLRegisterSecondViewController.h"
+#import "YLRegisterMessage.h"
+#import "YLAboutWebViewController.h"
 @interface YLRegisterOneViewController ()
 {
     UIView *whiteView;
+    UIButton *chooseButton;
+    NSString *_userNameString;
+    NSString *_sexString;
+    NSString *_addressSring;
 }
 @end
 
@@ -84,13 +90,14 @@
     [segCtl addTarget:self action:@selector(change:) forControlEvents:UIControlEventValueChanged];
     segCtl.tintColor = BGColor;
     segCtl.selectedSegmentIndex = 1;
+    _sexString=@"1";
     NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont boldSystemFontOfSize:12],NSFontAttributeName,[UIColor grayColor], NSForegroundColorAttributeName,nil];
     [segCtl setTitleTextAttributes:attributes forState:UIControlStateNormal];
     NSDictionary *highlightedAttributes = [NSDictionary dictionaryWithObject:[UIColor whiteColor] forKey:NSForegroundColorAttributeName];
     [segCtl setTitleTextAttributes:highlightedAttributes forState:UIControlStateHighlighted];
     [whiteView addSubview:segCtl];
     
-    UIButton *chooseButton=[UIButton buttonWithType:UIButtonTypeCustom];
+    chooseButton=[UIButton buttonWithType:UIButtonTypeCustom];
     chooseButton.frame=CGRectMake(SCREEN_WIDTH-76*SCREEN_MUTI-46, 118,36, 12);
     chooseButton.titleLabel.font=FONT_SYS(12);
     [chooseButton setTitle:@"请选择" forState:UIControlStateNormal];
@@ -123,6 +130,9 @@
     }
     
     UILabel *negotiate=[[UILabel alloc]initWithFrame:CGRectMake(38*SCREEN_MUTI, 179*SCREEN_MUTI+240, 200, 12)];
+    negotiate.userInteractionEnabled=YES;
+    UITapGestureRecognizer *tap=[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(negotiatetapClcik)];
+    [negotiate addGestureRecognizer:tap];
     negotiate.attributedText=[self getAttributedString];
     negotiate.font=FONT_SYS(12);
     negotiate.textAlignment=NSTextAlignmentLeft;
@@ -144,24 +154,58 @@
     return attriString;
 }
 
+-(void)negotiatetapClcik
+{
+    YLAboutWebViewController *negotiate=[[YLAboutWebViewController alloc]init];
+    negotiate.row=2;
+    [self presentViewController:negotiate animated:NO completion:nil];
+}
+
 -(void)change:(UISegmentedControl *)sender{
     if (sender.selectedSegmentIndex == 0) {
-        
+        _sexString=@"2";
     }else if (sender.selectedSegmentIndex == 1){
-        
+        _sexString=@"1";
     }
 }
 
 -(void)addressAction
 {
     YLAddressViewController *address=[[YLAddressViewController alloc]init];
+    address.addressBlock=^(NSString *address){
+        _addressSring=address;
+        [chooseButton setTitle:address forState:UIControlStateNormal];
+        CGSize chooseButtonSize = [address boundingRectWithSize:CGSizeMake(MAXFLOAT, 12)
+                                                           options:NSStringDrawingTruncatesLastVisibleLine  | NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading
+                                                        attributes:@{ NSFontAttributeName:FONT_SYS(12)}
+                                                           context:nil].size;
+        chooseButton.frame=CGRectMake(SCREEN_WIDTH-76*SCREEN_MUTI-chooseButtonSize.width-6, 118,chooseButtonSize.width, 12);
+    };
     [self presentViewController:address animated:YES completion:nil];
 }
 
 -(void)nextStep
 {
+    UITextField *textfield=[whiteView viewWithTag:8844];
+    if (textfield.text.length==0||textfield.text==nil) {
+        [MBProgressHUD showMessage:@"请输入用户名"];
+        return;
+    }
+    if (textfield.text.length>25) {
+        [MBProgressHUD showMessage:@"请输入25个字符以内"];
+        return;
+    }
+    if (_addressSring.length==0||_addressSring==nil) {
+        [MBProgressHUD showMessage:@"请选择城市"];
+        return;
+    }
     YLRegisterSecondViewController *second=[[YLRegisterSecondViewController alloc]init];
     [self presentViewController:second animated:NO completion:nil];
+    
+    [[YLRegisterMessage sharedRegisterMessage]setNickname:textfield.text];
+    [[YLRegisterMessage sharedRegisterMessage]setSex:_sexString];
+    [[YLRegisterMessage sharedRegisterMessage]setCity:_addressSring];
+    
 }
 
 - (void)didReceiveMemoryWarning {

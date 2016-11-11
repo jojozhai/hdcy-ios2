@@ -48,12 +48,24 @@
     
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     [self createNavigationBar];
-    [self prepareTableView];
-    [self createCommentView];
-    [self createClearCoverView];
+    [self isLoggin];
    
 }
-
+-(void)isLoggin
+{
+    NSString *token=[[NSUserDefaults standardUserDefaults]objectForKey:BASE64CONTENT];
+    if (token.length==0||token==nil) {
+        UIAlertController * alertController = [UIAlertController alertControllerWithTitle:@"您没有登录，点击我的登录"                                                                             message: nil                                                                       preferredStyle:UIAlertControllerStyleActionSheet];
+        [alertController addAction: [UIAlertAction actionWithTitle: @"确定" style: UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            [self backAction];
+        }]];
+        [self presentViewController:alertController animated: NO completion: nil];
+    }else{
+        [self prepareTableView];
+        [self createCommentView];
+        [self createClearCoverView];
+    }
+}
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:YES];
@@ -145,82 +157,80 @@
     [self.hud showAnimated:YES];
     NSString *urlString=[NSString stringWithFormat:@"%@%@",URL,@"/comments"];
     NSDictionary *paraDict=@{@"page":@(self.page),@"size":@"30",@"sort":@"createdTime,desc",@"targetId":self.Id,@"target":self.target};
-    //首个请求的是评论列表
-    [YLHttp get:urlString userName:USERNAME_REMBER passeword:PASSWORD_REMBER params:paraDict success:^(id json) {
-        NSArray *contentArray=json[@"content"];
+    NSString *token=[[NSUserDefaults standardUserDefaults]objectForKey:BASE64CONTENT];
+    //添加点赞状态
+    NSString *urlS=[NSString stringWithFormat:@"%@/comment/praise",URL];
+    [YLHttp get:urlS token:token params:paraDict success:^(id json) {
         if (self.page==0) {
             [self.dataAray removeAllObjects];
             [self.dataSource removeAllObjects];
+            [self.praiseArray removeAllObjects];
         }
-        //判断是否有评论
-        if (contentArray.count==0) {
+        for (int i=0; i<[json count]; i++) {
+            [self.praiseArray addObject:json[i]];
+        }
+        
+        //首个请求的是评论列表
+        [YLHttp get:urlString token:token params:paraDict success:^(id json) {
+            NSArray *contentArray=json[@"content"];
             
-            [MBProgressHUD showMessage:@"已经没有更多评论了"];
-        }else{
-            //添加数据
-            for (NSDictionary *commentDic in contentArray) {
-                YLCommentModel *model=[[YLCommentModel alloc]initWithDictionary:commentDic error:nil];
-                [self.dataSource addObject:model];
-                [self.dataAray addObject:model.replys];
-            }
-            //添加点赞状态
-            NSString *urlString=[NSString stringWithFormat:@"%@/comment/praise",URL];
-            [YLHttp get:urlString userName:USERNAME_REMBER passeword:PASSWORD_REMBER params:paraDict success:^(id json) {
-                for (int i=0; i<[json count]; i++) {
-                    [self.praiseArray addObject:json[i]];
+            //判断是否有评论
+            if (contentArray.count==0) {
+                
+                [MBProgressHUD showMessage:@"已经没有更多评论了"];
+            }else{
+                //添加数据
+                for (NSDictionary *commentDic in contentArray) {
+                    YLCommentModel *model=[[YLCommentModel alloc]initWithDictionary:commentDic error:nil];
+                    [self.dataSource addObject:model];
+                    [self.dataAray addObject:model.replys];
                 }
                 
-            } failure:^(NSError *error) {
-                if ([self.tableView.mj_header isRefreshing]) {
-                    [self.tableView.mj_header endRefreshing];
-                }else{
-                    [self.tableView.mj_footer endRefreshing];
-                }
                 
-            }];
-            
-        }
-        //添加是否展开的数组及数组中的元素
-        if (self.dataSource.count!=0) {
-            [self.boolAray removeAllObjects];
-            for (int i=0; i<self.dataSource.count; i++) {
-                
-                NSMutableDictionary *boolDict=[NSMutableDictionary dictionary];
-                [boolDict setObject:@(NO) forKey:@"bool"];
-                [self.boolAray addObject:boolDict];
             }
             
-            for (YLCommentModel *model in self.dataSource) {
-                if (model.replys.count>2) {
-                    NSMutableArray *addArr=[[NSMutableArray alloc]init];
-                    for (int i=0; i<2; i++) {
-                        [addArr addObject:model.replys[i]];
+            //添加是否展开的数组及数组中的元素
+            if (self.dataSource.count!=0) {
+                [self.boolAray removeAllObjects];
+                for (int i=0; i<self.dataSource.count; i++) {
+                    
+                    NSMutableDictionary *boolDict=[NSMutableDictionary dictionary];
+                    [boolDict setObject:@(NO) forKey:@"bool"];
+                    [self.boolAray addObject:boolDict];
+                }
+                
+                for (YLCommentModel *model in self.dataSource) {
+                    if (model.replys.count>2) {
+                        NSMutableArray *addArr=[[NSMutableArray alloc]init];
+                        for (int i=0; i<2; i++) {
+                            [addArr addObject:model.replys[i]];
+                        }
+                        [model setValue:addArr forKey:@"replys"];
                     }
-                    [model setValue:addArr forKey:@"replys"];
                 }
             }
-        }
-        //取消刷新
+            //取消刷新
+            if ([self.tableView.mj_header isRefreshing]) {
+                [self.tableView.mj_header endRefreshing];
+            }else{
+                [self.tableView.mj_footer endRefreshing];
+            }
+            [self.tableView reloadData];
+            [self.hud hideAnimated:YES];
+            
+        } failure:^(NSError *error) {
+            [self.hud hideAnimated:YES];
+        }];
+    } failure:^(NSError *error) {
         if ([self.tableView.mj_header isRefreshing]) {
             [self.tableView.mj_header endRefreshing];
         }else{
             [self.tableView.mj_footer endRefreshing];
         }
-        [self.tableView reloadData];
-        [self.hud hideAnimated:YES];
         
-    } failure:^(NSError *error) {
-        [self.hud hideAnimated:YES];
     }];
-    //无网络取消刷新
-//    if (self.isOnline==NO) {
-//        if ([self.tableView.mj_header isRefreshing]) {
-//            [self.tableView.mj_header endRefreshing];
-//        }else{
-//            [self.tableView.mj_footer endRefreshing];
-//        }
-//        [self.hud hide:YES];
-//    }
+    
+ 
 }
 
 -(void)prepareTableView
@@ -337,7 +347,8 @@
     UIButton *button=[cell.contentView viewWithTag:index];
     NSString *urlString=[NSString stringWithFormat:@"%@%@",URL,@"/praise"];
     NSDictionary *paraDict=@{@"target":@"comment",@"targetId":model.Id};
-    [YLHttp post:urlString userName:USERNAME_REMBER passeword:PASSWORD_REMBER params:paraDict success:^(id json) {
+    NSString *token=[[NSUserDefaults standardUserDefaults]objectForKey:BASE64CONTENT];
+    [YLHttp post:urlString token:token params:paraDict success:^(id json) {
         if ([json[@"result"] isEqualToString:@"ok"]) {
             if ([json[@"content"] isEqual:@(YES)]) {
                 [button setImage:[UIImage imageNamed:@"content-icon-zambia-pressed"] forState:UIControlStateNormal];
@@ -365,7 +376,8 @@
     UIButton *button=[self.tableView viewWithTag:index];
     NSString *urlString=[NSString stringWithFormat:@"%@%@",URL,@"/praise"];
     NSDictionary *paraDict=@{@"target":@"comment",@"targetId":model.Id};
-    [YLHttp put:urlString userName:USERNAME_REMBER passeword:PASSWORD_REMBER params:paraDict success:^(id json) {
+    NSString *token=[[NSUserDefaults standardUserDefaults]objectForKey:BASE64CONTENT];
+    [YLHttp put:urlString token:token params:paraDict success:^(id json) {
         if ([json[@"result"] isEqualToString:@"ok"]) {
             if ([json[@"content"] isEqual:@(YES)]) {
                 [button setImage:[UIImage imageNamed:@"content-icon-zambia-default-"] forState:UIControlStateNormal];
@@ -417,8 +429,8 @@
     }else{
         NSString *urlString=[NSString stringWithFormat:@"%@%@",URL,@"/comment"];
         NSDictionary *paraDict=@{@"target":self.target,@"targetId":self.Id,@"replyToId":_replyToId,@"content":wcv.commentTextView.text};
-        
-        [YLHttp post:urlString userName:USERNAME_REMBER passeword:PASSWORD_REMBER params:paraDict success:^(id json) {
+        NSString *token=[[NSUserDefaults standardUserDefaults]objectForKey:BASE64CONTENT];
+        [YLHttp post:urlString token:token params:paraDict success:^(id json) {
             //回复时
             if ([_replyToId isEqualToString:@""]==NO) {
                 YLCommentModel *model=self.dataSource[_indexpath.row];

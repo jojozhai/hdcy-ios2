@@ -59,13 +59,15 @@
     }else{
         NSString *urlString=[NSString stringWithFormat:@"%@/activityParticipator",URL];
         NSDictionary *paraDict=@{@"activityId":self.contentModel.Id,@"message":_TextView.text};
-        [YLHttp post:urlString userName:USERNAME_REMBER passeword:PASSWORD_REMBER params:paraDict success:^(id json) {
+        NSString *token=[[NSUserDefaults standardUserDefaults]objectForKey:BASE64CONTENT];
+        [YLHttp post:urlString token:token params:paraDict success:^(id json) {
             [MBProgressHUD showMessage:@"报名成功"];
-            self.messageBlock();
+            self.messageBlock(@(YES));
             [_signUpButton setTitle:@"已报名" forState:UIControlStateNormal];
             _signUpButton.enabled=NO;
         } failure:^(NSError *error) {
             [MBProgressHUD showMessage:@"报名已结束"];
+            self.messageBlock(@(NO));
         }];
         _TextView.text=@"";
         _showLabel.hidden=NO;

@@ -27,8 +27,16 @@
 @property (nonatomic,copy)NSString<Optional> *endTime;
 //热度（参与人数）
 @property (nonatomic,copy)NSString<Optional> *hot;
+
+@property (nonatomic,copy)NSString<Optional> *hotPlus;
 //活动地址
 @property (nonatomic,copy)NSString<Optional> *address;
+
+@property (nonatomic,copy)NSString<Optional> *city;
+
+@property (nonatomic,copy)NSString<Optional> *contactPhone;
+
+@property (nonatomic,copy)NSString<Optional> *contactWeixin;
 //活动介绍
 @property (nonatomic,copy)NSString<Optional> *desc;
 //是否已经结束
@@ -38,7 +46,7 @@
 //活动主办方ID
 @property (nonatomic,copy)NSString<Optional> *sponsorId;
 //浏览量
-@property (nonatomic,copy)NSString<Optional> *browsecal;
+@property (nonatomic,copy)NSString<Optional> *browseval;
 //主办方名称
 @property (nonatomic,copy)NSString<Optional> *sponsorName;
 
@@ -50,4 +58,11 @@
 //权数
 @property (nonatomic,copy)NSString<Optional> *weighting;
 
+@property (nonatomic,copy)NSString<Optional> *peopleLimit;
+
+@property (nonatomic,copy)NSString<Optional> *signStartTime;
+
+@property (nonatomic,copy)NSString<Optional> *signEndTime;
+
+@property (nonatomic,copy)NSString<Optional> *signFinish;
 @end

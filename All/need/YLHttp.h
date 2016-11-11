@@ -16,11 +16,11 @@
 /**
  *验证get请求
  */
-+(void)get:(NSString *)url userName:(NSString *)name passeword:(NSString *)password params:(id)params success:(void(^)(id json))success failure:(void(^)(NSError *error))failure;
++(void)get:(NSString *)url token:(NSString *)token params:(id)params success:(void(^)(id json))success failure:(void(^)(NSError *error))failure;
 /**
  *验证post请求
  */
-+(void)post:(NSString *)url userName:(NSString *)name passeword:(NSString *)password params:(id)params success:(void(^)(id json))success failure:(void(^)(NSError *error))failure;
++(void)post:(NSString *)url token:(NSString *)token params:(id)params success:(void(^)(id json))success failure:(void(^)(NSError *error))failure;
 /**
  *普通post请求
  */
@@ -31,15 +31,11 @@
  */
 + (void)post:(NSString *)url paramsWithChinese:(NSDictionary *)params success:(void(^)(id json))success failure:(void(^)(NSError *error))failure;
 
-/**
- * post的参数有中文时,用这个方法
- */
-+ (void)post:(NSString *)url parameters:(NSDictionary *)params constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block success:(void(^)(id json))success failure:(void(^)(NSError *error))failure;
-
++(void)post:(NSString *)url bodyparams:(NSDictionary *)params success:(void (^)(id))success failure:(void (^)(NSError *))failure;
 /**
  *put请求
  */
-+(void)put:(NSString *)url userName:(NSString *)name passeword:(NSString *)password params:(id)params success:(void(^)(id json))success failure:(void(^)(NSError *error))failure;
++(void)put:(NSString *)url token:(NSString *)token params:(id)params success:(void(^)(id json))success failure:(void(^)(NSError *error))failure;
 /**
  *上传头像
  */

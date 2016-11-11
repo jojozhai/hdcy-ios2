@@ -7,7 +7,7 @@
 //
 
 #import "YLCommunicateView.h"
-#import "YLActivityInfoHeaderView.h"
+
 #import "YLCommentModel.h"
 #import "YLActiConsultTableViewCell.h"
 #import "YLConsultRightTableViewCell.h"
@@ -16,7 +16,7 @@
 @property (nonatomic,strong)NSMutableArray *dataArray;
 @property (nonatomic,strong)NSMutableArray *cellHeightArray;
 @property (nonatomic,assign)NSInteger totelHeight;
-@property (nonatomic,strong)YLActivityInfoHeaderView *infoHeader;
+
 @end
 @implementation YLCommunicateView
 
@@ -32,7 +32,7 @@
 {
     self.infoHeader=[[YLActivityInfoHeaderView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 50)];
     self.infoHeader.infoImageView.image=[UIImage imageNamed:@"content-icon-communication-default"];
-    self.infoHeader.titleLabel.text=@"活动交流";
+    self.infoHeader.titleLabel.text=@"活动咨询";
     
     //self.frame=CGRectMake(0, 0, SCREEN_WIDTH, self.totelHeight);
     self.tableView = [[UITableView alloc]initWithFrame:CGRectMake(0,0, SCREEN_WIDTH,self.totelHeight) style:UITableViewStylePlain];
@@ -141,7 +141,7 @@
 -(void)setTotalElements:(NSString *)totalElements
 {
     _totalElements=totalElements;
-    self.infoHeader.titleLabel.text=[NSString stringWithFormat:@"活动交流(%@)",totalElements];
+    self.infoHeader.titleLabel.text=[NSString stringWithFormat:@"活动咨询(%@)",totalElements];
 }
 
 -(NSMutableArray *)dataArray

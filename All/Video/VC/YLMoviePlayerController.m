@@ -30,6 +30,8 @@
     BOOL _isShowControl;
     
     UIView *_maskView;
+    
+    BOOL _isPlay;
 }
 
 @property (nonatomic,strong)UIImageView *sponsorImageView;
@@ -47,7 +49,7 @@
         self.scalingMode = MPMovieScalingModeAspectFit;
         self.initialPlaybackTime = 0;
         _isZoom = NO;
-        
+        _isPlay=NO;
         self.frame = CGRectMake(0, 0, kWindowWidth, 250);
 
         [self registNoti];
@@ -71,6 +73,27 @@
 {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reset) name:MPMoviePlayerPlaybackDidFinishNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(nowPlaying) name:MPMovieDurationAvailableNotification object:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(enterBackground:) name:UIApplicationDidEnterBackgroundNotification object:[UIApplication sharedApplication]];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(enterForeground:) name:UIApplicationWillEnterForegroundNotification object:[UIApplication sharedApplication]];
+}
+
+-(void)enterBackground:(NSNotification *)noti
+{
+    if (_isPlay == YES){
+        [self pause];
+    }
+}
+
+-(void)enterForeground:(NSNotification *)noti
+{
+    if (_isPlay == YES)
+    {
+        [self play];
+        [_playBut setBackgroundImage:[UIImage imageNamed:@"content-button-suspend-default"] forState:UIControlStateNormal];
+    }else{
+        [self pause];
+        [_playBut setBackgroundImage:[UIImage imageNamed:@"content-button-play-default"] forState:UIControlStateNormal];
+    }
 }
 
 - (void)setFrame:(CGRect)frame
@@ -152,6 +175,7 @@
     {
         [self pause];
         [_playBut setBackgroundImage:[UIImage imageNamed:@"content-button-play-default"] forState:UIControlStateNormal];
+        _isPlay=NO;
     }
     else
     {
@@ -159,9 +183,11 @@
         {
             _progressView.value = 0;
             self.currentPlaybackTime = 0;
+            [self nowPlaying];
         }
         [self play];
         [_playBut setBackgroundImage:[UIImage imageNamed:@"content-button-suspend-default"] forState:UIControlStateNormal];
+        _isPlay=YES;
     }
 }
 
@@ -183,13 +209,13 @@
         
         self.sponsorImageView.sd_layout
         .leftSpaceToView(self,12)
-        .topSpaceToView(self,self.frame.size.height-70)
+        .topSpaceToView(self,250-70)
         .widthIs(30)
         .heightIs(30);
         
         self.sponorLabel.sd_layout
         .leftSpaceToView(self,50)
-        .topSpaceToView(self,self.frame.size.height-70)
+        .topSpaceToView(self,250-70)
         .widthIs(80)
         .heightIs(30);
     }
@@ -207,13 +233,13 @@
         
         self.sponsorImageView.sd_layout
         .leftSpaceToView(self,12)
-        .topSpaceToView(self,self.frame.size.width-70)
+        .topSpaceToView(self,kWindowWidth-70)
         .widthIs(30)
         .heightIs(30);
         
         self.sponorLabel.sd_layout
         .leftSpaceToView(self,50)
-        .topSpaceToView(self,self.frame.size.width-70)
+        .topSpaceToView(self,kWindowWidth-70)
         .widthIs(80)
         .heightIs(30);
     }
@@ -310,6 +336,14 @@
     _model=model;
     [self.sponsorImageView sd_setImageWithURL:[NSURL URLWithString:model.sponsorImage] placeholderImage:[UIImage imageNamed:@"placeholderImage"] options:SDWebImageRefreshCached];
     self.sponorLabel.text=model.sponsorName;
+}
+
+-(void)dealloc
+{
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:UIApplicationDidEnterBackgroundNotification object:[UIApplication sharedApplication]];
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:UIApplicationDidEnterBackgroundNotification object:[UIApplication sharedApplication]];
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:MPMoviePlayerPlaybackDidFinishNotification object:nil];
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:MPMovieDurationAvailableNotification object:nil];
 }
 
 @end

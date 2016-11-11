@@ -8,6 +8,14 @@
 
 #import "YLLogginViewController.h"
 #import "YLPassWordBackViewController.h"
+#import "YLMainViewController.h"
+#import "YLVideoViewController.h"
+#import "YLNewsViewController.h"
+#import "YLActivityViewController.h"
+#import "YLFamousViewController.h"
+#import "YLMineViewController.h"
+#import "YLInLetterViewController.h"
+#import "YLAboutWebViewController.h"
 @interface YLLogginViewController ()
 {
     UIView *whiteView;
@@ -73,7 +81,12 @@
         TextField.font=FONT_SYS(15);
         TextField.textColor=[UIColor grayColor];
         TextField.borderStyle=UITextBorderStyleNone;
-        TextField.secureTextEntry=YES;
+        if (i==0) {
+            TextField.secureTextEntry=NO;
+            TextField.keyboardType=UIKeyboardTypeNumberPad;
+        }else{
+            TextField.secureTextEntry=YES;
+        }
         [whiteView addSubview:TextField];
     }
     
@@ -86,6 +99,9 @@
     [self.view addSubview:nextButton];
     
     UILabel *negotiate=[[UILabel alloc]initWithFrame:CGRectMake(38*SCREEN_MUTI, 179*SCREEN_MUTI+190, 200, 12)];
+    negotiate.userInteractionEnabled=YES;
+    UITapGestureRecognizer *tap=[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(negotiatetapClcik)];
+    [negotiate addGestureRecognizer:tap];
     negotiate.attributedText=[self getAttributedString];
     negotiate.font=FONT_SYS(12);
     negotiate.textAlignment=NSTextAlignmentLeft;
@@ -99,6 +115,13 @@
     [forget addTarget:self action:@selector(forgetAction) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:forget];
     
+}
+
+-(void)negotiatetapClcik
+{
+    YLAboutWebViewController *negotiate=[[YLAboutWebViewController alloc]init];
+    negotiate.row=2;
+    [self presentViewController:negotiate animated:NO completion:nil];
 }
 
 -(void)forgetAction
@@ -123,7 +146,66 @@
 
 -(void)loggin
 {
+    UITextField *UNTF=[whiteView viewWithTag:8822];
+    [UNTF resignFirstResponder];
+    UITextField *PWTF=[whiteView viewWithTag:8823];
+    [PWTF resignFirstResponder];
+    NSString *urlString=[NSString stringWithFormat:@"%@/user/login",URL];
+    NSDictionary *paraDict=@{@"username":UNTF.text,@"password":PWTF.text};
+ 
+    AFHTTPRequestOperationManager *mgr = [AFHTTPRequestOperationManager manager];
+    NSMutableURLRequest *request =
+    [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:urlString]];
+    [request setHTTPMethod:@"POST"];
+    [request setValue:@"application/json"
+   forHTTPHeaderField:@"Content-Type"];
+    [request setHTTPBody:[NSJSONSerialization dataWithJSONObject:paraDict options:NSJSONWritingPrettyPrinted error:nil]];
+    NSOperation *operation =
+    [mgr HTTPRequestOperationWithRequest:request
+                                 success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                     // 成功后的处理
+                                     [[NSUserDefaults standardUserDefaults]setValue:responseObject[@"content"] forKey:BASE64CONTENT];
+                                     [[NSUserDefaults standardUserDefaults]setValue:UNTF.text forKey:USERNAME];
+                                     [[NSUserDefaults standardUserDefaults] synchronize];
+                                     
+                                     if ([[UIApplication sharedApplication].keyWindow.rootViewController isKindOfClass:[YLMainViewController class]]) {
+                                         [[NSNotificationCenter defaultCenter]postNotificationName:MINENOTIFICATION object:nil];
+                                         [self.presentingViewController.presentingViewController dismissViewControllerAnimated:NO completion:nil];
+                                     }else{
+                                         YLMainViewController *main=[[YLMainViewController alloc]init];
+                                         
+                                         YLVideoViewController *video=[[YLVideoViewController alloc]init];
+                                         YLNewsViewController *news=[[YLNewsViewController alloc]init];
+                                         news.topHeight=40;
+                                         news.selectedButtonColor=[UIColor whiteColor];
+                                         news.topBackgroudColor=RGBCOLOR(143, 175, 202);
+                                         YLActivityViewController *activity=[[YLActivityViewController alloc]init];
+                                         YLFamousViewController *famous=[[YLFamousViewController alloc]init];
+                                         
+                                         video.title=@"视频";
+                                         news.title=@"资讯";
+                                         activity.title=@"活动";
+                                         famous.title=@"大咖";
+                                         main.viewControllers=@[video,news,activity,famous];
+                                         main.topHeight=50;
+                                         main.selectedButtonColor=RGBCOLOR(0, 254, 252);
+                                         
+                                         YLMineViewController *mine=[[YLMineViewController alloc]init];
+                                         main.mineVC=mine;
+                                         YLInLetterViewController *inletter=[[YLInLetterViewController alloc]init];
+                                         main.inletterVC=inletter;
+                                         [[UIApplication sharedApplication].keyWindow setRootViewController:main];
+                                         [self presentViewController:main animated:YES completion:nil];
+                                         
+                                     }
+                                 }
+                                 failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                                     // 失败后的处理
+                                     [MBProgressHUD showMessage:@"用户名或密码不正确"];
+                                 }];
+    [mgr.operationQueue addOperation:operation];
     
+
 }
 
 - (void)didReceiveMemoryWarning {

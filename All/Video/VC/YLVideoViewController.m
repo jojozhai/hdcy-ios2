@@ -109,7 +109,7 @@
     YLVideoListModel *m = self.dataSource[indexPath.row];
     YLVideoDetailViewController *detail = [[YLVideoDetailViewController alloc] init];
     detail.Id = [m id];
-        
+    detail.model=m;
     CATransition * animation = [CATransition animation];
     animation.duration = 0.8;    //  时间
     animation.type = kCATransitionMoveIn;
@@ -160,8 +160,8 @@
     [self.hud showAnimated:YES];
     
     NSString *urlString=[NSString stringWithFormat:@"%@%@",URL,@"/video"];
-    NSDictionary *paraDict=@{@"page":@(_page),@"size":@"20",@"sort":@"createdTime,desc",@"enable":@(YES),@"top":@(isTop)};
-    [YLHttp get:urlString userName:USERNAME_REMBER passeword:PASSWORD_REMBER params:paraDict success:^(id json) {
+    NSDictionary *paraDict=@{@"page":@(_page),@"size":@"15",@"sort":@"createdTime,desc",@"enable":@(YES),@"top":@(isTop),@"liveForApp":@(YES)};
+    [YLHttp get:urlString params:paraDict success:^(id json) {
         [self.hud hideAnimated:YES];
         NSArray *contentArray=json[@"content"];
         if (isTop)

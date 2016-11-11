@@ -44,13 +44,22 @@
         _detailLabel.font=FONT_SYS(11);
         [self.contentView addSubview:_detailLabel];
         
-        _timeLabel=[[UILabel alloc]initWithFrame:CGRectMake(SCREEN_HEIGHT-80, 19, 68, 12)];
+        _timeLabel=[[UILabel alloc]initWithFrame:CGRectMake(SCREEN_WIDTH-80, 19, 68, 12)];
         _timeLabel.textColor=[UIColor grayColor];
         _timeLabel.textAlignment=NSTextAlignmentLeft;
         _timeLabel.font=FONT_SYS(11);
         [self.contentView addSubview:_timeLabel];
     }
     return self;
+}
+
+-(void)setDict:(NSDictionary *)dict
+{
+    _dict=dict;
+    _headImageView.image=[UIImage imageNamed:dict[@"image"]];
+    _nameLabel.text=dict[@"name"];
+    _detailLabel.text=dict[@"detail"];
+    _timeLabel.text=@"11-01";
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

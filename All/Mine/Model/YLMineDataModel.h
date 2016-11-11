@@ -30,9 +30,6 @@
 @property (nonatomic,copy)NSString<Optional> *vip;
 @property (nonatomic,copy)NSString<Optional> *vipExpired;
 @property (nonatomic,copy)NSString<Optional> *vipValid;
-@property (nonatomic,copy)NSString<Optional> *weixin;
-@property (nonatomic,copy)NSString<Optional> *weixinOpenId;
-@property (nonatomic,copy)NSString<Optional> *weixinUnionId;
 @property (nonatomic,copy)NSString<Optional> *beans;
 @property (nonatomic,copy)NSString<Optional> *job;
 @end

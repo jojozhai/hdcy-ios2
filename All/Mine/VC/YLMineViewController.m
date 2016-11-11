@@ -14,6 +14,9 @@
 #import "YLMyActivityViewController.h"
 #import "YLConvertViewController.h"
 #import "YLAboutUsViewController.h"
+#import "LoginViewController.h"
+#import "YLLoginRegisterViewController.h"
+
 @interface YLMineViewController ()
 {
     YLMineUpView *_upView;
@@ -27,9 +30,23 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(referesh) name:MINENOTIFICATION object:nil];
     [self createView];
     [self requestUrl];
+    
 }
+
+-(void)referesh
+{
+    [self requestUrl];
+}
+
+-(void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+   // [self performSelectorOnMainThread:@selector(isLoggin) withObject:nil waitUntilDone:NO];
+}
+
 
 -(void)createView
 {
@@ -51,7 +68,7 @@
         [button setTitle:self.dataSource[i][@"title"] forState:UIControlStateNormal];
         [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [downImageView addSubview:button];
-    }
+    } 
 }
 
 -(void)buttonAction:(UIButton *)btn
@@ -86,6 +103,12 @@
         case 3:{
 //            YLAboutUsViewController *aboutUs=[[YLAboutUsViewController alloc]init];
 //             [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:aboutUs animated:YES completion:nil];
+            [[NSUserDefaults standardUserDefaults]setObject:@"" forKey:BASE64CONTENT];
+            [[NSUserDefaults standardUserDefaults]setObject:@"" forKey:USERNAME];
+            [[NSUserDefaults standardUserDefaults]synchronize];
+            
+            YLLoginRegisterViewController *logRegist=[[YLLoginRegisterViewController alloc]init];
+            [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:logRegist animated:YES completion:nil];
         }
             break;
         case 4:{
@@ -101,9 +124,12 @@
 -(void)requestUrl
 {
     NSString *urlString=[NSString stringWithFormat:@"%@/user/current",URL];
-    [YLHttp get:urlString userName:USERNAME_REMBER passeword:PASSWORD_REMBER params:nil success:^(id json) {
+    NSString *token=[[NSUserDefaults standardUserDefaults]objectForKey:BASE64CONTENT];
+    NSLog(@"%@",token);
+    [YLHttp get:urlString token:token params:nil success:^(id json) {
         _upView.userDictionary=json;
         _model=[[YLMineDataModel alloc]initWithDictionary:json error:nil];
+        
     } failure:^(NSError *error) {
         
     }];

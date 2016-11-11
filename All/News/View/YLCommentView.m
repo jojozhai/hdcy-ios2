@@ -136,8 +136,6 @@
     [super setFrame:frame];
 }
 
-
-
 #pragma mark - MLLinkLabelDelegate
 
 - (void)didClickLink:(MLLink *)link linkText:(NSString *)linkText linkLabel:(MLLinkLabel *)linkLabel
@@ -146,11 +144,6 @@
     
 }
 
-
-
-
-
-
 - (NSMutableArray *)commentLabelsArray
 {
     if (!_commentLabelsArray) {
@@ -158,11 +151,5 @@
     }
     return _commentLabelsArray;
 }
-
-
-
-
-
-
 
 @end

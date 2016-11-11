@@ -8,7 +8,7 @@
 
 #import "RootViewController.h"
 #import "YLActivityListContentModel.h"
-typedef void(^changeMessageBlock)();
+typedef void(^changeMessageBlock)(BOOL);
 @interface YLSignUpViewController : RootViewController
 @property (nonatomic,strong)YLActivityListContentModel *contentModel;
 @property (nonatomic,copy)changeMessageBlock messageBlock;

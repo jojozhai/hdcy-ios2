@@ -29,6 +29,7 @@
     self.view.backgroundColor=DarkBGColor;
     [self createNavigationBar];
     [self createTableView];
+    
 }
 
 //设置navbar
@@ -37,8 +38,8 @@
     self.titleLabel.text=@"我的活动";
     //添加返回命令
     [self addLeftBarButtonItemWithImageName:@"nav-icon-back-default-@2x" target:self selector:@selector(backAction)];
-    
 }
+
 //返回
 -(void)backAction
 {
@@ -49,7 +50,6 @@
     [self.view.window.layer addAnimation:animation forKey:nil];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
-
 
 -(void)createTableView
 {
@@ -95,7 +95,8 @@
     
     NSDictionary *dict=@{@"enable":@YES,@"page":@(page),@"size":@"20",@"sort":@"createdTime,desc"};
     NSString *urlString=[NSString stringWithFormat:@"%@%@",URL,@"/participator"];
-    [YLHttp get:urlString userName:USERNAME_REMBER passeword:PASSWORD_REMBER  params:dict success:^(id json) {
+    NSString *token=[[NSUserDefaults standardUserDefaults]objectForKey:BASE64CONTENT];
+    [YLHttp get:urlString token:token  params:dict success:^(id json) {
         if (self.page==0) {
             [self.dataSource removeAllObjects];
         }

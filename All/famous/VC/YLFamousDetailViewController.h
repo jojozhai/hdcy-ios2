@@ -7,7 +7,8 @@
 //
 
 #import "RootViewController.h"
-
+ 
 @interface YLFamousDetailViewController : RootViewController
 @property (nonatomic,copy)NSString *Id;
+
 @end

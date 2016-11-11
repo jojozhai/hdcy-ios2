@@ -81,6 +81,12 @@ static NSString *URL= @"http://dev.haoduocheyou.com/app2";
 #define USERNAME_REMBER @"1"
 #define PASSWORD_REMBER @"123456"
 
+static NSString *BASE64CONTENT=@"base64content";
+static NSString *FIRSTLOGGIN=@"isfirst";
+static NSString *USERNAME=@"username64";
+
+static NSString *MINENOTIFICATION=@"mynotification";
+
 //第三方
 static NSString *UmengAppID= @"57cf7901e0f55afb1d001250";
 static NSString *WeChatAppID=@"wx6619f92e0cc550da";

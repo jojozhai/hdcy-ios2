@@ -57,7 +57,6 @@
                         range:NSMakeRange(0,6)];
     UITextField *phneTextField=[[UITextField alloc]initWithFrame:CGRectMake(57*SCREEN_MUTI, 161, 200, 15)];
     phneTextField.tag=8866;
-    phneTextField.keyboardType=UIKeyboardTypeNumberPad;
     phneTextField.attributedPlaceholder=attriString;
     phneTextField.font=FONT_SYS(12);
     phneTextField.textColor=[UIColor grayColor];
@@ -88,8 +87,15 @@
 {
     UITextField *tf=[self.view viewWithTag:8866];
     [tf resignFirstResponder];
-    
-    
+    NSString *urlString=[NSString stringWithFormat:@"%@/user/password/reset",URL];
+    NSDictionary *dict=@{@"phone":self.mobile,@"password":tf.text};
+
+    [YLHttp put:urlString token:nil params:dict success:^(id json) {
+        [MBProgressHUD showMessage:@"修改成功"];
+        [self.presentingViewController.presentingViewController dismissViewControllerAnimated:NO completion:nil];
+    } failure:^(NSError *error) {
+        
+    }];
 }
 
 - (void)didReceiveMemoryWarning {

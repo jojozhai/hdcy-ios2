@@ -10,4 +10,5 @@
 typedef void(^changeInterestBlock)(NSString *data);
 @interface YLInterestViewController : UIViewController
 @property (nonatomic,copy)changeInterestBlock interestBlock;
+@property (nonatomic,copy)NSString *tagString;
 @end

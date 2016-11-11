@@ -37,7 +37,7 @@
     nameLabel.textAlignment=NSTextAlignmentCenter;
     [topBackImageVIew addSubview:nameLabel];
     
-    UILabel *mannerLabel=[[UILabel alloc]initWithFrame:CGRectMake(0, 215*SCREEN_MUTI, 315*SCREEN_MUTI, 15)];
+    UILabel *mannerLabel=[[UILabel alloc]initWithFrame:CGRectMake(74*SCREEN_MUTI, 215*SCREEN_MUTI, 200*SCREEN_MUTI, 15)];
     mannerLabel.text=@"请通过以下方式与我们联系";
     mannerLabel.font=FONT_SYS(14);
     mannerLabel.textColor=[UIColor blackColor];

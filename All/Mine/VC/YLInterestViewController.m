@@ -54,8 +54,20 @@
         [button setBackgroundImage:[UIImage imageNamed:@"car_style_selected"] forState:UIControlStateSelected];
         button.selected=NO;
         [_buttonBackView addSubview:button];
+        
     }
 
+    NSArray *tagArray=[self.tagString componentsSeparatedByString:@","];
+    for (NSString *tag in tagArray) {
+        for (UIButton *btn in _buttonBackView.subviews) {
+            if ([tag isEqualToString:btn.titleLabel.text]) {
+                btn.selected=YES;
+                [self.chooseInterestArray addObject:tag];
+            }
+        }
+        
+    }
+    
     //添加蒙板
     _coverView=[[UIView alloc]initWithFrame:self.view.bounds];
     _coverView.backgroundColor = [UIColor colorWithWhite:0.000 alpha:0.290];
@@ -81,10 +93,17 @@
 
 -(void)dismissAction
 {
+    [self.chooseInterestArray removeAllObjects];
+    for (UIButton *button in _buttonBackView.subviews) {
+        if (button.selected==YES) {
+            [self.chooseInterestArray addObject:self.interestArray[button.tag-888]];
+        }
+    }
     NSString *valueString=[self.chooseInterestArray componentsJoinedByString:@","];
     NSString *urlString=[NSString stringWithFormat:@"%@/user/property",URL];
     NSDictionary *paraDict=@{@"name":@"tags",@"value":valueString};
-    [YLHttp put:urlString userName:USERNAME_REMBER passeword:PASSWORD_REMBER params:paraDict success:^(id json) {
+    NSString *token=[[NSUserDefaults standardUserDefaults]objectForKey:BASE64CONTENT];
+    [YLHttp put:urlString token:token params:paraDict success:^(id json) {
         CATransition * animation = [CATransition animation];
         animation.duration = 0.8;    //  时间
         animation.type = kCATransitionMoveIn;
@@ -105,7 +124,7 @@
 
 -(void)chooseInterest:(UIButton *)btn
 {
-    if (self.chooseInterestArray.count==4) {
+    if (self.chooseInterestArray.count>=4) {
         btn.selected=NO;
     }else{
         if (btn.tag-888==3&&btn.selected==NO) {

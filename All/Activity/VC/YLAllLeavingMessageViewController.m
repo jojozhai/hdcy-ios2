@@ -27,8 +27,23 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [self createNavigationBar];
-    [self createView];
+    [self isLoggin];
 }
+
+-(void)isLoggin
+{
+    NSString *token=[[NSUserDefaults standardUserDefaults]objectForKey:BASE64CONTENT];
+    if (token.length==0||token==nil) {
+        UIAlertController * alertController = [UIAlertController alertControllerWithTitle:@"您没有登录，点击我的登录"                                                                             message: nil                                                                       preferredStyle:UIAlertControllerStyleActionSheet];
+        [alertController addAction: [UIAlertAction actionWithTitle: @"确定" style: UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            [self backAction];
+        }]];
+        [self presentViewController:alertController animated: NO completion: nil];
+    }else{
+        [self createView];
+    }
+}
+
 
 //设置navbar
 -(void)createNavigationBar
@@ -56,7 +71,8 @@
     [self.hud showAnimated:YES];
     NSString *urlString=[NSString stringWithFormat:@"%@%@",URL,@"/comments"];
     NSDictionary *paraDict=@{@"page":@(pageNum),@"size":@"20",@"sort":@"createdTime,desc",@"targetId":self.contentModel.Id,@"target":@"activity"};
-    [YLHttp get:urlString userName:USERNAME_REMBER passeword:PASSWORD_REMBER params:paraDict success:^(id json) {
+    NSString *token=[[NSUserDefaults standardUserDefaults]objectForKey:BASE64CONTENT];
+    [YLHttp get:urlString token:token params:paraDict success:^(id json) {
         if (self.page==0) {
             [self.Source removeAllObjects];
             [self.cellHeightArray removeAllObjects];

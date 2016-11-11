@@ -9,5 +9,5 @@
 #import "RootViewController.h"
 
 @interface YLAboutWebViewController : RootViewController
-
+@property (nonatomic,assign)NSInteger row;
 @end

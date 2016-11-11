@@ -18,6 +18,7 @@
 @interface YLMyDataViewController ()<UITableViewDelegate,UITableViewDataSource,UIImagePickerControllerDelegate, UINavigationControllerDelegate,datePickerDidPickDelegate>
 {
     YLPickerView *_datePicker;
+    NSString *_tagString;
 }
 @property (nonatomic,strong)UITableView *tableView;
 @property (nonatomic,strong)NSMutableArray *dataSource;
@@ -55,8 +56,10 @@
 -(void)requestUrl
 {
     NSString *urlString=[NSString stringWithFormat:@"%@/user/current",URL];
-    [YLHttp get:urlString userName:USERNAME_REMBER passeword:PASSWORD_REMBER params:nil success:^(id json) {
+    NSString *token=[[NSUserDefaults standardUserDefaults]objectForKey:BASE64CONTENT];
+    [YLHttp get:urlString token:token params:nil success:^(id json) {
         self.model=[[YLMineDataModel alloc]initWithDictionary:json error:nil];
+        _tagString=self.model.tags;
         [self createTableView];
     } failure:^(NSError *error) {
         
@@ -106,11 +109,7 @@
             back.image=[UIImage imageNamed:@"xingmingbeijing浅"];
             cell.backgroundView=back;
         }
-        if (indexPath.row==2) {
-            
-        }else{
-            cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
-        }
+        cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
         cell.nameLabel.text=indexDict[@"name"];
         cell.contentLabel.text=indexDict[@"content"];
         return cell;
@@ -128,6 +127,7 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    NSString *token=[[NSUserDefaults standardUserDefaults]objectForKey:BASE64CONTENT];
     switch (indexPath.row) {
         case 0:{
             UIAlertController * alertController = [UIAlertController alertControllerWithTitle:@"头像修改"                                                                             message: nil                                                                       preferredStyle:UIAlertControllerStyleActionSheet];
@@ -136,7 +136,7 @@
                 //处理点击拍照
                 [self getImageFromIpc:UIImagePickerControllerSourceTypePhotoLibrary];
             }]];
-            [alertController addAction: [UIAlertAction actionWithTitle: @"从相册选取" style: UIAlertActionStyleDefault handler:^(UIAlertAction *action){
+            [alertController addAction: [UIAlertAction actionWithTitle: @"拍照上传" style: UIAlertActionStyleDefault handler:^(UIAlertAction *action){
                 //处理点击从相册选取
                 [self getImageFromIpc:UIImagePickerControllerSourceTypeCamera];
             }]];
@@ -164,9 +164,40 @@
                 
                 NSString *urlString=[NSString stringWithFormat:@"%@/user/property",URL];
                 NSDictionary *paraDict=@{@"name":@"nickname",@"value":namefield.text};
-                [YLHttp put:urlString userName:USERNAME_REMBER passeword:PASSWORD_REMBER params:paraDict success:^(id json) {
+                [YLHttp put:urlString token:token params:paraDict success:^(id json) {
                     [self.tableView reloadData];
                     self.headimageBlock(nil,namefield.text);
+                } failure:^(NSError *error) {
+                    
+                }];
+            }]];
+            [alertController addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+                
+            }]];
+            [self presentViewController:alertController animated:YES completion:nil];
+        }
+            break;
+        case 2:{
+            UIAlertController * alertController = [UIAlertController alertControllerWithTitle: @"编辑姓名"
+                                                                                      message: nil
+                                                                               preferredStyle:UIAlertControllerStyleAlert];
+            [alertController addTextFieldWithConfigurationHandler:^(UITextField *textField) {
+                textField.placeholder = _model.nickname;
+                textField.textColor = [UIColor blackColor];
+                textField.clearButtonMode = UITextFieldViewModeAlways;
+                textField.borderStyle = UITextBorderStyleRoundedRect;
+            }];
+            [alertController addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                NSArray * textfields = alertController.textFields;
+                UITextField * namefield = textfields[0];
+                [self.dataSource removeObjectAtIndex:2];
+                NSDictionary *dict=@{@"name":@"姓名",@"content":[NSString stringWithFormat:@"%@",namefield.text]};
+                [self.dataSource insertObject:dict atIndex:2];
+                
+                NSString *urlString=[NSString stringWithFormat:@"%@/user/property",URL];
+                NSDictionary *paraDict=@{@"name":@"realname",@"value":namefield.text};
+                [YLHttp put:urlString token:token params:paraDict success:^(id json) {
+                    [self.tableView reloadData];
                 } failure:^(NSError *error) {
                     
                 }];
@@ -186,7 +217,7 @@
                 
                 NSString *urlString=[NSString stringWithFormat:@"%@/user/property",URL];
                 NSDictionary *paraDict=@{@"name":@"sex",@"value":@"1"};
-                [YLHttp put:urlString userName:USERNAME_REMBER passeword:PASSWORD_REMBER params:paraDict success:^(id json) {
+                [YLHttp put:urlString token:token params:paraDict success:^(id json) {
                     [self.tableView reloadData];
                 } failure:^(NSError *error) {
                     
@@ -199,7 +230,7 @@
                 
                 NSString *urlString=[NSString stringWithFormat:@"%@/user/property",URL];
                 NSDictionary *paraDict=@{@"name":@"sex",@"value":@"2"};
-                [YLHttp put:urlString userName:USERNAME_REMBER passeword:PASSWORD_REMBER params:paraDict success:^(id json) {
+                [YLHttp put:urlString token:token params:paraDict success:^(id json) {
                     [self.tableView reloadData];
                 } failure:^(NSError *error) {
                     
@@ -253,9 +284,11 @@
             break;
         case 9:{
             YLInterestViewController *interest=[[YLInterestViewController alloc]init];
+            interest.tagString=_tagString;
             interest.interestBlock=^(NSString *data){
                 [self.dataSource removeObjectAtIndex:9];
                 NSDictionary *dict=@{@"name":@"兴趣",@"content":[NSString stringWithFormat:@"%@",data]};
+                _tagString=data;
                 [self.dataSource insertObject:dict atIndex:9];
                 [self.tableView reloadData];
             };
@@ -278,7 +311,8 @@
     
     NSString *urlString=[NSString stringWithFormat:@"%@/user/property",URL];
     NSDictionary *paraDict=@{@"name":@"birthday",@"value":date};
-    [YLHttp put:urlString userName:USERNAME_REMBER passeword:PASSWORD_REMBER params:paraDict success:^(id json) {
+    NSString *token=[[NSUserDefaults standardUserDefaults]objectForKey:BASE64CONTENT];
+    [YLHttp put:urlString token:token params:paraDict success:^(id json) {
         [self.tableView reloadData];
     } failure:^(NSError *error) {
         
@@ -317,7 +351,7 @@
 //    imagesize.width =413;
 //    //对图片大小进行压缩--
 //    image = [self imageWithImage:image scaledToSize:imagesize];
-    NSData *imageData = UIImageJPEGRepresentation(image,1);
+    NSData *imageData = UIImageJPEGRepresentation(image,0.5);
     NSString *urlSring=[NSString stringWithFormat:@"%@/image/upload",URL];
     [YLHttp postImage:imageData url:urlSring params:nil success:^(id json) {
         NSString *head=json[@"content"];
@@ -327,7 +361,8 @@
         [self.tableView reloadData];
         NSString *headimgurl=[NSString stringWithFormat:@"%@/user/property",URL];
         NSDictionary *paraDict=@{@"name":@"headimgurl",@"value":json[@"content"]};
-        [YLHttp put:headimgurl userName:USERNAME_REMBER passeword:PASSWORD_REMBER params:paraDict success:^(id json) {
+        NSString *token=[[NSUserDefaults standardUserDefaults]objectForKey:BASE64CONTENT];
+        [YLHttp put:headimgurl token:token params:paraDict success:^(id json) {
             self.headimageBlock(head,nil);
         } failure:^(NSError *error) {
             
@@ -368,13 +403,6 @@
     }else{
         model.sex=@"男";
     }
-    if (model.mobile.length!=11) {
-        
-    }else{
-        NSString *string = [model.mobile substringWithRange:NSMakeRange(3,4)];
-        //字符串的替换
-        model.mobile = [model.mobile stringByReplacingOccurrencesOfString:string withString:@"****"];
-    }
     
     model.birthday=[YLGetTime getYYMMDDWithDate2:[NSDate dateWithTimeIntervalSince1970:[model.birthday doubleValue]/1000]];
 }
@@ -383,11 +411,10 @@
 -(NSMutableArray *)dataSource
 {
     if (!_dataSource) {
-        _dataSource=[NSMutableArray arrayWithArray:@[@{@"name":@"头像",@"image":self.model.headimgurl},@{@"name":@"昵称",@"content":self.model.nickname},@{@"name":@"姓名",@"content":self.model.realname},@{@"name":@"性别",@"content":self.model.sex},@{@"name":@"手机",@"content":self.model.mobile},@{@"name":@"密码",@"content":@"**********"},@{@"name":@"出生年月",@"content":self.model.birthday},@{@"name":@"所在地",@"content":self.model.address},@{@"name":@"车型",@"content":self.model.car},@{@"name":@"兴趣",@"content":self.model.tags}]];
+        _dataSource=[NSMutableArray arrayWithArray:@[@{@"name":@"头像",@"image":self.model.headimgurl},@{@"name":@"昵称",@"content":self.model.nickname},@{@"name":@"姓名",@"content":self.model.realname},@{@"name":@"性别",@"content":self.model.sex},@{@"name":@"手机",@"content":self.model.mobile},@{@"name":@"密码",@"content":@"**********"},@{@"name":@"出生年月",@"content":self.model.birthday},@{@"name":@"所在地",@"content":self.model.city},@{@"name":@"车型",@"content":self.model.car},@{@"name":@"兴趣",@"content":self.model.tags}]];
     }
     return _dataSource;
 }
-
 
 
 - (void)didReceiveMemoryWarning {

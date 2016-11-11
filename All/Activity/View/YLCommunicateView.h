@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "YLActivityInfoHeaderView.h"
 @protocol clickAllButtonDelegate <NSObject>
 -(void)clickMoreButton;
 @end
@@ -15,4 +16,5 @@
 @property (nonatomic,strong)NSMutableArray *dataSource;
 @property (nonatomic,assign)id<clickAllButtonDelegate>delegate;
 @property (nonatomic,copy)NSString *totalElements;
+@property (nonatomic,strong)YLActivityInfoHeaderView *infoHeader;
 @end

@@ -1,4 +1,4 @@
-//
+  //
 //  YLActivityOffLineViewController.m
 //  hdcy
 //
@@ -59,6 +59,7 @@
      *留言总数
      */
     NSString *totalElements;
+    
 }
 
 //此页面的数据字典
@@ -75,13 +76,13 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view
-    
+    self.view.backgroundColor=[UIColor whiteColor];
     [self createNavigationBar];
-    [self requestUrl];
+    
     [self isEnroll];
     [self createBottom];
-    
 }
+
 
 -(void)viewDidAppear:(BOOL)animated
 {
@@ -112,27 +113,45 @@
 
 -(void)writeComment//跳转评论页
 {
-    YLReplyViewController *writeVC=[[YLReplyViewController alloc]init];
-    writeVC.changeItemBlock=^(YLCommentModel *model){
-        if (self.communicationArray.count>=5) {
-            [self.communicationArray removeLastObject];
-        }
-        [self.communicationArray insertObject:model atIndex:0];
-        for (UIView *view in commucationView.subviews) {
-            [view removeFromSuperview];
-        }
-        commucationView.dataSource=self.communicationArray;
-        scrollView.contentSize=CGSizeMake(SCREEN_WIDTH, CGRectGetMaxY(topView.frame)+commucationView.frame.size.height+186);
-        communicationHeight=commucationView.frame.size.height;
-    };
-    writeVC.Id=self.contentModel.Id;
-    writeVC.target=@"activity";
-    CATransition * animation = [CATransition animation];
-    animation.duration = 0.8;    //  时间
-    animation.type = kCATransitionMoveIn;
-    animation.subtype = kCATransitionFromRight;
-    [self.view.window.layer addAnimation:animation forKey:nil];
-    [self presentViewController:writeVC animated:YES completion:nil];
+    NSString *token=[[NSUserDefaults standardUserDefaults]objectForKey:BASE64CONTENT];
+    if (token.length==0||token==nil) {
+        UIAlertController * alertController = [UIAlertController alertControllerWithTitle:@"您没有登录，点击我的登录"                                                                             message: nil                                                                       preferredStyle:UIAlertControllerStyleActionSheet];
+        [alertController addAction: [UIAlertAction actionWithTitle: @"确定" style: UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            [self backAction];
+        }]];
+        [self presentViewController:alertController animated: NO completion: nil];
+    }else{
+        YLReplyViewController *writeVC=[[YLReplyViewController alloc]init];
+        writeVC.changeItemBlock=^(YLCommentModel *model){
+            if (self.communicationArray.count>=5) {
+                [self.communicationArray removeLastObject];
+            }
+            [self.communicationArray insertObject:model atIndex:0];
+            for (UIView *view in commucationView.subviews) {
+                [view removeFromSuperview];
+            }
+            commucationView.dataSource=self.communicationArray;
+            UITableView *tv=commucationView.subviews[0];
+            [scrollView addSubview:commucationView];
+            commucationView.sd_layout
+            .leftEqualToView(scrollView)
+            .rightEqualToView(scrollView)
+            .topSpaceToView(infotableView,8)
+            .heightIs(tv.frame.size.height);
+            scrollView.contentSize=CGSizeMake(SCREEN_WIDTH, CGRectGetMaxY(topView.frame)+commucationView.frame.size.height+186);
+            communicationHeight=commucationView.frame.size.height;
+            totalElements=[NSString stringWithFormat:@"%d",totalElements.intValue+1];
+            commucationView.infoHeader.titleLabel.text=[NSString stringWithFormat:@"活动咨询(%@)",totalElements];
+        };
+        writeVC.Id=self.contentModel.Id;
+        writeVC.target=@"activity";
+        CATransition * animation = [CATransition animation];
+        animation.duration = 0.8;    //  时间
+        animation.type = kCATransitionMoveIn;
+        animation.subtype = kCATransitionFromRight;
+        [self.view.window.layer addAnimation:animation forKey:nil];
+        [self presentViewController:writeVC animated:YES completion:nil];
+    }
 }
 
 /*
@@ -142,28 +161,13 @@
 {
     NSString *urlString=[NSString stringWithFormat:@"%@/participator/member",URL];
     NSDictionary *paraDict=@{@"participationId":self.contentModel.Id};
-    [YLHttp get:urlString userName:USERNAME_REMBER passeword:PASSWORD_REMBER params:paraDict success:^(id json) {
-        if ([json[@"content"] isEqual:@(false)]) {
-            if (self.isFinish==YES) {
-                [signButton setTitle:@"已结束" forState:UIControlStateNormal];
-                signButton.backgroundColor=[UIColor grayColor];
-                signButton.enabled=NO;
-            }else{
-                [signButton setTitle:@"立即报名" forState:UIControlStateNormal];
-                signButton.backgroundColor=[UIColor orangeColor];
-            }
-        }else{
-            if (self.isFinish==YES) {
-                [signButton setTitle:@"已结束" forState:UIControlStateNormal];
-                signButton.backgroundColor=[UIColor grayColor];
-                signButton.enabled=NO;
-            }else{
-                [signButton setTitle:@"已报名" forState:UIControlStateNormal];
-                signButton.backgroundColor=[UIColor grayColor];
-                signButton.enabled=NO;
-            }
-            
+    [YLHttp get:urlString params:paraDict success:^(id json) {
+        if ([json[@"content"] isEqual:@(YES)]) {
+            [signButton setTitle:@"已报名" forState:UIControlStateNormal];
+            signButton.backgroundColor=[UIColor grayColor];
+            signButton.enabled=NO;
         }
+        [self requestUrl];
     } failure:^(NSError *error) {
         
     }];
@@ -194,7 +198,7 @@
 
 -(void)shareAction
 {
-    NSString *urlString=[NSString stringWithFormat:@"%@/activityDetails.html?id=%@",URL,self.contentModel.Id];
+    NSString *urlString=[NSString stringWithFormat:@"%@/views/activityDetail.html?id=%@",URL,self.contentModel.Id];
     NSData *data = [NSData dataWithContentsOfURL:[NSURL  URLWithString:self.contentModel.image]];
     [[UMSocialData defaultData].urlResource setResourceType:UMSocialUrlResourceTypeWeb url:urlString];
     [UMSocialData defaultData].extConfig.title = self.contentModel.name;
@@ -203,7 +207,7 @@
                                       shareText:nil
                                      shareImage:[UIImage imageWithData:data]
                                 shareToSnsNames:@[UMShareToWechatSession,UMShareToWechatTimeline]
-                                       delegate:self];
+                                       delegate:nil];
 }
 
 #pragma ----------------UMSocialUIDelegate-------------------------------
@@ -235,7 +239,7 @@
     signButton=[UIButton buttonWithType:UIButtonTypeCustom];
     [signButton setTitle:@"立即报名" forState:UIControlStateNormal];
     [signButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [signButton setBackgroundImage:[UIImage imageNamed:@"jianbian"] forState:UIControlStateNormal];
+    //[signButton setBackgroundImage:[UIImage imageNamed:@"jianbian"] forState:UIControlStateNormal];
     [signButton addTarget:self action:@selector(signUpAction) forControlEvents:UIControlEventTouchUpInside];
     [bottomView addSubview:signButton];
     
@@ -279,7 +283,9 @@
 
 -(void)callDialAction
 {
-    NSMutableString * str=[[NSMutableString alloc] initWithFormat:@"telprompt://%@",[self.modelDict[@"offInfo"] valueForKey:@"contactPhone"]];
+    YLActivityOffInfoModel *model=_modelDict[@"offInfo"];
+    NSDictionary *dict=model.waiterInfo;
+    NSMutableString * str=[[NSMutableString alloc] initWithFormat:@"telprompt://%@",dict[@"phone"]];
     //            NSLog(@"str======%@",str);
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:str]];
     [callView removeFromSuperview];
@@ -297,8 +303,15 @@
 -(void)signUpAction
 {
     YLSignUpViewController *signUpVC=[[YLSignUpViewController alloc]init];
-    signUpVC.messageBlock=^(){
-        [signButton setTitle:@"已报名" forState:UIControlStateNormal];
+    signUpVC.messageBlock=^(BOOL bo){
+        if (bo==YES) {
+            [signButton setTitle:@"已报名" forState:UIControlStateNormal];
+            signButton.enabled=NO;
+        }else{
+            [signButton setTitle:@"已结束" forState:UIControlStateNormal];
+            signButton.enabled=NO;
+        }
+        signButton.backgroundColor=[UIColor grayColor];
     };
     CATransition * animation = [CATransition animation];
     animation.duration = 0.5;    //  时间
@@ -319,7 +332,58 @@
     NSString *urlString=[NSString stringWithFormat:@"%@/activity/%@",URL,self.contentModel.Id];
     [YLHttp get:urlString params:nil success:^(id json) {
         
-        YLActivityOffInfoModel *offInfoModel=[[YLActivityOffInfoModel alloc]initWithDictionary:json error:nil];
+        YLActivityOffInfoModel *offInfoModel=[[YLActivityOffInfoModel alloc]init];
+        
+        offInfoModel.address=json[@"address"];
+        offInfoModel.city=json[@"city"];
+        offInfoModel.province=json[@"province"];
+        offInfoModel.contactPhone=json[@"contactPhone"];
+        offInfoModel.desc=json[@"desc"];
+        offInfoModel.enable=[json[@"enable"] boolValue];
+        offInfoModel.endTime=[NSNumber numberWithInteger:[json[@"endTime"] integerValue]];
+        offInfoModel.finish=[json[@"finish"] boolValue];
+        offInfoModel.hot=json[@"hot"];
+        offInfoModel.hotPlus=[NSNumber numberWithInteger:[json[@"hotPlus"] integerValue]];
+        offInfoModel.Id=json[@"id"];
+        offInfoModel.image=json[@"image"];
+        offInfoModel.images=json[@"images"];
+        offInfoModel.name=json[@"name"];
+        offInfoModel.peopleLimit=json[@"peopleLimit"];
+        offInfoModel.price=[NSNumber numberWithInteger:[json[@"price"] integerValue]];
+        offInfoModel.signCount=[NSNumber numberWithInteger:[json[@"signCount"] integerValue]];
+        offInfoModel.signCountPlus=[NSNumber numberWithInteger:[json[@"signCountPlus"] integerValue]];
+        offInfoModel.signEndTime=[NSNumber numberWithInteger:[json[@"signEndTime"] integerValue]];
+        offInfoModel.signFinish=[json[@"signFinish"] boolValue];
+        offInfoModel.signStartTime=[NSNumber numberWithInteger:[json[@"signStartTime"] integerValue]];
+        offInfoModel.sponsorName=json[@"sponsorName"];
+        offInfoModel.startTime=[NSNumber numberWithInteger:[json[@"startTime"] integerValue]];
+        offInfoModel.state=json[@"state"];
+        offInfoModel.type=json[@"type"];
+        if ([json[@"waiterInfo"] isKindOfClass:[NSNull class]]) {
+            offInfoModel.waiterInfo=@{};
+        }else{
+            offInfoModel.waiterInfo=json[@"waiterInfo"];
+        }
+        if ([signButton.titleLabel.text isEqualToString:@"已报名"]) {
+            
+        }else{
+            if (offInfoModel.signFinish==YES) {
+                [signButton setTitle:@"报名已截止" forState:UIControlStateNormal];
+                signButton.backgroundColor=[UIColor grayColor];
+                signButton.enabled=NO;
+                
+            }else{
+                if ([offInfoModel.state isEqual:@"NOT_START"]) {
+                    [signButton setTitle:@"立即报名" forState:UIControlStateNormal];
+                    signButton.backgroundColor=BGColor;
+                    
+                }else if ([offInfoModel.state isEqual:@"FINISH"]) {
+                    [signButton setTitle:@"已结束" forState:UIControlStateNormal];
+                    signButton.backgroundColor=[UIColor grayColor];
+                    signButton.enabled=NO;
+                }
+            }
+        }
         _modelDict=[[NSMutableDictionary alloc]initWithDictionary:@{@"offInfo":offInfoModel}];
         [self createView];
      } failure:^(NSError *error) {
@@ -367,7 +431,7 @@
     YLActivityOffInfoModel *offInfoModel=_modelDict[@"offInfo"];
     NSMutableArray *infoTArray=[[NSMutableArray alloc]init];
     NSMutableArray *firstArr=[[NSMutableArray alloc]init];
-    [firstArr addObject:offInfoModel.hot];
+    [firstArr addObject:[NSString stringWithFormat:@"%d",offInfoModel.signCount.intValue+offInfoModel.signCountPlus.intValue]];
     [infoTArray addObject:firstArr];
     NSMutableArray *secondArray=[NSMutableArray array];
     if (offInfoModel.sponsorName==nil) {
@@ -375,8 +439,8 @@
     }else{
         [secondArray addObject:offInfoModel.sponsorName];
     }
-    [secondArray addObject:[YLGetTime getYYMMDDWithDate2:[NSDate dateWithTimeIntervalSince1970:offInfoModel.startTime.doubleValue/1000]]];
-    [secondArray addObject:offInfoModel.address];
+    [secondArray addObject:[YLGetTime getYYMMDDHHMMWithDate:[NSDate dateWithTimeIntervalSince1970:offInfoModel.startTime.doubleValue/1000]]];
+    [secondArray addObject:[NSString stringWithFormat:@"%@%@%@",offInfoModel.province,offInfoModel.city,offInfoModel.address]];
     [secondArray addObject:offInfoModel.price];
     [infoTArray addObject:secondArray];
     infotableView.sourceArray=infoTArray;
@@ -392,7 +456,7 @@
     
     NSString *urlString=[NSString stringWithFormat:@"%@%@",URL,@"/comments"];
     NSDictionary *paraDict=@{@"page":@(0),@"size":@"5",@"sort":@"createdTime,desc",@"targetId":self.contentModel.Id,@"target":@"activity"};
-    [YLHttp get:urlString userName:USERNAME_REMBER passeword:PASSWORD_REMBER params:paraDict success:^(id json) {
+    [YLHttp get:urlString params:paraDict success:^(id json) {
         totalElements=json[@"totalElements"];
         NSArray *contentArray=json[@"content"];
         if (contentArray.count==0) {
@@ -445,7 +509,7 @@
         .topSpaceToView(infotableView,8)
         .heightIs(200);
         UILabel *showLabel=[[UILabel alloc]initWithFrame:CGRectMake(0, 48*SCREEN_MUTI, SCREEN_WIDTH, 200-48*SCREEN_MUTI)];
-        showLabel.text=@"暂无留言";
+        showLabel.text=@"暂无咨询";
         showLabel.textColor=[UIColor lightGrayColor];
         showLabel.backgroundColor=[UIColor whiteColor];
         showLabel.textAlignment=NSTextAlignmentCenter;

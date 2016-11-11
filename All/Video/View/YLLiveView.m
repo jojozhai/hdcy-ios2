@@ -98,6 +98,7 @@
         self.transform=CGAffineTransformRotate(self.transform, M_PI_2);
         self.frame=CGRectMake(0, 0, Window_Width, Window_Height);
         
+        
         self.sponsorImageView.sd_layout
         .leftSpaceToView(self,12)
         .topSpaceToView(self,self.frame.size.width-40)
@@ -109,6 +110,8 @@
         .topSpaceToView(self,self.frame.size.width-40)
         .widthIs(80)
         .heightIs(30);
+        self.sponsorImageView.hidden=YES;
+        self.sponorLabel.hidden=YES;
         
         self.livelabel.sd_layout
         .leftSpaceToView(self,self.frame.size.height-125)
@@ -142,6 +145,8 @@
         .topSpaceToView(self,self.frame.size.height-40)
         .widthIs(80)
         .heightIs(30);
+        self.sponsorImageView.hidden=NO;
+        self.sponorLabel.hidden=NO;
         
         self.livelabel.sd_layout
         .leftSpaceToView(self,self.frame.size.width-125)

@@ -114,7 +114,8 @@
     [YLHttp get:urlString params:paraDict success:^(id json) {
         NSString *phoneString=[NSString stringWithFormat:@"%@/user/property",URL];
         NSDictionary *para=@{@"name":@"mobile",@"value":otf.text};
-        [YLHttp put:phoneString userName:USERNAME_REMBER passeword:PASSWORD_REMBER params:para success:^(id json) {
+        NSString *token=[[NSUserDefaults standardUserDefaults]objectForKey:BASE64CONTENT];
+        [YLHttp put:phoneString token:token params:para success:^(id json) {
             [MBProgressHUD showMessage:@"修改手机号成功"];
             [self.presentingViewController.presentingViewController dismissViewControllerAnimated:NO completion:nil];
         } failure:^(NSError *error) {

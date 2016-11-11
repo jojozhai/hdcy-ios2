@@ -12,6 +12,7 @@
 {
     UIWebView *_webView;
 }
+@property (nonatomic,strong)NSArray *dataSource;
 @end
 
 @implementation YLAboutWebViewController
@@ -21,12 +22,11 @@
     // Do any additional setup after loading the view.
     self.view.backgroundColor=BGColor;
     [self createNavigationBar];
-    NSString *urlString=[NSString stringWithFormat:@"%@",URL];
     _webView=[[UIWebView alloc]initWithFrame:CGRectMake(0,70, SCREEN_WIDTH, SCREEN_HEIGHT-70)];
     //_webView.scrollView.scrollEnabled = NO;
     //[_webView sizeToFit];
     _webView.scalesPageToFit = YES;
-    NSURLRequest *request=[NSURLRequest requestWithURL:[NSURL URLWithString:urlString]];
+    NSURLRequest *request=[NSURLRequest requestWithURL:[NSURL URLWithString:self.dataSource[self.row]]];
     [_webView loadRequest:request];
     [self.view addSubview:_webView];
 }
@@ -48,6 +48,14 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+-(NSArray *)dataSource
+{
+    if (!_dataSource) {
+        _dataSource=@[[NSString stringWithFormat:@"%@/views/about/agreement.html",URL],[NSString stringWithFormat:@"%@/views/about/contact.html",URL],[NSString stringWithFormat:@"%@/views/about/company.html",URL]];
+    }
+    return _dataSource;
 }
 
 /*

@@ -17,7 +17,7 @@
 @property (nonatomic,strong)UIImageView *endImageView;
 @property (nonatomic,strong)UILabel *sponsorLabel;
 @property (nonatomic,strong)UIImageView *sponsorImage;
-
+@property (nonatomic,strong)UILabel *countTimeLabel;
 
 @property (nonatomic,strong)YLActivityListContentModel *model;
 @end

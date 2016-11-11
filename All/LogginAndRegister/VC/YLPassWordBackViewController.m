@@ -110,22 +110,23 @@
     [otf resignFirstResponder];
     UITextField *nof=[self.view viewWithTag:7799];
     [nof resignFirstResponder];
-    NSString *urlString=[NSString stringWithFormat:@"%@/sms/code",URL];
-    NSDictionary *paraDict=@{@"phone":nof.text};
+    NSString *urlString=[NSString stringWithFormat:@"%@/sms/code/check",URL];
+    NSDictionary *paraDict=@{@"phone":otf.text,@"code":nof.text};
     [YLHttp get:urlString params:paraDict success:^(id json) {
         YLBackCodeViewController *change=[[YLBackCodeViewController alloc]init];
+        change.mobile=otf.text;
         [self presentViewController:change animated:YES completion:nil];
     } failure:^(NSError *error) {
-        
+        [MBProgressHUD showMessage:@"信息错误"];
     }];
 }
 
 -(void)redeliverAction:(UIButton *)btn
 {
     if (btn==nil) {
-        
+        [reButton setTitle:@"发送验证码" forState:UIControlStateNormal];
     }else{
-        UITextField *otf=[self.view viewWithTag:7788];
+        UITextField *otf=[self.view viewWithTag:7798];
         [otf resignFirstResponder];
         NSString *urlString=[NSString stringWithFormat:@"%@/sms/code",URL];
         NSDictionary *paraDict=@{@"phone":otf.text};

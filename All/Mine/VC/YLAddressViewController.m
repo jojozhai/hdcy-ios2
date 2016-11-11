@@ -12,11 +12,13 @@
 {
     UIButton *currentButton;
     CLLocationManager *_locationManager;
-    CLGeocoder *_geocoder;;
+    CLGeocoder *_geocoder;
+    NSString *_address;
 }
 @property (nonatomic,strong)NSMutableDictionary *dataSource;
 @property (nonatomic,strong)NSMutableArray *indexArray;
 @property (nonatomic,strong)UITableView *tableView;
+@property (nonatomic,strong)MBProgressHUD *hud;
 @end
 
 @implementation YLAddressViewController
@@ -68,11 +70,13 @@
 
 -(void)locate
 {
+    [self.hud showAnimated:YES];
     //定位管理器
     _locationManager=[[CLLocationManager alloc]init];
     
     if (![CLLocationManager locationServicesEnabled]) {
         NSLog(@"定位服务当前可能尚未打开，请设置打开！");
+        [self.hud hideAnimated:YES];
         return;
     }
     
@@ -110,11 +114,29 @@
         CLPlacemark *placemark=[placemarks firstObject];
         NSLog(@"详细信息:%@",placemark.addressDictionary);
         [currentButton setTitle:placemark.locality forState:UIControlStateNormal];
+        _address=placemark.locality;
+        [_hud hideAnimated:YES];
     }];
 }
 
 -(void)dismissAction
 {
+    self.addressBlock(_address);
+    
+    if ([_address isEqualToString:@"北京市"]) {
+        NSString *urlString=[NSString stringWithFormat:@"%@/user/property",URL];
+        NSDictionary *paraDict=@{@"name":@"city",@"value":@"北京市"};
+        NSString *token=[[NSUserDefaults standardUserDefaults]objectForKey:BASE64CONTENT];
+        if (token.length==0||token==nil) {
+            
+        }else{
+            [YLHttp put:urlString token:token params:paraDict success:^(id json) {
+                
+            } failure:^(NSError *error) {
+                
+            }];
+        }
+    }
     CATransition * animation = [CATransition animation];
     animation.duration = 0.8;    //  时间
     animation.type = kCATransitionMoveIn;
@@ -180,13 +202,19 @@
     NSArray *arry=self.dataSource[self.indexArray[indexPath.section]];
     NSString *name=arry[indexPath.row];
     NSString *urlString=[NSString stringWithFormat:@"%@/user/property",URL];
-    NSDictionary *paraDict=@{@"name":@"address",@"value":name};
-    [YLHttp put:urlString userName:USERNAME_REMBER passeword:PASSWORD_REMBER params:paraDict success:^(id json) {
+    NSDictionary *paraDict=@{@"name":@"city",@"value":name};
+    NSString *token=[[NSUserDefaults standardUserDefaults]objectForKey:BASE64CONTENT];
+    if (token.length==0||token==nil) {
+        _address=name;
         [self dismissAction];
-        self.addressBlock(name);
-    } failure:^(NSError *error) {
-        
-    }];
+    }else{
+        [YLHttp put:urlString token:token params:paraDict success:^(id json) {
+            _address=name;
+            [self dismissAction];
+        } failure:^(NSError *error) {
+            
+        }];
+    }
 }
 
 //返回索引数组
@@ -223,6 +251,15 @@
         
     }
     return _dataSource;
+}
+
+-(MBProgressHUD *)hud
+{
+    if (!_hud) {
+        _hud=[[MBProgressHUD alloc]initWithView:self.view];
+        _hud.label.text=@"加载中";
+    }
+    return _hud;
 }
 
 - (void)didReceiveMemoryWarning {

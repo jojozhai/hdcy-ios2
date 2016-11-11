@@ -14,14 +14,14 @@
 #import "YLFamousDetailViewController.h"
 #import "YLFamousApply.h"
 #import "YLFamousApplyInstitite.h"
-@interface YLFamousViewController ()<UITableViewDelegate,UITableViewDataSource,YLFamousApplyDelegate>
+@interface YLFamousViewController ()<UITableViewDelegate,UITableViewDataSource,YLFamousApplyDelegate,FamousScrollViewClickDelegate>
 {
     UIView *_topMainView;
     YLFamousTopView *_topView;
     UIView *_segmentView;
     NSInteger _page;
     NSString *_portString;
-     UIView *_coverView;
+    UIView *_coverView;
     YLFamousApply *_applyView;
     YLFamousApplyInstitite *_instituteView;
 }
@@ -42,6 +42,7 @@
     [self createPlusButton];
     [self requestWithTop];
 }
+
 
 /*
  *创建编辑按钮
@@ -71,6 +72,7 @@
     UITapGestureRecognizer *tap=[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(disappearAction)];
     [_coverView addGestureRecognizer:tap];
     [self.view addSubview:_coverView];
+    
     _applyView=[[YLFamousApply alloc]initWithFrame:CGRectMake(30*SCREEN_MUTI, 158, 315*SCREEN_MUTI, 250*SCREEN_MUTI)];
     _applyView.delegate=self;
     [_coverView addSubview:_applyView];
@@ -96,6 +98,9 @@
             
         }];
 
+    }else{
+        [MBProgressHUD showMessage:@"您的积分暂无法申请个人大咖"];
+        _coverView.hidden=YES;
     }
 }
 
@@ -104,6 +109,7 @@
     _topMainView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 225*SCREEN_MUTI+40)];
 
     _topView=[[YLFamousTopView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 225*SCREEN_MUTI)];
+    _topView.delegate=self;
     _topView.backgroundColor=BGColor;
     [_topMainView addSubview:_topView];
     
@@ -190,7 +196,7 @@
 -(void)requestDataWithPortString:(NSString *)port
 {
     [self.hud showAnimated:YES];
-    NSDictionary *dict=@{@"enable":@YES,@"page":@(_page),@"size":@"20",@"sort":@"createdTime,desc",@"organ":port};
+    NSDictionary *dict=@{@"enable":@YES,@"page":@(_page),@"size":@"20",@"sort":@"createdTime,desc",@"organ":port,@"top":@NO};
     NSString *famousString=[NSString stringWithFormat:@"%@/leader",URL];
     [YLHttp get:famousString params:dict success:^(id json) {
         NSArray *contentArr=json[@"content"];
@@ -260,6 +266,20 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     YLFamousTopModel *model=self.dataSource[indexPath.row];
+    YLFamousDetailViewController *detail=[[YLFamousDetailViewController alloc]init];
+    detail.Id=model.Id;
+    CATransition * animation = [CATransition animation];
+    animation.duration = 0.8;    //  时间
+    animation.type = kCATransitionMoveIn;
+    animation.subtype = kCATransitionFromRight;
+    [self.view.window.layer addAnimation:animation forKey:nil];
+    [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:detail animated:YES completion:nil];
+}
+
+#pragma FamousScrollViewClickDelegate
+-(void)clickScrollViewItemWithIndex:(NSInteger)index
+{
+    YLFamousTopModel *model=self.headerArray[index];
     YLFamousDetailViewController *detail=[[YLFamousDetailViewController alloc]init];
     detail.Id=model.Id;
     CATransition * animation = [CATransition animation];

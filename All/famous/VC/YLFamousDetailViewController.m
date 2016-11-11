@@ -55,16 +55,16 @@
  */
 -(void)shareAction
 {
-//    NSString *urlString=[NSString stringWithFormat:@"%@%@",URL,[NSString stringWithFormat:@"/articleDetails.html?id=%@&show=YES",self.listModel.Id]];
-//    NSData *data = [NSData dataWithContentsOfURL:[NSURL  URLWithString:self.listModel.image]];
-//    [[UMSocialData defaultData].urlResource setResourceType:UMSocialUrlResourceTypeWeb url:urlString];
-//    [UMSocialData defaultData].extConfig.title = self.listModel.title;
-//    [UMSocialSnsService presentSnsIconSheetView:self
-//                                         appKey:UmengAppID
-//                                      shareText:nil
-//                                     shareImage:[UIImage imageWithData:data]
-//                                shareToSnsNames:@[UMShareToWechatSession,UMShareToWechatTimeline]
-//                                       delegate:self];
+    NSString *urlString=[NSString stringWithFormat:@"%@%@",URL,[NSString stringWithFormat:@"/views/leaderDetail.html?id=%@",self.Id]];
+    NSData *data = [NSData dataWithContentsOfURL:[NSURL  URLWithString:_model.image]];
+    [[UMSocialData defaultData].urlResource setResourceType:UMSocialUrlResourceTypeWeb url:urlString];
+    [UMSocialData defaultData].extConfig.title = _model.name;
+    [UMSocialSnsService presentSnsIconSheetView:self
+                                         appKey:UmengAppID
+                                      shareText:nil
+                                     shareImage:[UIImage imageWithData:data]
+                                shareToSnsNames:@[UMShareToWechatSession,UMShareToWechatTimeline]
+                                       delegate:nil];
 }
 
 -(void)requestURL
@@ -111,21 +111,30 @@
     _sloganLabel.font=FONT_SYS(12);
     [backView addSubview:_sloganLabel];
     
-    _tagLabel=[[UILabel alloc]init];
-    _tagLabel.text=_model.tags;
-    CGSize size = CGSizeMake(MAXFLOAT, 10);
-    CGSize tagLabelSize = [_model.tags boundingRectWithSize:size
-                                                              options:NSStringDrawingTruncatesLastVisibleLine  | NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading
-                                                           attributes:@{ NSFontAttributeName:FONT_SYS(10)}
-                                                              context:nil].size;
-    _tagLabel.frame=CGRectMake(92, 130, tagLabelSize.width, tagLabelSize.height);
-    _tagLabel.backgroundColor=RGBCOLOR(31, 59, 82);
-    _tagLabel.textColor=RGBCOLOR(200, 200, 200);
-    _tagLabel.textAlignment=NSTextAlignmentLeft;
-    _tagLabel.font=FONT_SYS(10);
-    [backView addSubview:_tagLabel];
+    NSArray *tagArray=[_model.tags componentsSeparatedByString:@","];
+    NSInteger labelWidth=0;
+    for (int i=0; i<tagArray.count; i++) {
+        _tagLabel=[[UILabel alloc]init];
+        _tagLabel.text=tagArray[i];
+        _tagLabel.numberOfLines=0;
+        CGSize size = CGSizeMake(SCREEN_WIDTH, 1000);
+        CGSize tagLabelSize = [_tagLabel.text boundingRectWithSize:size
+                                                        options:NSStringDrawingTruncatesLastVisibleLine  | NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading
+                                                     attributes:@{ NSFontAttributeName:FONT_SYS(10)}
+                                                        context:nil].size;
+        _tagLabel.frame=CGRectMake(92+labelWidth, 128, tagLabelSize.width+5, tagLabelSize.height+5);
+        _tagLabel.backgroundColor=RGBCOLOR(31, 59, 82);
+        _tagLabel.textColor=RGBCOLOR(200, 200, 200);
+        _tagLabel.textAlignment=NSTextAlignmentCenter;
+        _tagLabel.font=FONT_SYS(10);
+        [backView addSubview:_tagLabel];
+        labelWidth=labelWidth+tagLabelSize.width+20;
+    }
     
-    UIView *introView=[[UIView alloc]init];
+    UIScrollView *introView=[[UIScrollView alloc]initWithFrame:CGRectMake(0, 260, SCREEN_WIDTH, SCREEN_HEIGHT-260)];
+    introView.alwaysBounceVertical=YES;
+    introView.showsVerticalScrollIndicator=NO;
+    introView.showsHorizontalScrollIndicator=NO;
     introView.backgroundColor=[UIColor whiteColor];
     [self.view addSubview:introView];
     
@@ -140,15 +149,16 @@
     [introView addSubview:label];
     
     UILabel *introLabel=[[UILabel alloc]init];
+    introLabel.numberOfLines=0;
     introLabel.font=FONT_SYS(14);
     introLabel.textColor=[UIColor blackColor];
     introLabel.text=_model.intro;
-    CGSize introLabelSize = [_model.tags boundingRectWithSize:CGSizeMake(MAXFLOAT, 14)
+    CGSize introLabelSize = [_model.intro boundingRectWithSize:CGSizeMake(SCREEN_WIDTH, MAXFLOAT)
                                                     options:NSStringDrawingTruncatesLastVisibleLine  | NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading
                                                  attributes:@{ NSFontAttributeName:FONT_SYS(14)}
                                                 context:nil].size;
-    introLabel.frame=CGRectMake(12, 60, SCREEN_WIDTH-24, introLabelSize.height);
-    introView.frame=CGRectMake(0, 260,SCREEN_WIDTH , 60+introLabelSize.height+10);
+    introLabel.frame=CGRectMake(12, 60, SCREEN_WIDTH-24, introLabelSize.height+20);
+    introView.contentSize=CGSizeMake(SCREEN_WIDTH, 80+introLabelSize.height);
     [introView addSubview:introLabel];
 }
 

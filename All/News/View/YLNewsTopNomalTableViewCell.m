@@ -50,7 +50,7 @@
     self.tagLabel.font=FONT_SYS_ANNOTATE;
     [hideImageView addSubview:self.tagLabel];
     
-    self.timeLabel=[[UILabel alloc]initWithFrame:CGRectMake(135, 85*SCREEN_MUTI, 60, 20)];
+    self.timeLabel=[[UILabel alloc]initWithFrame:CGRectMake(135, 85*SCREEN_MUTI, 100, 20)];
     self.timeLabel.textColor=[UIColor grayColor];
     self.timeLabel.textAlignment=NSTextAlignmentLeft;
     self.timeLabel.font=FONT_SYS_ANNOTATE;

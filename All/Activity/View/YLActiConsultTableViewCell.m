@@ -80,7 +80,7 @@
         [backImageView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.equalTo(self.contentView.mas_left).offset(42);
             make.top.equalTo(self.nameLabel.mas_bottom).offset(2);
-            make.width.equalTo(@(100));
+            make.width.equalTo(@(120));
         }];
     }
 }
